@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import Home from './home/home';
+import './home.scss';
 
-class App extends Component {
+class Home extends Component {
     constructor(props) {
         super(props);
-        this.state = { };
+        this.state = { 
+
+         };
     }
     
     componentWillMount() {
@@ -12,11 +14,10 @@ class App extends Component {
 
     render() {
     return(
-        <div>
-            <Home />
-        </div>
+    <div>
+    </div>
     );
     }
 }
 
-export default App;
+export default Home;
