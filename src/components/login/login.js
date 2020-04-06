@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 //import './login.scss';
 
 class Login extends Component {
@@ -7,29 +7,30 @@ class Login extends Component {
         super(props);
         this.state = 
         {
-            value: '', 
-            passval: ''
+            emailVal: '',
+            passVal: '',
+            session: ''
         };
     
-        this.handleChange = this.handleChange.bind(this);
+        this.handleEmail = this.handleEmail.bind(this);
         this.handlePass = this.handlePass.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
     
-      handleChange(event) {
-        this.setState({value: event.target.value});
+      handleEmail(event) {
+        this.setState({emailVal: event.target.value});
       }
 
       handlePass(event) {
-        this.setState({passval: event.target.value});
+        this.setState({passVal: event.target.value});
       }
     
       handleSubmit(event) {
         event.preventDefault();
         const loginObject = 
         { 
-            email: this.state.value, 
-            password: this.state.passval 
+            email: this.state.emailVal, 
+            password: this.state.passVal 
         };
         console.log(loginObject);
 
@@ -65,7 +66,7 @@ class Login extends Component {
             }).then((res) => res.json())
             .then((data) => {
                 console.log(data);
-                return<div>data</div>
+                this.setState({session: data});
                 
             })
         })
@@ -74,18 +75,24 @@ class Login extends Component {
     
       render() {
         return (
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Name:
-              <input type="email" value={this.state.value} onChange={this.handleChange} />
-            </label>
-              <br />
-            <label>Password:
-              <input type="password" value={this.state.passval} onChange={this.handlePass} />
-            </label>
-            <br />
-            <input type="submit" value="Submit" />
-          </form>
+          <div>
+            <form onSubmit={this.handleSubmit}>
+                <label>Email:<br />
+                <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
+                </label>
+                <br />
+                <label>Password:<br />
+                <input type="password" value={this.state.passVal} onChange={this.handlePass} />
+                </label>
+                <br />
+                <input type="submit" value="Submit" />
+            </form>
+            { this.state.session != '' &&
+            <div>Welcome {this.state.session.username} </div>
+
+            }
+            <div></div>
+          </div>
         );
       }
 }
