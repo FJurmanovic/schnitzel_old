@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Home from './home/home';
 import Login from './login/login';
 import Register from './register/register';
+import Logout from './logout/logout';
 import Navbar from './navbar/navbar';
 
 
@@ -14,6 +15,10 @@ class App extends Component {
     }
     
     componentWillMount() {
+      if (localStorage.getItem("session")){
+        const session = localStorage.getItem("session");
+        this.setState({session: session});
+      }
     }
 
     render() {
@@ -23,8 +28,9 @@ class App extends Component {
           <Navbar />
           <Route exact path="/" component={Home} />
           <div className="container">
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/logout" component={Logout} />
           </div>
         </div>
       </Router>

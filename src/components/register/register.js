@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { register } from '../classes/callAPI';
 //import './login.scss';
 
 class Register extends Component {
@@ -74,16 +75,9 @@ class Register extends Component {
             };
             console.log(registerObject);
             
-            fetch('http://localhost:4000/user/signup', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(registerObject)
-            }).then((res) => res.json())
-            .then((data) => {
-                console.log(data.token);
-                this.setState({succRegister: true});
-            })
-            .catch((err)=>console.log(err))
+            register(registerObject).then(res=>{
+              this.setState({succRegister: true});
+            });
         }   
       }
     

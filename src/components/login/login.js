@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-//import axios from 'axios';
+import { login, userData } from '../classes/callAPI';
+import { functions } from '../classes/Functions';
 //import './login.scss';
 
 class Login extends Component {
@@ -34,43 +35,15 @@ class Login extends Component {
         };
         console.log(loginObject);
 
-        /*
-        axios.post('http://localhost:4000/user/login', {
-            email: this.state.value, 
-            password: this.state.passval
-        })
-        .then(response => { 
-            console.log(response.data.token)
-            axios.get('http://localhost:4000/user/me', { token: response.data.token })
-            .then(res => {console.log(res)})
-            .catch(error => {console.log(error)})
-        })
-        .catch(error => {
-            console.log(error.response)
-        });*/
+        login(loginObject).then(res=>{
+          console.log(res);
+          userData(res.data.token).then(response=>{
+            this.setState({session: res.data.token});
+            localStorage.setItem("session", res.data.token);
+          });
+        });
+        
 
-        fetch('http://localhost:4000/user/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(loginObject)
-        }).then((res) => res.json())
-        .then((data) => {
-            console.log(data.token);
-
-            fetch('http://localhost:4000/user/me', {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-            headers: {
-                token: data.token
-            }
-            }).then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-                this.setState({session: data});
-                
-            })
-        })
-        .catch((err)=>console.log(err))
       }
     
       render() {
@@ -88,8 +61,7 @@ class Login extends Component {
                 <input type="submit" value="Submit" />
             </form>
             { this.state.session != '' &&
-            <div>Welcome {this.state.session.username} </div>
-
+                functions.BackToLanding()
             }
             <div></div>
           </div>
