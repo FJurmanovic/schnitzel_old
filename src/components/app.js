@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { useSelector, useDispatch, connect } from 'react-redux';
 
 import Home from './home/home';
 import Login from './login/login';
@@ -7,6 +8,12 @@ import Register from './register/register';
 import Logout from './logout/logout';
 import Navbar from './navbar/navbar';
 
+import {SIGN_IN} from '../actions/';
+
+function State() {
+  const isLogged = useSelector(state => state.isLogged)
+  //const dispatch = useDispatch();
+}
 
 class App extends Component {
     constructor(props) {
@@ -17,7 +24,7 @@ class App extends Component {
     componentWillMount() {
       if (localStorage.getItem("session")){
         const session = localStorage.getItem("session");
-        this.setState({session: session});
+        this.props.dispatch({ type: SIGN_IN });
       }
     }
 
@@ -25,7 +32,8 @@ class App extends Component {
     return(
         <Router>
         <div className="App">
-          <Navbar />
+          <Navbar/>
+          <div>{this.props.isLogged ? <div>User is logged</div> : <div>User is not logged</div> }</div>
           <Route exact path="/" component={Home} />
           <div className="container">
               <Route exact path="/register" component={Register} />
@@ -38,4 +46,10 @@ class App extends Component {
     }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    isLogged: state.isLogged
+  };
+}
+
+export default connect(mapStateToProps)(App);

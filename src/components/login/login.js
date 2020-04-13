@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { login, userData } from '../classes/callAPI';
 import { functions } from '../classes/Functions';
+import { createStore } from 'redux';
+import {SIGN_IN} from '../../actions/';
+
 //import './login.scss';
 
 class Login extends Component {
@@ -39,7 +44,9 @@ class Login extends Component {
           console.log(res);
           userData(res.data.token).then(response=>{
             this.setState({session: res.data.token});
+            this.props.dispatch({type: SIGN_IN});
             localStorage.setItem("session", res.data.token);
+            this.props.history.push('/');
           });
         });
         
@@ -60,13 +67,17 @@ class Login extends Component {
                 <br />
                 <input type="submit" value="Submit" />
             </form>
-            { this.state.session != '' &&
-                functions.BackToLanding()
-            }
+            
             <div></div>
           </div>
         );
       }
 }
 
-export default Login;
+function mapStateToProps(state) {
+  return {
+    isLogged: state.isLogged
+  };
+}
+
+export default connect(mapStateToProps)(Login);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { functions } from '../classes/Functions';
-import Navbar from '../navbar/navbar';
+import {LOG_OUT} from '../../actions/';
+import {connect} from 'react-redux';
 
 
 class Logout extends Component {
@@ -13,6 +14,7 @@ class Logout extends Component {
     componentWillMount() {
       if (localStorage.getItem("session") != null){
         localStorage.removeItem("session");
+        this.props.dispatch({ type: LOG_OUT });
       }
     }
 
@@ -21,4 +23,10 @@ class Logout extends Component {
     }
 }
 
-export default Logout;
+function mapStateToProps(state) {
+  return {
+    isLogged: state.isLogged
+  };
+}
+
+export default connect(mapStateToProps)(Logout);

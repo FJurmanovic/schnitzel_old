@@ -1,25 +1,26 @@
-import React, { Component, useState } from 'react';
+import React, { PropTypes } from 'react';
 import { Link, withRouter } from 'react-router-dom'
+import {connect} from 'react-redux';
 
-class Navbar extends Component {
+
+class Navbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = { };
     }
 
+
+
     componentWillMount() {
-      this.setState({session: localStorage.getItem("session")})
-      
+      this.setState({
+        session: localStorage.getItem("session"),
+      })
     }
 
-    isLogged(){
+    render() {
+
       const notLoggedLink = (
-        <ul>
-          <li>
-            <Link to="./">
-              Home
-            </Link>
-          </li>
+        <>
           <li>
             <Link to="/login">
               Login
@@ -30,39 +31,40 @@ class Navbar extends Component {
               Register
             </Link>
           </li>
-        </ul>
+        </>
       )
 
       const loggedLink = (
-        <ul>
-          <li>
-            <Link to="./">
-              Home
-            </Link>
-          </li>
+        <>
           <li>
             <Link to="/logout">
               Logout
             </Link>
           </li>
-        </ul>
+        </>
       )
 
-      if(this.state.session){
-        return loggedLink;
-      }else{
-        return notLoggedLink;
-      }
-    }
-
-    render() {
-
     return(
-      <div>
-      { this.isLogged() }
-      </div>
+      <ul>
+        <li>
+          <Link to="./">
+            Home
+          </Link>
+        </li>
+        { this.props.isLogged ? loggedLink : notLoggedLink }
+      </ul>
     );
     }
 }
 
-export default Navbar;
+Navbar.propTypes = {
+  //isLogged: PropTypes.bool.isRequired
+};
+
+function mapStateToProps(state) {
+  return {
+    isLogged: state.isLogged
+  };
+}
+
+export default connect(mapStateToProps)(Navbar);
