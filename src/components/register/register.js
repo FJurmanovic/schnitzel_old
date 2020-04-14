@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { register } from '../classes/callAPI';
+import { connect } from 'react-redux';
+
+import { register, login, userData } from '../classes/callAPI';
+import {SIGN_IN} from '../../actions/';
 //import './login.scss';
 
 class Register extends Component {
@@ -73,11 +76,27 @@ class Register extends Component {
                 email: email, 
                 password: pass 
             };
+
+            const loginObject = {
+              email: email,
+              password: pass
+            };
             console.log(registerObject);
             
             register(registerObject).then(res=>{
               this.setState({succRegister: true});
-            });
+              login(loginObject).then(res=>{
+                console.log(res);
+                userData(res.data.token).then(response=>{
+                  this.setState({session: res.data.token});
+                  this.props.dispatch({type: SIGN_IN});
+                  localStorage.setItem("session", res.data.token);
+                  this.props.history.push('/');
+                });
+              });
+            }).catch((err)=>console.log(err))
+
+            
         }   
       }
     
@@ -122,4 +141,10 @@ class Register extends Component {
       }
 }
 
-export default Register;
+function mapStateToProps(state) {
+  return {
+    isLogged: state.isLogged
+  };
+}
+
+export default connect(mapStateToProps)(Register);

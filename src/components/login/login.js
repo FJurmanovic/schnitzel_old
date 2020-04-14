@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { login, userData } from '../classes/callAPI';
-import { functions } from '../classes/Functions';
-import { createStore } from 'redux';
 import {SIGN_IN} from '../../actions/';
 
 //import './login.scss';
