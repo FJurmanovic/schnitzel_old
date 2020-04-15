@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { useSelector, useDispatch, connect } from 'react-redux';
+import { connect } from 'react-redux';
+import jwt_decode from 'jwt-decode';
+
+import setAuthToken from '../utils/setAuthToken';
+import { setCurrentUser, logout } from './classes/callAPI';
+import store from './store';
 
 import Home from './home/home';
 import Login from './login/login';
@@ -10,12 +15,18 @@ import Navbar from './navbar/navbar';
 
 import { userData } from './classes/callAPI';
 
-import {SIGN_IN} from '../actions/';
-
-function State() {
-  const isLogged = useSelector(state => state.isLogged)
-  //const dispatch = useDispatch();
+if (localStorage.jwtToken) {
+  const token = localStorage.jwtToken;
+  setAuthToken(token);
+  const decoded = jwt_decode(token);
+  store.dispatch(setCurrentUser(decoded));
+  const currentTime = Date.now() / 1000; // to get in milliseconds
+  if (decoded.exp < currentTime) {
+    store.dispatch(logout());
+    window.location.href = "./login";
+  }
 }
+
 
 class App extends Component {
     constructor(props) {
@@ -23,23 +34,13 @@ class App extends Component {
         this.state = { };
     }
     
-    componentWillMount() {
-      if (localStorage.getItem("session")){
-        userData(localStorage.getItem("session")).then(res => {this.setState({username: res.data.username})})
-
-        this.setState({
-          session: localStorage.getItem("session")
-        });
-        this.props.dispatch({ type: SIGN_IN });
-      }
-    }
-
     render() {
     return(
+    
         <Router>
         <div className="App">
           <Navbar/>
-          <div>{this.props.isLogged ? <div>User {this.state.username} is logged</div> : <div>User is not logged</div> }</div>
+          <div>{this.props.auth.isAuthenticated ? <div>User {this.props.auth.user.user["id"]} is logged</div> : <div>User is not logged</div> }</div>
           <Route exact path="/" component={Home} />
           <div className="container">
               <Route exact path="/register" component={Register} />
@@ -54,7 +55,7 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    isLogged: state.isLogged
+    auth: state.auth
   };
 }
 

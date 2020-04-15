@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link, withRouter } from "react-router-dom";
 
-import { register, login, userData } from '../classes/callAPI';
-import {SIGN_IN} from '../../actions/';
+import PropTypes from "prop-types";
+
+import { register } from '../classes/callAPI';
 //import './login.scss';
 
 class Register extends Component {
@@ -14,7 +16,8 @@ class Register extends Component {
             emailVal: '',
             email2Val: '',
             passVal: '',
-            pass2Val: ''
+            pass2Val: '',
+            errors: {}
         };
     
         this.handleUsername = this.handleUsername.bind(this);
@@ -23,6 +26,20 @@ class Register extends Component {
         this.handlePass = this.handlePass.bind(this);
         this.handlePass2 = this.handlePass2.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+      }
+
+      componentDidMount() {
+        if (this.props.auth.isAuthenticated) {
+          this.props.history.push("/");
+        }
+      }
+    
+      componentWillReceiveProps(props) {
+        if (props.errors) {
+          this.setState({
+            errors: props.errors
+          });
+        }
       }
     
       handleUsername(event) {
@@ -83,24 +100,15 @@ class Register extends Component {
             };
             console.log(registerObject);
             
-            register(registerObject).then(res=>{
-              this.setState({succRegister: true});
-              login(loginObject).then(res=>{
-                console.log(res);
-                userData(res.data.token).then(response=>{
-                  this.setState({session: res.data.token});
-                  this.props.dispatch({type: SIGN_IN});
-                  localStorage.setItem("session", res.data.token);
-                  this.props.history.push('/');
-                });
-              });
-            }).catch((err)=>console.log(err))
+            this.props.register(registerObject, this.props.history);
 
             
         }   
       }
     
       render() {
+        const { errors } = this.state;
+
         return (
           <div>
             <form onSubmit={this.handleSubmit}>
@@ -141,10 +149,18 @@ class Register extends Component {
       }
 }
 
-function mapStateToProps(state) {
-  return {
-    isLogged: state.isLogged
-  };
-}
+Register.propTypes = {
+  register: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
 
-export default connect(mapStateToProps)(Register);
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { register }
+)(withRouter(Register));

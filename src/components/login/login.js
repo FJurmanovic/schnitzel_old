@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+
+import { Link } from "react-router-dom";
+
+import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
 import { login, userData } from '../classes/callAPI';
-import {SIGN_IN} from '../../actions/';
 
 //import './login.scss';
 
@@ -13,12 +16,30 @@ class Login extends Component {
         {
             emailVal: '',
             passVal: '',
-            session: ''
+            errors: {}
         };
     
         this.handleEmail = this.handleEmail.bind(this);
         this.handlePass = this.handlePass.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+      }
+
+      componentDidMount() {
+        if (this.props.auth.isAuthenticated) {
+          this.props.history.push("/");
+        }
+      }
+    
+      componentWillReceiveProps(props) {
+        if (props.auth.isAuthenticated) {
+          this.props.history.push("/");
+        }
+    
+        if (props.errors) {
+          this.setState({
+            errors: props.errors
+          });
+        }
       }
     
       handleEmail(event) {
@@ -38,20 +59,13 @@ class Login extends Component {
         };
         console.log(loginObject);
 
-        login(loginObject).then(res=>{
-          console.log(res);
-          userData(res.data.token).then(response=>{
-            this.setState({session: res.data.token});
-            this.props.dispatch({type: SIGN_IN});
-            localStorage.setItem("session", res.data.token);
-            this.props.history.push('/');
-          });
-        });
+        this.props.login(loginObject);
         
 
       }
     
       render() {
+        const { errors } = this.state;
         return (
           <div>
             <form onSubmit={this.handleSubmit}>
@@ -72,10 +86,18 @@ class Login extends Component {
       }
 }
 
-function mapStateToProps(state) {
-  return {
-    isLogged: state.isLogged
-  };
-}
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
 
-export default connect(mapStateToProps)(Login);
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { login }
+)(Login);

@@ -1,21 +1,13 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { Link, withRouter } from 'react-router-dom'
 import {connect} from 'react-redux';
+import PropTypes from "prop-types";
+
+import { logout } from '../classes/callAPI';
+
 
 
 class Navbar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { };
-    }
-
-
-
-    componentWillMount() {
-      this.setState({
-        session: localStorage.getItem("session"),
-      })
-    }
 
     render() {
 
@@ -37,9 +29,7 @@ class Navbar extends React.Component {
       const loggedLink = (
         <>
           <li>
-            <Link to="/logout">
-              Logout
-            </Link>
+      <a href="#" onClick={this.props.logout}>Logout</a>
           </li>
         </>
       )
@@ -51,20 +41,18 @@ class Navbar extends React.Component {
             Home
           </Link>
         </li>
-        { this.props.isLogged ? loggedLink : notLoggedLink }
+        { this.props.auth.isAuthenticated ? loggedLink : notLoggedLink }
       </ul>
     );
     }
 }
 
 Navbar.propTypes = {
-  //isLogged: PropTypes.bool.isRequired
+  logout: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(state) {
-  return {
-    isLogged: state.isLogged
-  };
-}
+const mapStateToProps = state => ({
+    auth: state.auth
+});
 
-export default connect(mapStateToProps)(Navbar);
+export default connect(mapStateToProps, { logout })(Navbar);

@@ -1,10 +1,12 @@
 import {combineReducers} from 'redux';
 
-import loggedReducer from './isLogged';
+import authReducer from './authReducer';
+import errReducer from './errReducer';
 
 
 const appReducers = combineReducers({
-    isLogged: loggedReducer
+    auth: authReducer,
+    err: errReducer
 }); 
 
 export {appReducers};
