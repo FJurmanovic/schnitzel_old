@@ -29,7 +29,9 @@ class Navbar extends React.Component {
       const loggedLink = (
         <>
           <li>
-      <a href="#" onClick={this.props.logout}>Logout</a>
+            <Link to="/logout" onClick={this.props.logout}>
+              Logout
+            </Link>
           </li>
         </>
       )
