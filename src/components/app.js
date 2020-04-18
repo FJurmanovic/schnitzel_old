@@ -10,9 +10,13 @@ import store from './store';
 import Home from './home/home';
 import Login from './login/login';
 import Register from './register/register';
+import Profile from './profile/profile';
 import Navbar from './navbar/navbar';
+import EditProfile from './profile/edit';
 
 import { userData } from './classes/callAPI';
+
+import './app.scss';
 
 if (localStorage.jwtToken) {
   const token = localStorage.jwtToken;
@@ -45,12 +49,13 @@ class App extends Component {
         <Router>
         <div className="App">
           <Navbar/>
-          <div>{this.props.auth.isAuthenticated ? <div>User {user.username} is logged</div> : <div>User is not logged</div> }</div>
-          <Route exact path="/" component={Home} />
           <div className="container">
+            <Route exact path="/" component={Home} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/logout" component={Home} />
+              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/profile/edit" component={EditProfile} />
           </div>
         </div>
       </Router>

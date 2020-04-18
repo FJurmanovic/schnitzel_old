@@ -9,21 +9,22 @@ export const login = user => dispatch => {
     axios
         .post('http://localhost:4000/user/login', user)
         .then(res => { 
-            const { token } = res.data;
-            localStorage.setItem("jwtToken", token);
-            setAuthToken(token);
-            const decoded = jwt_decode(token);
+            
+                const { token } = res.data;
+                localStorage.setItem("jwtToken", token);
+                setAuthToken(token);
+                const decoded = jwt_decode(token);
 
-            userData(token).then(resp => {
-                dispatch(setCurrentUser(resp.data));
-            })
+                userData(token).then(resp => {
+                    dispatch(setCurrentUser(resp.data));
+                })
         })
-        .catch(err =>
+        .catch(err => {
             dispatch({
-              type: GET_ERRORS,
-              payload: err.response.data
-            })
-        );
+                type: GET_ERRORS,
+                payload: err.response.data
+              })
+        });
 };
 
 export const setCurrentUser = user => {
@@ -45,7 +46,14 @@ export const userData = user => {
         .catch(error => {console.log(error)})
 }
 
-
+export const deactivateUser = user => {
+    return axios
+        .get('http://localhost:4000/user/deactivate', { headers: {token: user }})
+        .then(res=> {
+            console.log("Succesfully deactivated");
+        })
+        .catch(error => {console.log(error)})
+}
 
 export const register = (user, history) => dispatch => {
     axios

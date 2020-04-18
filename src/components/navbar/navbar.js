@@ -6,19 +6,19 @@ import PropTypes from "prop-types";
 import { logout } from '../classes/callAPI';
 
 
-
 class Navbar extends React.Component {
 
     render() {
+      const { user } = this.props.auth
 
       const notLoggedLink = (
         <>
-          <li>
+          <li className="auth">
             <Link to="/login">
               Login
             </Link>
           </li>
-          <li>
+          <li className="auth">
             <Link to="/register">
               Register
             </Link>
@@ -28,7 +28,12 @@ class Navbar extends React.Component {
 
       const loggedLink = (
         <>
-          <li>
+          <li className="auth">
+            <Link to="/profile">
+              {user.username}
+            </Link>
+          </li>
+          <li className="auth">
             <Link to="/logout" onClick={this.props.logout}>
               Logout
             </Link>
@@ -37,14 +42,16 @@ class Navbar extends React.Component {
       )
 
     return(
-      <ul>
-        <li>
-          <Link to="./">
-            Home
-          </Link>
-        </li>
-        { this.props.auth.isAuthenticated ? loggedLink : notLoggedLink }
-      </ul>
+      <div className="Navigation">
+        <ul>
+          <li>
+            <Link to="../">
+              Home
+            </Link>
+          </li>
+          { this.props.auth.isAuthenticated ? loggedLink : notLoggedLink }
+        </ul>
+      </div>
     );
     }
 }

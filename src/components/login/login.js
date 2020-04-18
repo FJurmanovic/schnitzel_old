@@ -16,7 +16,7 @@ class Login extends Component {
         {
             emailVal: '',
             passVal: '',
-            errors: {}
+            err: {}
         };
     
         this.handleEmail = this.handleEmail.bind(this);
@@ -37,7 +37,7 @@ class Login extends Component {
     
         if (props.errors) {
           this.setState({
-            errors: props.errors
+            err: props.err
           });
         }
       }
@@ -65,17 +65,19 @@ class Login extends Component {
       }
     
       render() {
-        const { errors } = this.state;
+        const { err } = this.state;
         return (
           <div>
             <form onSubmit={this.handleSubmit}>
                 <label>Email:<br />
                 <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
                 </label>
+                {this.props.err.message && <div>User does not exist</div>}
                 <br />
                 <label>Password:<br />
                 <input type="password" value={this.state.passVal} onChange={this.handlePass} />
                 </label>
+                {this.props.err.errors && <div>Please enter a valid password</div>}
                 <br />
                 <input type="submit" value="Submit" />
             </form>
@@ -89,12 +91,12 @@ class Login extends Component {
 Login.propTypes = {
   login: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  err: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  err: state.err
 });
 
 export default connect(

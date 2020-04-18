@@ -17,7 +17,7 @@ class Register extends Component {
             email2Val: '',
             passVal: '',
             pass2Val: '',
-            errors: {}
+            err: {}
         };
     
         this.handleUsername = this.handleUsername.bind(this);
@@ -35,9 +35,9 @@ class Register extends Component {
       }
     
       componentWillReceiveProps(props) {
-        if (props.errors) {
+        if (props.err) {
           this.setState({
-            errors: props.errors
+            err: props.err
           });
         }
       }
@@ -107,7 +107,7 @@ class Register extends Component {
       }
     
       render() {
-        const { errors } = this.state;
+        const { err } = this.state;
 
         return (
           <div>
@@ -152,12 +152,12 @@ class Register extends Component {
 Register.propTypes = {
   register: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  err: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  err: state.err
 });
 
 export default connect(
