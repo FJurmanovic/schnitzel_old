@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 
 import { Link } from "react-router-dom";
 
+import jwt_decode from "jwt-decode";
+
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
-import { logout, deactivateUser} from '../classes/callAPI';
+import { logout, deactivateUser, userData} from '../classes/callAPI';
 
 import axios from 'axios';
 
@@ -34,24 +36,43 @@ class EditProfile extends Component {
       }
 
       componentDidMount() {
-        if (!this.props.auth.isAuthenticated) {  
-            this.props.history.push("/");
+        let isAuthenticated = false;
+        if (localStorage.jwtToken) {
+          isAuthenticated = true;
+          console.log(isAuthenticated)
+        }
+
+        if (!isAuthenticated) { 
+            this.props.history.push("../");
         } else {
-            const { user } = this.props.auth
-            this.setState({
+            const token = jwt_decode(localStorage.jwtToken).user.id
+            
+            console.log(token)
+            userData(localStorage.jwtToken).then((res) => {
+              this.setState({
+                id: res.data._id,
+                userVal: res.data.username,
+                emailVal: res.data.email,
+                passVal: '',
+                token: localStorage.jwtToken,
+                deactivate: false,
+              });
+            })
+            //const { user } = this.state.user;
+            /*this.setState({
                 id: user["_id"],
                 userVal: user.username,
                 emailVal: user.email,
                 passVal: '',
                 token: localStorage.jwtToken,
                 deactivate: false,
-            });
+            });*/
         }
       }
     
       componentWillReceiveProps(props) {
         if (!props.auth.isAuthenticated) {
-            this.props.history.push("/");
+            this.props.history.push("../");
         }
     
         if (props.errors) {

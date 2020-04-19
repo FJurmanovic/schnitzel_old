@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 
@@ -11,8 +11,9 @@ import Home from './home/home';
 import Login from './login/login';
 import Register from './register/register';
 import Profile from './profile/profile';
-import Navbar from './navbar/navbar';
 import EditProfile from './profile/edit';
+import Navbar from './navbar/navbar';
+import NoPage from './nopage/nopage';
 
 import { userData } from './classes/callAPI';
 
@@ -34,6 +35,29 @@ if (localStorage.jwtToken) {
   }
 }
 
+function AppRouter(){
+  return(
+    <Router>
+      <div className="App">
+        <Navbar/>
+        <div className="container">
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/register" component={Register} />
+            <Route path="/login" component={Login} />
+            <Route path="/logout" component={Home} />
+            <Route exact path="/profile">
+              <Profile />
+            </Route>
+            <Route path="/profile/edit" component={EditProfile} />
+            <Route component={NoPage} />
+          </Switch>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
 
 class App extends Component {
     constructor(props) {
@@ -45,20 +69,7 @@ class App extends Component {
     const { user } = this.props.auth
 
     return(
-    
-        <Router>
-        <div className="App">
-          <Navbar/>
-          <div className="container">
-            <Route exact path="/" component={Home} />
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/logout" component={Home} />
-              <Route exact path="/profile" component={Profile} />
-              <Route exact path="/profile/edit" component={EditProfile} />
-          </div>
-        </div>
-      </Router>
+      <AppRouter />
     );
     }
 }

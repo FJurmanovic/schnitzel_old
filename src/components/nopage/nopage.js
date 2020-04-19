@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import './home.scss';
 
-class Home extends Component {
+class NoPage extends Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -9,16 +8,13 @@ class Home extends Component {
          };
     }
     
-    componentWillMount() {
-    }
-
     render() {
     return(
     <div>
-        Hello
+        404 Page not found
     </div>
     );
     }
 }
 
-export default Home;
+export default NoPage;

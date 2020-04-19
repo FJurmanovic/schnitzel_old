@@ -21,16 +21,19 @@ class Profile extends Component {
       }
 
       componentDidMount() {
-        if (!this.props.auth.isAuthenticated) {  
+        let isAuthenticated = false;
+        if (localStorage.jwtToken) {
+          isAuthenticated = true;
+          console.log(isAuthenticated)
+        }
+
+        if (!isAuthenticated) { 
             this.props.history.push("/");
         } else {
             const { user } = this.props.auth
             this.setState({
-                userVal: user.username,
-                emailVal: user.email,
-                passVal: '',
+                username: user.username,
                 token: localStorage.jwtToken,
-                deactivate: false
             });
         }
       }
@@ -51,7 +54,7 @@ class Profile extends Component {
         const { err } = this.state;
         return (
           <div>
-            <Link to="profile/edit">
+            <Link to="/profile/edit">
                 Edit profile
             </Link>
           </div>
