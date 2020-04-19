@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 
 import { logout, deactivateUser} from '../classes/callAPI';
 
+import axios from 'axios';
+
 
 class EditProfile extends Component {
     constructor(props) {
@@ -16,11 +18,18 @@ class EditProfile extends Component {
             userVal: '',
             emailVal: '',
             passVal: '',
-            err: {}
+            pass2Val: '',
+            err: {},
+            editEmail: false,
+            editPassword: false,
+            editUsername: false
         };
-    
+        
+        
+        this.handleUsername = this.handleUsername.bind(this);
         this.handleEmail = this.handleEmail.bind(this);
         this.handlePass = this.handlePass.bind(this);
+        this.handlePass2 = this.handlePass2.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
 
@@ -30,11 +39,12 @@ class EditProfile extends Component {
         } else {
             const { user } = this.props.auth
             this.setState({
+                id: user["_id"],
                 userVal: user.username,
                 emailVal: user.email,
                 passVal: '',
                 token: localStorage.jwtToken,
-                deactivate: false
+                deactivate: false,
             });
         }
       }
@@ -51,6 +61,10 @@ class EditProfile extends Component {
         }
       }
     
+      handleUsername(event) {
+        this.setState({userVal: event.target.value});
+      }
+
       handleEmail(event) {
         this.setState({emailVal: event.target.value});
       }
@@ -58,17 +72,44 @@ class EditProfile extends Component {
       handlePass(event) {
         this.setState({passVal: event.target.value});
       }
+
+      handlePass2(event) {
+        this.setState({pass2Val: event.target.value});
+      }
     
       handleSubmit(event) {
         event.preventDefault();
-        const loginObject = 
-        { 
-            email: this.state.emailVal, 
-            password: this.state.passVal 
-        };
-        console.log(loginObject);
+        const username = this.state.userVal;
+        const email = this.state.emailVal;
+        const pass = this.state.passVal;
+        const pass2 = this.state.pass2Val;
 
-        this.props.login(loginObject);
+
+        if((pass === pass2 && pass.length > 6) || !this.state.editPassword || (this.state.editUsername && username.length > 0)){
+          const editObject = 
+          {   
+            id: this.state.id
+          };
+
+          if(this.state.editEmail){
+            editObject.email = email
+          }
+          if(this.state.editUsername){
+            editObject.username = username
+          }
+          if(this.state.editPassword){
+            editObject.password = pass
+          }
+
+          console.log(editObject);
+
+          axios
+              .post('http://localhost:4000/user/edit', editObject)
+              .then(res => history.push("/profile"))
+              .catch(err =>
+                  console.log(err)
+          );
+        } 
       }
 
       noDeactivateButton(event) {
@@ -92,23 +133,38 @@ class EditProfile extends Component {
         return (
           <div>
             <form onSubmit={this.handleSubmit}>
-                <label>Username:<br />
-                <input type="email" value={this.state.userVal} onChange={this.handleEmail} />
+              {this.state.editUsername 
+              ? <label>Username:<br />
+                <input type="text" value={this.state.userVal} onChange={this.handleUsername} /> <a href="#" onClick={() => {this.setState({editUsername: false})}}>Cancel</a>
                 </label>
+              : <span><input type="text" value={this.state.userVal} disabled /> <a href="#" onClick={() => {this.setState({editUsername: true})}}>Edit username</a></span>
+              }
+                
                 <br />
-                <label>Email:<br />
-                <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
+              {this.state.editEmail
+              ? <label>Email:<br />
+                <input type="email" value={this.state.emailVal} onChange={this.handleEmail} /> <a href="#" onClick={() => {this.setState({editEmail: false})}}>Cancel</a>
                 </label>
+              : <span><input type="email" value={this.state.emailVal} disabled /> <a href="#" onClick={() => {this.setState({editEmail: true})}}>Edit email</a></span>
+              }
+                
                 <br />
-                <label>New password:<br />
+
+              {this.state.editPassword
+              ? <><label>New password:<br />
                 <input type="password" value={this.state.passVal} onChange={this.handlePass} />
                 </label>
                 <br />
                 <label>Confirm password:<br />
-                <input type="password" value={this.state.passVal} onChange={this.handlePass} />
-                </label>
+                <input type="password" value={this.state.pass2Val} onChange={this.handlePass2} /> <a href="#" onClick={() => {this.setState({editPassword: false, passVal: '', pass2Val: ''})}}>Cancel</a>
+                </label></>
+              : <span><a href="#" onClick={() => {this.setState({editPassword: true, passVal: '', pass2Val: ''})}}>Edit password</a></span>
+              }
                 <br />
+              {(this.state.editUsername || this.state.editEmail || this.state.editPassword) && 
                 <input type="submit" value="Submit" />
+              }
+                
             </form>
             <br/><br/>
             <div>
