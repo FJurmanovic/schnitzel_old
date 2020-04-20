@@ -37,7 +37,7 @@ export const setCurrentUser = user => {
 
 export const userData = user => {
     return axios
-        .get('http://localhost:4000/user/me', { headers : {token: user }})
+        .get('http://localhost:4000/user/data', { headers : {token: user }})
         .then(res => {
             console.log(res.data.username);
             return res;
@@ -59,6 +59,18 @@ export const register = (user, history) => dispatch => {
     axios
         .post('http://localhost:4000/user/signup', user)
         .then(res => history.push("/login"))
+        .catch(err =>
+            dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+            })
+        );
+};
+
+export const createPost = (post, history) => dispatch => {
+    axios
+        .post('http://localhost:4000/post/create', post)
+        .then(res => console.log("Succesfully created post"))
         .catch(err =>
             dispatch({
             type: GET_ERRORS,
