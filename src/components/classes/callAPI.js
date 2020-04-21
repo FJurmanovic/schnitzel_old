@@ -38,8 +38,17 @@ export const setCurrentUser = user => {
 export const userData = user => {
     return axios
         .get('http://localhost:4000/user/data', { headers : {token: user }})
-        .then(res => {
-            console.log(res.data.username);
+        .then(res => {  
+            return res;
+            
+        })
+        .catch(error => {console.log(error)})
+}
+
+export const getUser = user => {
+    return axios
+        .get('http://localhost:4000/user/getUser', { headers : {id: user }})
+        .then(res => {  
             return res;
             
         })
@@ -78,6 +87,15 @@ export const createPost = (post, history) => dispatch => {
             })
         );
 };
+
+export const getHomePosts = user => {
+    return axios
+        .get('http://localhost:4000/post/home', { headers : {token: user }})
+        .then(res => {
+            return res;
+        })
+        .catch(error => {console.log(error)})
+}
 
 export const logout = () => dispatch => {
     localStorage.removeItem("jwtToken");
