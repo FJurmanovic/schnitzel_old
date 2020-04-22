@@ -38,13 +38,8 @@ class Posts extends Component {
                 let posts = res.data;
                 let postList = [];
 
-                Object.keys(posts).map((key, i) => (
-                  postList.push(posts[key]),
-                  getUser(posts[key].userId).then((resp) => {
-                    postList[i]["username"] = resp.data.username;
-                    this.setState({
-                    })
-                  })
+                Object.keys(posts).map((key) => (
+                  postList.push(posts[key])
                ))
 
                this.setState({posts: postList})
@@ -68,12 +63,12 @@ class Posts extends Component {
       return(
       <div className="posts">
         { this.state.posts.map((post, key) => {
-            return (<><div className="post">
+            return (<React.Fragment key={key}><div className="post">
               <h3>{post.title}</h3>
               <div>{post.content}</div>
               <div>Author: {post.username}</div>
             </div>
-            <hr /></>
+            <hr /></React.Fragment>
             )
         })
         }
