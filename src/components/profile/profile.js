@@ -63,7 +63,8 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-  };
+  auth: PropTypes.object.isRequired
+};
   
   const mapStateToProps = state => ({
       auth: state.auth

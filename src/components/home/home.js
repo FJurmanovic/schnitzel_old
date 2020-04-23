@@ -18,10 +18,16 @@ class Home extends Component {
     render() {
     return(
     <div>
-        <Post />
-        <hr />
-        <Posts />
-        Hello
+        {localStorage.jwtToken
+            ?   <>
+                    <Post />
+                    <hr />
+                    <Posts />
+                </>
+            :   <h2>Hello</h2>
+        }
+        
+        
     </div>
     );
     }

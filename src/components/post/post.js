@@ -28,26 +28,33 @@ class Post extends Component {
         }
 
         if (!isAuthenticated) { 
-            this.props.history.push("../");
+            this.props.history.push("/");
         } else {
             const token = jwt_decode(localStorage.jwtToken).user.id
             
             console.log(token)
-            userData(localStorage.jwtToken).then((res) => {
-              this.setState({
-                userdata: res.data,
+            this.setState({
+                userdata: this.props.auth,
                 token: localStorage.jwtToken
-              });
+            });
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if (!props.auth.isAuthenticated) {
+            props.history.push("/");
+        } else {
+            const { user } = props.auth;
+            this.setState({
+            userdata: user,
+            token: localStorage.jwtToken
             })
-            //const { user } = this.state.user;
-            /*this.setState({
-                id: user["_id"],
-                userVal: user.username,
-                emailVal: user.email,
-                passVal: '',
-                token: localStorage.jwtToken,
-                deactivate: false,
-            });*/
+        }
+
+        if (props.errors) {
+            this.setState({
+            err: props.err
+            });
         }
     }
 
@@ -114,11 +121,13 @@ class Post extends Component {
 }
 
 Post.propTypes = {
-    err: PropTypes.object.isRequired
+    err: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired
   };
   
   const mapStateToProps = state => ({
-    err: state.err
+    err: state.err,
+    auth: state.auth
   });
   
   export default connect(

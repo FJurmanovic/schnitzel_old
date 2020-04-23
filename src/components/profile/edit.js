@@ -46,18 +46,20 @@ class EditProfile extends Component {
             this.props.history.push("../");
         } else {
             const token = jwt_decode(localStorage.jwtToken).user.id
+
+            const { user } = this.props.auth
             
             console.log(token)
-            userData(localStorage.jwtToken).then((res) => {
-              this.setState({
-                id: res.data._id,
-                userVal: res.data.username,
-                emailVal: res.data.email,
-                passVal: '',
-                token: localStorage.jwtToken,
-                deactivate: false,
-              });
-            })
+            this.setState({
+              id: user._id,
+              userVal: user.username,
+              emailVal: user.email,
+              passVal: '',
+              token: localStorage.jwtToken,
+              deactivate: false,
+            });
+
+            console.log(this.props.auth)
             //const { user } = this.state.user;
             /*this.setState({
                 id: user["_id"],
@@ -73,6 +75,17 @@ class EditProfile extends Component {
       componentWillReceiveProps(props) {
         if (!props.auth.isAuthenticated) {
             this.props.history.push("../");
+        }else{
+
+          const { user } = props.auth
+          this.setState({
+            id: user._id,
+            userVal: user.username,
+            emailVal: user.email,
+            passVal: '',
+            token: localStorage.jwtToken,
+            deactivate: false,
+          });
         }
     
         if (props.errors) {
@@ -202,6 +215,7 @@ class EditProfile extends Component {
 
 EditProfile.propTypes = {
     logout: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
   };
   
   const mapStateToProps = state => ({

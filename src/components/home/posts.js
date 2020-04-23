@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import {userData, getHomePosts, getUser} from '../classes/callAPI';
 
@@ -22,16 +23,14 @@ class Posts extends Component {
         }
 
         if (!isAuthenticated) { 
-            this.props.history.push("../");
+            this.props.history.push("/");
         } else {
             const token = jwt_decode(localStorage.jwtToken).user.id
             
             console.log(token)
-            userData(localStorage.jwtToken).then((res) => {
-              this.setState({
-                userdata: res.data,
-                token: localStorage.jwtToken
-              });
+            this.setState({
+              userdata: this.props.auth,
+              token: localStorage.jwtToken
             });
 
             getHomePosts(localStorage.jwtToken).then((res) => {
@@ -44,17 +43,26 @@ class Posts extends Component {
 
                this.setState({posts: postList})
             });
-            //const { user } = this.state.user;
-            /*this.setState({
-                id: user["_id"],
-                userVal: user.username,
-                emailVal: user.email,
-                passVal: '',
-                token: localStorage.jwtToken,
-                deactivate: false,
-            });*/
         }
     }
+
+    componentWillReceiveProps(props) {
+      if (!props.auth.isAuthenticated) {
+          this.props.history.push("/");
+      } else {
+          const { user } = props.auth;
+          this.setState({
+          userdata: user,
+          token: localStorage.jwtToken
+          })
+      }
+
+      if (props.errors) {
+          this.setState({
+          err: props.err
+          });
+      }
+  }
 
     render() {
 
@@ -66,7 +74,7 @@ class Posts extends Component {
             return (<React.Fragment key={key}><div className="post">
               <h3>{post.title}</h3>
               <div>{post.content}</div>
-              <div>Author: {post.username}</div>
+              <div>Author: <Link to="/{post.username}">{post.username}</Link></div>
             </div>
             <hr /></React.Fragment>
             )
@@ -79,11 +87,13 @@ class Posts extends Component {
 }
 
 Posts.propTypes = {
-    err: PropTypes.object.isRequired
+    err: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired
   };
   
   const mapStateToProps = state => ({
-    err: state.err
+    err: state.err,
+    auth: state.auth
   });
   
   export default connect(
