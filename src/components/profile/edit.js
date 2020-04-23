@@ -51,7 +51,7 @@ class EditProfile extends Component {
             
             console.log(token)
             this.setState({
-              id: user._id,
+              id: user.id,
               userVal: user.username,
               emailVal: user.email,
               passVal: '',
@@ -79,7 +79,7 @@ class EditProfile extends Component {
 
           const { user } = props.auth
           this.setState({
-            id: user._id,
+            id: user.id,
             userVal: user.username,
             emailVal: user.email,
             passVal: '',

@@ -37,7 +37,7 @@ class Posts extends Component {
                 let posts = res.data;
                 let postList = [];
 
-                Object.keys(posts).map((key) => (
+                Object.keys(posts).forEach((key) => (
                   postList.push(posts[key])
                ))
 
@@ -62,7 +62,24 @@ class Posts extends Component {
           err: props.err
           });
       }
-  }
+    }
+
+    formatDate(datetime, type) {
+      let date = datetime.split("T")
+      date[1] = date[1].replace("Z", "")
+      date[1] = date[1].split(".")[0]
+
+      switch(type){
+        case "date":
+          return date[0];
+          break;
+        case "time":
+          return date[1];
+          break;
+        default:
+          return (date[0] + " " + date[1]);
+      }
+    }
 
     render() {
 
@@ -74,7 +91,8 @@ class Posts extends Component {
             return (<React.Fragment key={key}><div className="post">
               <h3>{post.title}</h3>
               <div>{post.content}</div>
-              <div>Author: <Link to="/{post.username}">{post.username}</Link></div>
+              <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
+              <div>Posted on: {this.formatDate(post.createdAt)}</div>
             </div>
             <hr /></React.Fragment>
             )
