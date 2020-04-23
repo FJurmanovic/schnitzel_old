@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
+import axios from 'axios';
+
 import {userData, getHomePosts, getUser} from '../classes/callAPI';
 
 class Posts extends Component {
@@ -41,8 +43,16 @@ class Posts extends Component {
                   postList.push(posts[key])
                ))
 
-               this.setState({posts: postList})
+               this.setState({posts: postList, lastPost: postList[postList.length-1]})
+               axios
+              .get('http://localhost:4000/post/scroll', { headers : {token: localStorage.jwtToken }, params: {current: 2, fit: 10, lastDate: "2020-04-20T19:25:01.460Z", lastId: "5e9e00b33f678e3f4c0bee0b"}})
+              .then(res => {
+                  console.log(res.data)
+              })
+              .catch(error => {console.log(error)})
             });
+
+            
         }
     }
 
