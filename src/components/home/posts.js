@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
+import {connect, dispatch} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 import axios from 'axios';
 
 import {userData, getHomePosts, getUser} from '../classes/callAPI';
+
+import { UNSET_POSTED } from "../../actions";
 
 class Posts extends Component {
     constructor(props) {
@@ -15,6 +17,25 @@ class Posts extends Component {
             posts: [],
             postUsernames: []
          };
+    }
+
+    getPosts(){
+      getHomePosts(localStorage.jwtToken).then((res) => {
+          let posts = res.data;
+          let postList = [];
+
+          Object.keys(posts).forEach((key) => (
+            postList.push(posts[key])
+        ))
+
+        this.setState({posts: postList, lastPost: postList[postList.length-1]})
+        axios
+        .get('http://localhost:4000/post/scroll', { headers : {token: localStorage.jwtToken }, params: {current: 2, fit: 10, lastDate: "2020-04-20T19:25:01.460Z", lastId: "5e9e00b33f678e3f4c0bee0b"}})
+        .then(res => {
+            console.log(res.data)
+        })
+        .catch(error => {console.log(error)})
+     });
     }
     
     componentWillMount() {
@@ -29,42 +50,30 @@ class Posts extends Component {
         } else {
             const token = jwt_decode(localStorage.jwtToken).user.id
             
+            this.getPosts();
             console.log(token)
             this.setState({
               userdata: this.props.auth,
               token: localStorage.jwtToken
             });
-
-            getHomePosts(localStorage.jwtToken).then((res) => {
-                let posts = res.data;
-                let postList = [];
-
-                Object.keys(posts).forEach((key) => (
-                  postList.push(posts[key])
-               ))
-
-               this.setState({posts: postList, lastPost: postList[postList.length-1]})
-               axios
-              .get('http://localhost:4000/post/scroll', { headers : {token: localStorage.jwtToken }, params: {current: 2, fit: 10, lastDate: "2020-04-20T19:25:01.460Z", lastId: "5e9e00b33f678e3f4c0bee0b"}})
-              .then(res => {
-                  console.log(res.data)
-              })
-              .catch(error => {console.log(error)})
-            });
-
-            
         }
     }
 
     componentWillReceiveProps(props) {
+      console.log(props.post.isPosted)
       if (!props.auth.isAuthenticated) {
           this.props.history.push("/");
       } else {
           const { user } = props.auth;
+          const post  = props.post.isPosted;
           this.setState({
           userdata: user,
+          isPosted: post,
           token: localStorage.jwtToken
           })
+          if(post){
+            this.getPosts()
+          }
       }
 
       if (props.errors) {
@@ -121,7 +130,8 @@ Posts.propTypes = {
   
   const mapStateToProps = state => ({
     err: state.err,
-    auth: state.auth
+    auth: state.auth,
+    post: state.post
   });
   
   export default connect(

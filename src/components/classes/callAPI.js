@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER} from "../../actions";
+import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED,  } from "../../actions";
 
 
 export const login = user => dispatch => {
@@ -79,7 +79,11 @@ export const register = (user, history) => dispatch => {
 export const createPost = (post, history) => dispatch => {
     axios
         .post('http://localhost:4000/post/create', post)
-        .then(res => console.log("Succesfully created post"))
+        .then(res => {
+            dispatch({
+                type: SET_POSTED
+            })
+        })
         .catch(err =>
             dispatch({
             type: GET_ERRORS,
@@ -101,4 +105,24 @@ export const logout = () => dispatch => {
     localStorage.removeItem("jwtToken");
     setAuthToken(false);
     dispatch(setCurrentUser({}));
+};
+
+
+export const editUser = (editProps, history) => dispatch => {
+    axios
+        .post('http://localhost:4000/user/edit', editProps)
+        .then(res => {
+            userData(res.data.token).then(resp => {
+                dispatch(setCurrentUser(resp.data));
+            })
+        })
+        .catch(err => {
+            console.log("err")
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+                })
+        }
+            
+    );
 };

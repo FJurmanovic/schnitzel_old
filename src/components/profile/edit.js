@@ -7,7 +7,7 @@ import jwt_decode from "jwt-decode";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
-import { logout, deactivateUser, userData} from '../classes/callAPI';
+import { logout, deactivateUser, userData, editUser} from '../classes/callAPI';
 
 import axios from 'axios';
 
@@ -50,16 +50,16 @@ class EditProfile extends Component {
             const { user } = this.props.auth
             
             console.log(token)
-            this.setState({
-              id: user.id,
-              userVal: user.username,
-              emailVal: user.email,
-              passVal: '',
-              token: localStorage.jwtToken,
-              deactivate: false,
-            });
-
-            console.log(this.props.auth)
+            if(this.props.auth.isAuthenticated){
+              this.setState({
+                id: user.id,
+                userVal: user.username,
+                emailVal: user.email,
+                passVal: '',
+                token: localStorage.jwtToken,
+                deactivate: false,
+              });
+            }
             //const { user } = this.state.user;
             /*this.setState({
                 id: user["_id"],
@@ -118,6 +118,8 @@ class EditProfile extends Component {
         const pass = this.state.passVal;
         const pass2 = this.state.pass2Val;
 
+        console.log("SASA")
+
 
         if((pass === pass2 && pass.length > 6) || !this.state.editPassword || (this.state.editUsername && username.length > 0)){
           const editObject = 
@@ -135,14 +137,10 @@ class EditProfile extends Component {
             editObject.password = pass
           }
 
-          console.log(editObject);
+          this.props.editUser(editObject);
+          this.props.history.push("/profile");
 
-          axios
-              .post('http://localhost:4000/user/edit', editObject)
-              .then(res => history.push("/profile"))
-              .catch(err =>
-                  console.log(err)
-          );
+          
         } 
       }
 
@@ -215,6 +213,7 @@ class EditProfile extends Component {
 
 EditProfile.propTypes = {
     logout: PropTypes.func.isRequired,
+    editUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
   };
   
@@ -222,4 +221,4 @@ EditProfile.propTypes = {
       auth: state.auth
   });
   
-  export default connect(mapStateToProps, { logout })(EditProfile);
+  export default connect(mapStateToProps, { editUser, logout })(EditProfile);

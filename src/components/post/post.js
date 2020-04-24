@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 
 import {userData, createPost} from '../classes/callAPI';
 
+
 class Post extends Component {
     constructor(props) {
         super(props);
@@ -21,6 +22,7 @@ class Post extends Component {
     }
     
     componentWillMount() {
+        
         let isAuthenticated = false;
         if (localStorage.jwtToken) {
           isAuthenticated = true;
@@ -34,7 +36,7 @@ class Post extends Component {
             
             console.log(token)
             this.setState({
-                userdata: this.props.auth,
+                userdata: this.props.auth.user,
                 token: localStorage.jwtToken
             });
         }
@@ -45,6 +47,7 @@ class Post extends Component {
             props.history.push("/");
         } else {
             const { user } = props.auth;
+            
             this.setState({
             userdata: user,
             token: localStorage.jwtToken
@@ -75,11 +78,11 @@ class Post extends Component {
 
         console.log("Title: " + this.state.titleVal)
         console.log("Content: " + this.state.contentVal)
-        console.log("UserId: " + this.state.userdata._id)
+        console.log("UserId: " + this.state.userdata.id)
 
         const title = this.state.titleVal
         const content = this.state.contentVal
-        const userid = this.state.userdata._id
+        const userid = this.state.userdata.id
 
         if(title.length > 0 && content.length > 0 && userid.length > 0){
             const postObject = {
@@ -89,7 +92,7 @@ class Post extends Component {
             }
     
             this.props.createPost(postObject, this.props.history);
-
+            this.setState({enablePost: false});
         }else if(!(title.length > 0)){
             console.log("Error: Title is blank")
         }if(!(content.length > 0)){
@@ -102,20 +105,26 @@ class Post extends Component {
     render() {
         const { err } = this.state;
         return(
-        <form onSubmit={this.handleSubmit}>
-            <label>Title:<br />
-            <input type="text" value={this.state.titleVal} onChange={this.handleTitle} />
-            </label>
-            <br />
-            <label>Content:<br />
-            <textarea 
-                onChange={this.handleContent}
-                value={this.state.contentVal}
-            />
-            </label>
-            <br />
-            <input type="submit" value="Submit" />
-        </form>
+        <>
+            {this.state.enablePost
+            ?   <form onSubmit={this.handleSubmit}>
+                    <label>Title:<br />
+                    <input type="text" value={this.state.titleVal} onChange={this.handleTitle} />
+                    </label>
+                    <br />
+                    <label>Content:<br />
+                    <textarea 
+                        onChange={this.handleContent}
+                        value={this.state.contentVal}
+                    />
+                    </label>
+                    <br />
+                    <input type="submit" value="Submit" />
+                </form>
+            :   <button onClick={() => this.setState({enablePost: true})}>New Post</button>
+            } 
+        </>
+        
         );
     }
 }
@@ -127,7 +136,8 @@ Post.propTypes = {
   
   const mapStateToProps = state => ({
     err: state.err,
-    auth: state.auth
+    auth: state.auth,
+    post: state.post
   });
   
   export default connect(
