@@ -1,4 +1,4 @@
-import { SET_POSTED, UNSET_POSTED } from "../actions/index";
+import { SET_POSTED, UNSET_POSTED, GET_POSTS } from "../actions/index";
 
 const initialState = {
     isPosted: false
@@ -15,6 +15,11 @@ const initialState = {
             return {
                 ...state,
                 isPosted: false,
+            };
+        case GET_POSTS:
+            return {
+                ...state,
+                post: action.payload,
             };
       default:
         return state;

@@ -6,21 +6,51 @@ import {Link} from 'react-router-dom';
 
 import axios from 'axios';
 
-import {userData, getHomePosts, getUser} from '../classes/callAPI';
+import {userData, getHomePosts, getUser, getPosts} from '../classes/callAPI';
 
 import { UNSET_POSTED } from "../../actions";
+
 
 class Posts extends Component {
     constructor(props) {
         super(props);
         this.state = { 
             posts: [],
-            postUsernames: []
+            postUsernames: [],
+            last: false
          };
     }
 
+    getPostss(user, current, fit, lastDate, lastId){
+      return axios
+      .get('http://localhost:4000/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+      .then(res => {
+          console.log(res.data);
+          let posts = res.data.post;
+          let postList = this.state.posts;
+    
+          Object.keys(posts).forEach((key) => (
+          postList.push(posts[key])
+          ))
+
+          let lastPost = postList[postList.length-1];
+
+          console.log(lastPost)
+
+          this.setState({posts: postList, lastPost: postList[postList.length-1]})
+    
+          if(!res.data.last){
+              this.getPostss(user, current, fit, lastPost.createdAt, lastPost._id);
+              console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
+          }
+    
+          return res;
+      })
+      .catch(error => {console.log(error)})
+    }
+
     getPosts(){
-      getHomePosts(localStorage.jwtToken).then((res) => {
+      /*getHomePosts(localStorage.jwtToken).then((res) => {
           let posts = res.data;
           let postList = [];
 
@@ -29,13 +59,15 @@ class Posts extends Component {
         ))
 
         this.setState({posts: postList, lastPost: postList[postList.length-1]})
-        axios
-        .get('http://localhost:4000/post/scroll', { headers : {token: localStorage.jwtToken }, params: {current: 2, fit: 10, lastDate: "2020-04-20T19:25:01.460Z", lastId: "5e9e00b33f678e3f4c0bee0b"}})
-        .then(res => {
-            console.log(res.data)
-        })
-        .catch(error => {console.log(error)})
-     });
+      });*/
+
+      if(this.state.lastPost && this.state.lastPost){ 
+        this.getPostss(localStorage.jwtToken, 0, 10, this.props.post.post[this.props.post.post.length].createdAt, this.props.post.post[this.props.post.post.userId]);
+        console.log("Ovo")
+      }else{
+        this.getPostss(localStorage.jwtToken, 0, 10, '', '')
+        console.log("Ono")
+      }
     }
     
     componentWillMount() {
@@ -125,7 +157,8 @@ class Posts extends Component {
 
 Posts.propTypes = {
     err: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    post: PropTypes.object.isRequired
   };
   
   const mapStateToProps = state => ({

@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED,  } from "../../actions";
+import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, GET_POSTS } from "../../actions";
 
 
 export const login = user => dispatch => {
@@ -99,6 +99,32 @@ export const getHomePosts = user => {
             return res;
         })
         .catch(error => {console.log(error)})
+}
+
+export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => {
+    return axios
+    .get('http://localhost:4000/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+    .then(res => {
+        console.log(res.data);
+        let posts = res.data.post;
+        let postList = [];
+
+        Object.keys(posts).forEach((key) => (
+        postList.push(posts[key])
+        ))
+
+        dispatch({
+            type: GET_POSTS,
+            payload: postList
+        })
+
+        if(!res.data.last){
+            getPosts(user, current, fit, lastDate, lastId);
+        }
+
+        return res;
+    })
+    .catch(error => {console.log(error)})
 }
 
 export const logout = () => dispatch => {
