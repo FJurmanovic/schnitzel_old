@@ -18,10 +18,22 @@ class Posts extends Component {
             posts: [],
             postUsernames: [],
             last: false
-         };
+        };
+        this.handleScroll = this.handleScroll.bind(this);
     }
 
-    getPostss(user, current, fit, lastDate, lastId){
+    getPosts(user, current, fit, lastDate, lastId){
+      /*getHomePosts(localStorage.jwtToken).then((res) => {
+          let posts = res.data;
+          let postList = [];
+
+          Object.keys(posts).forEach((key) => (
+            postList.push(posts[key])
+        ))
+
+        this.setState({posts: postList, lastPost: postList[postList.length-1]})
+      });*/
+
       return axios
       .get('http://localhost:4000/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
       .then(res => {
@@ -35,39 +47,20 @@ class Posts extends Component {
 
           let lastPost = postList[postList.length-1];
 
-          console.log(lastPost)
+          //console.log(lastPost)
 
-          this.setState({posts: postList, lastPost: postList[postList.length-1]})
+          this.setState({posts: postList, lastPost: lastPost, last: res.data.last})
     
+          /*
           if(!res.data.last){
               this.getPostss(user, current, fit, lastPost.createdAt, lastPost._id);
               console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
-          }
+          }*/
     
           return res;
       })
       .catch(error => {console.log(error)})
-    }
-
-    getPosts(){
-      /*getHomePosts(localStorage.jwtToken).then((res) => {
-          let posts = res.data;
-          let postList = [];
-
-          Object.keys(posts).forEach((key) => (
-            postList.push(posts[key])
-        ))
-
-        this.setState({posts: postList, lastPost: postList[postList.length-1]})
-      });*/
-
-      if(this.state.lastPost && this.state.lastPost){ 
-        this.getPostss(localStorage.jwtToken, 0, 10, this.props.post.post[this.props.post.post.length].createdAt, this.props.post.post[this.props.post.post.userId]);
-        console.log("Ovo")
-      }else{
-        this.getPostss(localStorage.jwtToken, 0, 10, '', '')
-        console.log("Ono")
-      }
+      
     }
     
     componentWillMount() {
@@ -82,7 +75,8 @@ class Posts extends Component {
         } else {
             const token = jwt_decode(localStorage.jwtToken).user.id
             
-            this.getPosts();
+            
+            this.getPosts(localStorage.jwtToken, 0, 10, '', '')
             console.log(token)
             this.setState({
               userdata: this.props.auth,
@@ -103,8 +97,8 @@ class Posts extends Component {
           isPosted: post,
           token: localStorage.jwtToken
           })
-          if(post){
-            this.getPosts()
+          if(post){     
+            this.getPosts(localStorage.jwtToken, 0, 10, '', '')
           }
       }
 
@@ -113,6 +107,27 @@ class Posts extends Component {
           err: props.err
           });
       }
+    }
+
+    componentDidMount() {
+      window.addEventListener("scroll", this.handleScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleScroll);
+    }
+
+    handleScroll(event) {
+      const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+        const body = document.body;
+        const html = document.documentElement;
+        const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+        const windowBottom = windowHeight + window.pageYOffset;
+        if (windowBottom >= docHeight) {
+          if(!this.state.last){
+            this.getPosts(localStorage.jwtToken, 0, 10, this.state.lastPost.createdAt, this.state.lastPost.id);
+          }
+        }
     }
 
     formatDate(datetime, type) {
@@ -137,7 +152,7 @@ class Posts extends Component {
       
       
       return(
-      <div className="posts">
+      <div className="posts" onScroll={this.handleScroll}>
         { this.state.posts.map((post, key) => {
             return (<React.Fragment key={key}><div className="post">
               <h3>{post.title}</h3>
