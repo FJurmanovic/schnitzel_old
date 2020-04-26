@@ -114,12 +114,18 @@ class Register extends Component {
             <form onSubmit={this.handleSubmit}>
                 <label>Username:<br />
                 <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} />
+                    { this.props.err.type == 'username' 
+                        ?   <div>Username is already registered</div>
+                        :   <br />
+                    }
                 </label>
-                <br />
                 <label>Email:<br />
                 <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
+                    { this.props.err.type == 'email' 
+                        ?   <div>Email is already registered</div>
+                        :   <br />
+                    }
                 </label>
-                <br />
                 <label>Confirm Email:<br />
                 <input type="email" value={this.state.email2Val} onChange={this.handleEmail2} />
                     { this.state.mailsMatch === false 

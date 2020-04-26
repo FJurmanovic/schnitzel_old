@@ -65,19 +65,18 @@ class Login extends Component {
       }
     
       render() {
-        const { err } = this.state;
         return (
           <div>
             <form onSubmit={this.handleSubmit}>
                 <label>Email:<br />
                 <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
                 </label>
-                {this.props.err.message && <div>User does not exist</div>}
+                {this.props.err.type == 'email' && <div>{this.props.err.message}</div>}
                 <br />
                 <label>Password:<br />
                 <input type="password" value={this.state.passVal} onChange={this.handlePass} />
                 </label>
-                {this.props.err.errors && <div>Please enter a valid password</div>}
+                {this.props.err.type == 'password' && <div>{this.props.err.message}</div>}
                 <br />
                 <input type="submit" value="Submit" />
             </form>

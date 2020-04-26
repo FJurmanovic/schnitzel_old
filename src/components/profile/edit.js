@@ -138,9 +138,10 @@ class EditProfile extends Component {
           }
 
           this.props.editUser(editObject);
-          this.props.history.push("/profile");
 
-          
+          if(!this.props.err){
+            this.props.history.push("/profile");
+          }
         } 
       }
 
@@ -158,6 +159,16 @@ class EditProfile extends Component {
         event.preventDefault();
         const token = this.state.token;
         deactivateUser(token);
+      }
+
+      errorMessages(){
+          return(
+            <>
+            <br />
+              {this.props.err.type == 'email' && <span>{this.props.err.message}</span>}
+              {this.props.err.type == 'username' && <span>{this.props.err.message}</span>}
+              {this.props.err.type == 'password' && <span>{this.props.err.message}</span>}
+            </>)
       }
     
       render() {
@@ -196,6 +207,14 @@ class EditProfile extends Component {
               {(this.state.editUsername || this.state.editEmail || this.state.editPassword) && 
                 <input type="submit" value="Submit" />
               }
+
+              {
+                <>
+                {
+                  this.errorMessages()
+                }
+                </>
+              }
                 
             </form>
             <br/><br/>
@@ -214,11 +233,13 @@ class EditProfile extends Component {
 EditProfile.propTypes = {
     logout: PropTypes.func.isRequired,
     editUser: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    err: PropTypes.object.isRequired
   };
   
   const mapStateToProps = state => ({
-      auth: state.auth
+      auth: state.auth,
+      err: state.err
   });
   
   export default connect(mapStateToProps, { editUser, logout })(EditProfile);
