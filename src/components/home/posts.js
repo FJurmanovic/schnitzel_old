@@ -92,13 +92,22 @@ class Posts extends Component {
       } else {
           const { user } = props.auth;
           const post  = props.post.isPosted;
-          this.setState({
-          userdata: user,
-          isPosted: post,
-          token: localStorage.jwtToken
-          })
-          if(post){     
+          
+          if(post){ 
+            this.setState({
+            userdata: user,
+            isPosted: post,
+            token: localStorage.jwtToken,
+            posts: []
+            })    
             this.getPosts(localStorage.jwtToken, 0, 10, '', '')
+          }
+          else{
+            this.setState({
+              userdata: user,
+              isPosted: post,
+              token: localStorage.jwtToken
+              })
           }
       }
 
