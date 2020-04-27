@@ -45,6 +45,16 @@ export const userData = user => {
         .catch(error => {console.log(error)})
 }
 
+export const dataByUsername = user => {
+    return axios
+        .get('http://localhost:4000/user/dataByUser', { headers : {username: user }})
+        .then(res => {  
+            return res;
+            
+        })
+        .catch(error => {console.log(error)})
+}
+
 export const getUser = user => {
     return axios
         .get('http://localhost:4000/user/getUser', { headers : {id: user }})
@@ -104,6 +114,32 @@ export const getHomePosts = user => {
 export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => {
     return axios
     .get('http://localhost:4000/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+    .then(res => {
+        console.log(res.data);
+        let posts = res.data.post;
+        let postList = [];
+
+        Object.keys(posts).forEach((key) => (
+        postList.push(posts[key])
+        ))
+
+        dispatch({
+            type: GET_POSTS,
+            payload: postList
+        })
+
+        if(!res.data.last){
+            getPosts(user, current, fit, lastDate, lastId);
+        }
+
+        return res;
+    })
+    .catch(error => {console.log(error)})
+}
+
+export const getPostsProfile = (user, current, fit, lastDate, lastId) => dispatch => {
+    return axios
+    .get('http://localhost:4000/post/scrollProfile', { headers : {userId: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
     .then(res => {
         console.log(res.data);
         let posts = res.data.post;

@@ -36,6 +36,7 @@ if (localStorage.jwtToken) {
 }
 
 function AppRouter(){
+
   return(
     <Router>
       <div className="App">
@@ -50,6 +51,9 @@ function AppRouter(){
               <Profile />
             </Route>
             <Route path="/profile/edit" component={EditProfile} />
+            <Route path='/:profileId'>
+              <Profile />
+            </Route>
             <Route component={NoPage} />
           </Switch>
         </div>

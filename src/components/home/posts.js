@@ -128,15 +128,15 @@ class Posts extends Component {
 
     handleScroll(event) {
       const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-        const body = document.body;
-        const html = document.documentElement;
-        const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-        const windowBottom = windowHeight + window.pageYOffset;
-        if (windowBottom >= docHeight) {
-          if(!this.state.last){
-            this.getPosts(localStorage.jwtToken, 0, 10, this.state.lastPost.createdAt, this.state.lastPost.id);
-          }
+      const body = document.body;
+      const html = document.documentElement;
+      const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+      const windowBottom = windowHeight + window.pageYOffset;
+      if (windowBottom >= docHeight) {
+        if(!this.state.last){
+          this.getPosts(localStorage.jwtToken, 0, 10, this.state.lastPost.createdAt, this.state.lastPost.id);
         }
+      }
     }
 
     formatDate(datetime, type) {
