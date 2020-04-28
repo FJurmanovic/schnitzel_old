@@ -21,9 +21,11 @@ class Profile extends Component {
             passVal: '',
             err: {},
             last: false,
-            id: ''
+            id: '',
+            userdata: {}
         };
         this.handleScroll = this.handleScroll.bind(this);
+        this.checkFollowing = this.checkFollowing.bind(this);
       }
 
       getPosts(user, fit, lastDate, lastId){
@@ -67,29 +69,40 @@ class Profile extends Component {
         } else {
             const { user } = this.props.auth
 
-            const id = this.props.match.params.profileId;
-
-            dataByUsername(id).then((res)=>{
-              this.getPosts(res.data.id, 10, '', '')
-              this.setState({
-                id: res.data.id
-              })
-            });
+            const id = this.props.match.params.profileId;           
 
             if(!id){
-              this.setState({
-                username: user.username,
-                token: localStorage.jwtToken,
-                profileId: user.username
-              });
+              if(!(!user)){
+                this.setState({
+                  userdata: user,
+                  username: user.username,
+                  token: localStorage.jwtToken,
+                  profileId: user.username,
+                  posts: [],
+                  id: user.id
+                });
+                this.getPosts(user.id, 10, '', '')
+              }else{
+                this.setState({
+                  token: localStorage.jwtToken
+                });
+              }
             }else{
+              dataByUsername(id).then((res)=>{
+                this.getPosts(res.data.id, 10, '', '')
+                this.setState({
+                  id: res.data.id
+                })
+              });
               this.setState({
+                userdata: user,
                 username: user.username,
                 token: localStorage.jwtToken,
+                posts: [],
                 profileId: id
               });
             }
-        }
+          }
         
         window.addEventListener("scroll", this.handleScroll);
       }
@@ -99,10 +112,29 @@ class Profile extends Component {
             this.props.history.push("/");
         } else{
             const { user } = props.auth
-            this.setState({
-              username: user.username,
-              token: localStorage.jwtToken
-            });
+            const id = props.match.params.profileId;           
+
+            if(!id){
+              if(!(!user)){
+                this.setState({
+                  userdata: user,
+                  username: user.username,
+                  token: localStorage.jwtToken,
+                  profileId: user.username,
+                  posts: [],
+                  id: user.id
+                });
+                this.getPosts(user.id, 10, '', '')
+              }else{
+                this.setState({
+                  token: localStorage.jwtToken
+                });
+              }
+            } else {
+              this.setState({
+                userdata: user
+              })
+            }
         }
     
         if (props.errors) {
@@ -147,30 +179,74 @@ class Profile extends Component {
             return (date[0] + " " + date[1]);
         }
       }
+
+      checkFollowing() {
+        let following = [];
+        following = this.state.userdata.following;
+        let isFollowing = false;
+        if(!(!following)){
+          following.map((user) => {
+            if(user.userId == this.state.id){
+              isFollowing = true;
+              console.log(user.userId)
+            }
+          });
+        }
+        console.log(isFollowing);
+        return isFollowing;
+      }
     
       render() {
         return (
           <div onScroll={this.handleScroll}>
-            {(this.state.profileId == this.state.username || this.state.profileId == undefined)
-            ? <Link to="/profile/edit">
-                Edit profile
-              </Link>
-            : <div>
-                <h1>{this.state.profileId}</h1>
-                <div className="posts">
-                { this.state.posts.map((post, key) => {
-                    return (<React.Fragment key={key}><div className="post">
-                      <h3>{post.title}</h3>
-                      <div>{post.content}</div>
-                      <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
-                      <div>Posted on: {this.formatDate(post.createdAt)}</div>
-                    </div>
-                    <hr /></React.Fragment>
-                    )
-                })
+            {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)
+            ? <>
+                <Link to="/profile/edit">
+                  Edit profile
+                </Link>
+
+                <div>
+                  <h1>Your posts: </h1>
+                  <div className="posts">
+                  { this.state.posts.map((post, key) => {
+                      return (<React.Fragment key={key}><div className="post">
+                        <h3>{post.title}</h3>
+                        <div>{post.content}</div>
+                        <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
+                        <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                      </div>
+                      <hr /></React.Fragment>
+                      )
+                  })
+                  }
+                  </div>
+                </div>
+              </>
+            : <>
+                <div>
+                  {this.checkFollowing()
+                  ? <span>Following</span>
+                  : <span>Not following</span>
                 }
                 </div>
-              </div>
+
+                <div>
+                  <h1>{this.state.profileId}</h1>
+                  <div className="posts">
+                  { this.state.posts.map((post, key) => {
+                      return (<React.Fragment key={key}><div className="post">
+                        <h3>{post.title}</h3>
+                        <div>{post.content}</div>
+                        <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
+                        <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                      </div>
+                      <hr /></React.Fragment>
+                      )
+                  })
+                  }
+                  </div>
+                </div>
+              </>
             }
             
           </div>
