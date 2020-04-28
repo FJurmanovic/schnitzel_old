@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, GET_POSTS } from "../../actions";
+import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, GET_POSTS, SET_FOLLOWERS } from "../../actions";
 
 
 export const login = user => dispatch => {
@@ -16,7 +16,7 @@ export const login = user => dispatch => {
                 const decoded = jwt_decode(token);
 
                 userData(token).then(resp => {
-                    dispatch(setCurrentUser(resp.data));
+                    dispatch(setCurrentUser(resp.data), setUserFollowers(resp.data));
                 })
         })
         .catch(err => {
@@ -33,6 +33,17 @@ export const setCurrentUser = user => {
       payload: user
     };
 };
+
+export const setUserFollowers = user => {
+    return {
+        type: SET_FOLLOWERS,
+        payload: {
+            followers: user.followers,
+            following: user.following
+                
+        }
+    };
+}
   
 
 export const userData = user => {
@@ -100,6 +111,11 @@ export const createPost = (post, history) => dispatch => {
             payload: err.response.data
             })
         );
+};
+
+export const followUser = (token, userId) => {
+    return axios
+        .get('http://localhost:4000/user/follow', { headers: {token: token}, params: {id: userId}})
 };
 
 export const getHomePosts = user => {

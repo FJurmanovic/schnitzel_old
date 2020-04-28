@@ -13,3 +13,5 @@ export const SET_POSTED = "SET_POSTED";
 export const UNSET_POSTED = "UNSET_POSTED";
 
 export const GET_POSTS = "GET_POSTS";
+
+export const SET_FOLLOWERS = "SET_FOLLOWERS";

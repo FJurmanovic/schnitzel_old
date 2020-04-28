@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import { userData, dataByUsername } from '../classes/callAPI';
+import { userData, dataByUsername, followUser } from '../classes/callAPI';
 
 
 class Profile extends Component {
@@ -25,6 +25,9 @@ class Profile extends Component {
             userdata: {}
         };
         this.handleScroll = this.handleScroll.bind(this);
+        this.handleFollowButton = this.handleFollowButton.bind(this);
+        this.handleUnfollowButton = this.handleUnfollowButton.bind(this);
+        this.addFollower = this.addFollower.bind(this);
         this.checkFollowing = this.checkFollowing.bind(this);
       }
 
@@ -55,6 +58,28 @@ class Profile extends Component {
         })
         .catch(error => {console.log(error)})
         
+      }
+
+      addFollower(userId){
+        let { user } = this.props.auth
+        let flw = {
+          following: [],
+          followers: []
+        }
+        flw.following = user.following;
+        flw.followers = user.followers;
+
+        
+        flw.following.push({"userId": userId})
+
+        user.followers = flw.followers;
+        user.following = flw.following;
+
+        this.setState(
+          {
+            userdata: user
+          }
+        )
       }
 
       componentDidMount() {
@@ -132,7 +157,8 @@ class Profile extends Component {
               }
             } else {
               this.setState({
-                userdata: user
+                userdata: user,
+                username: user.username
               })
             }
         }
@@ -195,6 +221,41 @@ class Profile extends Component {
         console.log(isFollowing);
         return isFollowing;
       }
+      
+      showPosts() {
+        return(
+          <div className="posts">
+            { this.state.posts.map((post, key) => {
+                return (
+                <React.Fragment key={key}>
+                  <div className="post">
+                    <h3>{post.title}</h3>
+                    <div>{post.content}</div>
+                    <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
+                    <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                  </div>
+                  <hr />
+                </React.Fragment>
+                )
+              })
+            }
+          </div>
+        );
+      }
+
+      handleUnfollowButton() {
+
+      }
+
+      handleFollowButton(event) {
+        event.preventDefault();
+
+        followUser(this.state.token, this.state.id).then(res =>
+          {
+            this.addFollower(this.state.id)
+          }
+        )
+      }
     
       render() {
         return (
@@ -207,44 +268,20 @@ class Profile extends Component {
 
                 <div>
                   <h1>Your posts: </h1>
-                  <div className="posts">
-                  { this.state.posts.map((post, key) => {
-                      return (<React.Fragment key={key}><div className="post">
-                        <h3>{post.title}</h3>
-                        <div>{post.content}</div>
-                        <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
-                        <div>Posted on: {this.formatDate(post.createdAt)}</div>
-                      </div>
-                      <hr /></React.Fragment>
-                      )
-                  })
-                  }
-                  </div>
+                  {this.showPosts()}
                 </div>
               </>
             : <>
                 <div>
                   {this.checkFollowing()
-                  ? <span>Following</span>
-                  : <span>Not following</span>
-                }
+                  ? <button onClick={this.handleUnfollowButton}>Unfollow</button>
+                  : <button onClick={this.handleFollowButton}>Follow</button>
+                  }
                 </div>
 
                 <div>
                   <h1>{this.state.profileId}</h1>
-                  <div className="posts">
-                  { this.state.posts.map((post, key) => {
-                      return (<React.Fragment key={key}><div className="post">
-                        <h3>{post.title}</h3>
-                        <div>{post.content}</div>
-                        <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
-                        <div>Posted on: {this.formatDate(post.createdAt)}</div>
-                      </div>
-                      <hr /></React.Fragment>
-                      )
-                  })
-                  }
-                  </div>
+                  {this.showPosts()}
                 </div>
               </>
             }
