@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import { userData, dataByUsername, followUser } from '../classes/callAPI';
+import { userData, dataByUsername, followUser, unfollowUser } from '../classes/callAPI';
 
 
 class Profile extends Component {
@@ -71,6 +71,31 @@ class Profile extends Component {
 
         
         flw.following.push({"userId": userId})
+
+        user.followers = flw.followers;
+        user.following = flw.following;
+
+        this.setState(
+          {
+            userdata: user
+          }
+        )
+      }
+
+      removeFollower(userId){
+        let { user } = this.props.auth
+        let flw = {
+          following: [],
+          followers: []
+        }
+        flw.following = user.following;
+        flw.followers = user.followers;
+
+        console.log(flw.following)
+
+        flw.following.splice(flw.following.findIndex(x => x.userId == userId), 1)
+
+        console.log(flw.following)
 
         user.followers = flw.followers;
         user.following = flw.following;
@@ -243,8 +268,12 @@ class Profile extends Component {
         );
       }
 
-      handleUnfollowButton() {
+      handleUnfollowButton(event) {
+        event.preventDefault();
 
+        unfollowUser(this.state.token, this.state.id).then(res => {
+          this.removeFollower(this.state.id)
+        })
       }
 
       handleFollowButton(event) {

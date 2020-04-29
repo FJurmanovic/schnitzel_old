@@ -166,7 +166,12 @@ class Posts extends Component {
             return (<React.Fragment key={key}><div className="post">
               <h3>{post.title}</h3>
               <div>{post.content}</div>
-              <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
+              <div>Author: <span></span>
+                {post.username == "DeletedUser" 
+                ? <span>DeletedUser</span>
+                : <Link to={location => `/${post.username}`}>{post.username}</Link>
+                }
+              </div>
               <div>Posted on: {this.formatDate(post.createdAt)}</div>
             </div>
             <hr /></React.Fragment>
