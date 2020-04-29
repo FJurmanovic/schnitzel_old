@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 
 import setAuthToken from '../utils/setAuthToken';
-import { setCurrentUser, setUserFollowers, logout } from './classes/callAPI';
+import { setCurrentUser, setUserFollowers, logout, getFollowUsernames } from './classes/callAPI';
 import store from './store';
 
 import Home from './home/home';
@@ -25,8 +25,11 @@ if (localStorage.jwtToken) {
   const decoded = jwt_decode(token);
   
   userData(token).then(resp => {
-    store.dispatch(setCurrentUser(resp.data));
-    store.dispatch(setUserFollowers(resp.data))
+    let usrData = resp.data;
+    
+    store.dispatch(setCurrentUser(usrData));
+    store.dispatch(setUserFollowers(usrData));
+    
   })
 
   const currentTime = Date.now() / 1000; // to get in milliseconds

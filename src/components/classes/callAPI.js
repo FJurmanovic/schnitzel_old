@@ -123,6 +123,11 @@ export const unfollowUser = (token, userId) => {
         .get('http://localhost:4000/user/unfollow', { headers: {token: token}, params: {id: userId}})
 };
 
+export const getFollowUsernames = (token, user) => {
+    return axios
+        .post('http://localhost:4000/user/getFollowerUsernames', { token: token, user})
+};
+
 export const getHomePosts = user => {
     return axios
         .get('http://localhost:4000/post/home', { headers : {token: user }})

@@ -68,7 +68,6 @@ class Profile extends Component {
         }
         flw.following = user.following;
         flw.followers = user.followers;
-
         
         flw.following.push({"userId": userId})
 
@@ -234,6 +233,7 @@ class Profile extends Component {
       checkFollowing() {
         let following = [];
         following = this.state.userdata.following;
+        console.log(following)
         let isFollowing = false;
         if(!(!following)){
           following.map((user) => {
