@@ -4,10 +4,14 @@ import jwt_decode from "jwt-decode";
 
 import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, GET_POSTS, SET_FOLLOWERS } from "../../actions";
 
+export const getHostname = () => {
+    const port = ":4000";
+    return (window.location.protocol + '//' + window.location.hostname + port + '/');
+};
 
 export const login = user => dispatch => {
     axios
-        .post('http://localhost:4000/user/login', user)
+        .post(getHostname() + 'api/user/login', user)
         .then(res => { 
             
                 const { token } = res.data;
@@ -48,7 +52,7 @@ export const setUserFollowers = user => {
 
 export const userData = user => {
     return axios
-        .get('http://localhost:4000/user/data', { headers : {token: user }})
+        .get(getHostname() + 'api/user/data', { headers : {token: user }})
         .then(res => {  
             return res;
             
@@ -58,7 +62,7 @@ export const userData = user => {
 
 export const dataByUsername = user => {
     return axios
-        .get('http://localhost:4000/user/dataByUser', { headers : {username: user }})
+        .get(getHostname() + 'api/user/dataByUser', { headers : {username: user }})
         .then(res => {  
             return res;
             
@@ -68,7 +72,7 @@ export const dataByUsername = user => {
 
 export const getUser = user => {
     return axios
-        .get('http://localhost:4000/user/getUser', { headers : {id: user }})
+        .get(getHostname() + 'api/user/getUser', { headers : {id: user }})
         .then(res => {  
             return res;
             
@@ -78,7 +82,7 @@ export const getUser = user => {
 
 export const deactivateUser = user => {
     return axios
-        .get('http://localhost:4000/user/deactivate', { headers: {token: user }})
+        .get(getHostname() + 'api/user/deactivate', { headers: {token: user }})
         .then(res=> {
             console.log("Succesfully deactivated");
         })
@@ -87,7 +91,7 @@ export const deactivateUser = user => {
 
 export const register = (user, history) => dispatch => {
     axios
-        .post('http://localhost:4000/user/signup', user)
+        .post(getHostname() + 'api/user/signup', user)
         .then(res => history.push("/login"))
         .catch(err =>
             dispatch({
@@ -99,7 +103,7 @@ export const register = (user, history) => dispatch => {
 
 export const createPost = (post, history) => dispatch => {
     axios
-        .post('http://localhost:4000/post/create', post)
+        .post(getHostname() + 'api/post/create', post)
         .then(res => {
             dispatch({
                 type: SET_POSTED
@@ -115,22 +119,22 @@ export const createPost = (post, history) => dispatch => {
 
 export const followUser = (token, userId) => {
     return axios
-        .get('http://localhost:4000/user/follow', { headers: {token: token}, params: {id: userId}})
+        .get(getHostname() + 'api/user/follow', { headers: {token: token}, params: {id: userId}})
 };
 
 export const unfollowUser = (token, userId) => {
     return axios
-        .get('http://localhost:4000/user/unfollow', { headers: {token: token}, params: {id: userId}})
+        .get(getHostname() + 'api/user/unfollow', { headers: {token: token}, params: {id: userId}})
 };
 
 export const getFollowUsernames = (token, user) => {
     return axios
-        .post('http://localhost:4000/user/getFollowerUsernames', { token: token, user})
+        .post(getHostname() + 'api/user/getFollowerUsernames', { token: token, user})
 };
 
 export const getHomePosts = user => {
     return axios
-        .get('http://localhost:4000/post/home', { headers : {token: user }})
+        .get(getHostname() + 'api/post/home', { headers : {token: user }})
         .then(res => {
             return res;
         })
@@ -139,7 +143,7 @@ export const getHomePosts = user => {
 
 export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => {
     return axios
-    .get('http://localhost:4000/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+    .get(getHostname() + 'api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
     .then(res => {
         console.log(res.data);
         let posts = res.data.post;
@@ -165,7 +169,7 @@ export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => {
 
 export const getPostsProfile = (user, current, fit, lastDate, lastId) => dispatch => {
     return axios
-    .get('http://localhost:4000/post/scrollProfile', { headers : {userId: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+    .get(getHostname() + 'api/post/scrollProfile', { headers : {userId: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
     .then(res => {
         console.log(res.data);
         let posts = res.data.post;
@@ -198,7 +202,7 @@ export const logout = () => dispatch => {
 
 export const editUser = (editProps, history) => dispatch => {
     axios
-        .post('http://localhost:4000/user/edit', editProps)
+        .post(getHostname() + 'api/user/edit', editProps)
         .then(res => {
             userData(res.data.token).then(resp => {
                 dispatch(setCurrentUser(resp.data));

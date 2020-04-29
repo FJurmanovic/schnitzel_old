@@ -34,7 +34,7 @@ class Profile extends Component {
       getPosts(user, fit, lastDate, lastId){
   
         return axios
-        .get('http://localhost:4000/post/scrollProfile', { params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
+        .get('api/post/scrollProfile', { params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
         .then(res => {
             console.log(res.data);
             let posts = res.data.post;

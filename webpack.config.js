@@ -34,6 +34,18 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html'
         })
-    ]
+    ],
+    devServer: {
+        contentBase: path.join(__dirname, "/dist"),
+        compress: true,
+        port: 8080,
+        proxy: {
+            '/api': {
+                target: 'http://localhost:4000',
+                secure: true
+            }
+        }
+    }
+    
     
 }

@@ -35,7 +35,7 @@ class Posts extends Component {
       });*/
 
       return axios
-      .get('http://localhost:4000/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+      .get('api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
       .then(res => {
           console.log(res.data);
           let posts = res.data.post;
