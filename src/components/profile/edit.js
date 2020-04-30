@@ -7,7 +7,8 @@ import jwt_decode from "jwt-decode";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
-import { logout, deactivateUser, userData, editUser} from '../classes/callAPI';
+import { deactivateUser, userData, editUser, setAuthToken} from '../classes/callAPI';
+import store from '../store';
 
 import axios from 'axios';
 
@@ -122,7 +123,7 @@ class EditProfile extends Component {
 
 
         if((pass === pass2 && pass.length > 6) || !this.state.editPassword || (this.state.editUsername && username.length > 0)){
-          const editObject = 
+          let editObject = 
           {   
             id: this.state.id
           };
@@ -158,7 +159,7 @@ class EditProfile extends Component {
       yesDeactivateButton(event) {
         event.preventDefault();
         const token = this.state.token;
-        deactivateUser(token);
+        this.props.deactivateUser(token);
       }
 
       errorMessages(){
@@ -220,8 +221,7 @@ class EditProfile extends Component {
             <br/><br/>
             <div>
                 { this.state.deactivate 
-                    ?   <span>Are you sure you want to deactivate account? <button onClick={this.yesDeactivateButton.bind(this)}><Link to="../" onClick={
-                        this.props.logout}>Yes</Link></button> <button onClick={this.noDeactivateButton.bind(this)}>No</button></span> 
+                    ?   <span>Are you sure you want to deactivate account? <button onClick={this.yesDeactivateButton.bind(this)}>Yes</button> <button onClick={this.noDeactivateButton.bind(this)}>No</button></span> 
                     :   <button onClick={this.deactivateButton.bind(this)}>Deactivate account</button>
                 }
             </div>
@@ -231,10 +231,10 @@ class EditProfile extends Component {
 }
 
 EditProfile.propTypes = {
-    logout: PropTypes.func.isRequired,
     editUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    err: PropTypes.object.isRequired
+    err: PropTypes.object.isRequired,
+    deactivateUser: PropTypes.func.isRequired
   };
   
   const mapStateToProps = state => ({
@@ -242,4 +242,4 @@ EditProfile.propTypes = {
       err: state.err
   });
   
-  export default connect(mapStateToProps, { editUser, logout })(EditProfile);
+  export default connect(mapStateToProps, { editUser, deactivateUser })(EditProfile);

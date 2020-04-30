@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 
 import axios from 'axios';
 
-import {userData, getHomePosts, getUser, getPosts} from '../classes/callAPI';
+import {userData, getHomePosts, getUser, getPosts, getHostname} from '../classes/callAPI';
 
 import { UNSET_POSTED } from "../../actions";
 
@@ -35,7 +35,7 @@ class Posts extends Component {
       });*/
 
       return axios
-      .get('api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+      .get(getHostname() + 'api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
       .then(res => {
           console.log(res.data);
           let posts = res.data.post;

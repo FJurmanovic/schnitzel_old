@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import { userData, dataByUsername, followUser, unfollowUser } from '../classes/callAPI';
+import { userData, dataByUsername, followUser, unfollowUser, getHostname } from '../classes/callAPI';
 
 
 class Profile extends Component {
@@ -34,7 +34,7 @@ class Profile extends Component {
       getPosts(user, fit, lastDate, lastId){
   
         return axios
-        .get('api/post/scrollProfile', { params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
+        .get(getHostname() + 'api/post/scrollProfile', { params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
         .then(res => {
             console.log(res.data);
             let posts = res.data.post;

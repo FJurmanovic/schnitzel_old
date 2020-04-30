@@ -5,7 +5,7 @@ import jwt_decode from "jwt-decode";
 import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, GET_POSTS, SET_FOLLOWERS } from "../../actions";
 
 export const getHostname = () => {
-    const port = ":4000";
+    const port = ":8080";
     return (window.location.protocol + '//' + window.location.hostname + port + '/');
 };
 
@@ -80,11 +80,13 @@ export const getUser = user => {
         .catch(error => {console.log(error)})
 }
 
-export const deactivateUser = user => {
-    return axios
+export const deactivateUser = user => dispatch => {
+    axios
         .get(getHostname() + 'api/user/deactivate', { headers: {token: user }})
         .then(res=> {
-            console.log("Succesfully deactivated");
+            localStorage.removeItem("jwtToken");
+            setAuthToken(false);
+            dispatch(setCurrentUser({}));
         })
         .catch(error => {console.log(error)})
 }
