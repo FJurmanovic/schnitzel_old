@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import { userData, dataByUsername, followUser, unfollowUser, getHostname } from '../classes/callAPI';
+import { userData, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames } from '../classes/callAPI';
 
 
 class Profile extends Component {
@@ -22,13 +22,19 @@ class Profile extends Component {
             err: {},
             last: false,
             id: '',
-            userdata: {}
+            userdata: {},
+            flw: {
+              followers: [],
+              following: []
+            }
         };
         this.handleScroll = this.handleScroll.bind(this);
         this.handleFollowButton = this.handleFollowButton.bind(this);
         this.handleUnfollowButton = this.handleUnfollowButton.bind(this);
         this.addFollower = this.addFollower.bind(this);
         this.checkFollowing = this.checkFollowing.bind(this);
+        this.removeFromFollower = this.removeFromFollower.bind(this);
+        this.removeFromFollowing = this.removeFromFollowing.bind(this);
       }
 
       getPosts(user, fit, lastDate, lastId){
@@ -69,14 +75,15 @@ class Profile extends Component {
         flw.following = user.following;
         flw.followers = user.followers;
         
-        flw.following.push({"userId": userId})
+        flw.following.push({"userId": userId, "username": this.state.profileId})
 
         user.followers = flw.followers;
         user.following = flw.following;
 
         this.setState(
           {
-            userdata: user
+            userdata: user,
+            flw: flw
           }
         )
       }
@@ -101,7 +108,34 @@ class Profile extends Component {
 
         this.setState(
           {
-            userdata: user
+            userdata: user,
+            flw: flw
+          }
+        )
+      }
+
+      removeFromFollowerState(userId){
+        let { user } = this.props.auth
+        let flw = {
+          following: [],
+          followers: []
+        }
+        flw.following = user.following;
+        flw.followers = user.followers;
+
+        console.log(flw.following)
+
+        flw.followers.splice(flw.following.findIndex(x => x.userId == userId), 1)
+
+        console.log(flw.following)
+
+        user.followers = flw.followers;
+        user.following = flw.following;
+
+        this.setState(
+          {
+            userdata: user,
+            flw: flw
           }
         )
       }
@@ -128,6 +162,10 @@ class Profile extends Component {
                   token: localStorage.jwtToken,
                   profileId: user.username,
                   posts: [],
+                  flw: {
+                    followers: user.followers,
+                    following: user.following
+                  },
                   id: user.id
                 });
                 this.getPosts(user.id, 10, '', '')
@@ -139,8 +177,14 @@ class Profile extends Component {
             }else{
               dataByUsername(id).then((res)=>{
                 this.getPosts(res.data.id, 10, '', '')
-                this.setState({
-                  id: res.data.id
+                getFollowUsernames(res.data.id).then((ress) => {
+                  this.setState({
+                    id: res.data.id,
+                    flw: {
+                      followers: ress.data.followers,
+                      following: ress.data.following
+                    }
+                  })
                 })
               });
               this.setState({
@@ -171,6 +215,10 @@ class Profile extends Component {
                   token: localStorage.jwtToken,
                   profileId: user.username,
                   posts: [],
+                  flw: {
+                    followers: user.followers,
+                    following: user.following
+                  },
                   id: user.id
                 });
                 this.getPosts(user.id, 10, '', '')
@@ -180,10 +228,24 @@ class Profile extends Component {
                 });
               }
             } else {
+              dataByUsername(id).then((res)=>{
+                getFollowUsernames(res.data.id).then((ress) => {
+                  this.setState({
+                    id: res.data.id,
+                    flw: {
+                      followers: ress.data.followers,
+                      following: ress.data.following
+                    }
+                  })
+                })
+              });
               this.setState({
                 userdata: user,
-                username: user.username
-              })
+                username: user.username,
+                token: localStorage.jwtToken,
+                posts: [],
+                profileId: id
+              });
             }
         }
     
@@ -271,7 +333,7 @@ class Profile extends Component {
       handleUnfollowButton(event) {
         event.preventDefault();
 
-        unfollowUser(this.state.token, this.state.id).then(res => {
+        unfollowUser(this.state.userdata.id, this.state.id).then(res => {
           this.removeFollower(this.state.id)
         })
       }
@@ -279,14 +341,56 @@ class Profile extends Component {
       handleFollowButton(event) {
         event.preventDefault();
 
-        followUser(this.state.token, this.state.id).then(res =>
+        followUser(this.state.userdata.id, this.state.id).then(res =>
           {
             this.addFollower(this.state.id)
           }
         )
       }
-    
+
+      removeFromFollower(id) {
+        event.preventDefault()
+        unfollowUser(id, this.state.userdata.id).then(res => {
+          this.removeFromFollowerState(id)
+        })
+      }
+
+      removeFromFollowing(id) {
+        event.preventDefault()
+        unfollowUser(this.state.userdata.id, id).then(res => {
+          this.removeFollower(id)
+        })
+      }
+
       render() {
+        const getFollowers = (
+          <>{ !(!this.state.flw.followers) && <>
+            { 
+              this.state.flw.followers.map((follower, key) => {
+                return (
+                  <React.Fragment key={key}>
+                    <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> <span><a href="#" onClick={() => this.removeFromFollower(follower.userId)}>Remove follower</a></span></li>
+                  </React.Fragment>
+                )
+              })
+            } </> }
+          </>
+        )
+
+        const getFollowing = (
+          <>{ !(!this.state.flw.following) && <>
+            { 
+              this.state.flw.following.map((follower, key) => {
+                return (
+                  <React.Fragment key={key}>
+                    <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> <span><a href="#" onClick={() => this.removeFromFollowing(follower.userId)}>Remove following</a></span></li>
+                  </React.Fragment>
+                )
+              })
+            } </> }
+          </>
+        )
+
         return (
           <div onScroll={this.handleScroll}>
             {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)
@@ -294,6 +398,16 @@ class Profile extends Component {
                 <Link to="/profile/edit">
                   Edit profile
                 </Link>
+                <div>
+                  <ul>
+                    <strong>Followers:</strong>
+                    {getFollowers}
+                  </ul>
+                  <ul>
+                    <strong>Following:</strong>
+                    {getFollowing}
+                  </ul>
+                </div>
 
                 <div>
                   <h1>Your posts: </h1>

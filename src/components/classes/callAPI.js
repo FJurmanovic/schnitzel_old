@@ -119,19 +119,19 @@ export const createPost = (post, history) => dispatch => {
         );
 };
 
-export const followUser = (token, userId) => {
+export const followUser = (idUser, id) => {
     return axios
-        .get(getHostname() + 'api/user/follow', { headers: {token: token}, params: {id: userId}})
+        .get(getHostname() + 'api/user/follow', { params: {idUser: idUser, id: id}})
 };
 
-export const unfollowUser = (token, userId) => {
+export const unfollowUser = (idUser, id) => {
     return axios
-        .get(getHostname() + 'api/user/unfollow', { headers: {token: token}, params: {id: userId}})
+        .get(getHostname() + 'api/user/unfollow', { params: {idUser: idUser, id: id}})
 };
 
-export const getFollowUsernames = (token, user) => {
+export const getFollowUsernames = id => {
     return axios
-        .post(getHostname() + 'api/user/getFollowerUsernames', { token: token, user})
+        .post(getHostname() + 'api/user/getFollowerUsernames', { id: id })
 };
 
 export const getHomePosts = user => {
