@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import { userData, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames } from '../classes/callAPI';
+import { userData, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile } from '../classes/callAPI';
 
 
 class Profile extends Component {
@@ -38,32 +38,29 @@ class Profile extends Component {
       }
 
       getPosts(user, fit, lastDate, lastId){
-  
-        return axios
-        .get(getHostname() + 'api/post/scrollProfile', { params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
-        .then(res => {
-            console.log(res.data);
-            let posts = res.data.post;
-            let postList = this.state.posts;
-      
-            Object.keys(posts).forEach((key) => (
-            postList.push(posts[key])
-            ))
-  
-            let lastPost = postList[postList.length-1];
-  
-            this.setState({posts: postList, lastPost: lastPost, last: res.data.last})
-      
-            /*
-            if(!res.data.last){
-                this.getPostss(user, current, fit, lastPost.createdAt, lastPost._id);
-                console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
-            }*/
-      
-            return res;
-        })
-        .catch(error => {console.log(error)})
+          getPostsProfile(user, fit, lastDate, lastId).then((res) => {
+              let posts = res.data.post;
+              let postList = this.state.posts;
+              
+              if((lastDate == '' && lastId == '' && !this.state.posts[0]) || (lastDate != '' && lastId != '' && this.state.posts[0])){
+                Object.keys(posts).forEach((key) => (
+                  postList.push(posts[key])
+                ))
+              }
+
+              let lastPost = postList[postList.length-1];
+    
+              this.setState({posts: postList, lastPost: lastPost, last: res.data.last})
         
+              /*
+              if(!res.data.last){
+                  this.getPostss(user, current, fit, lastPost.createdAt, lastPost._id);
+                  console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
+              }*/
+        
+              return res;
+          })
+          .catch(error => {console.log(error)})
       }
 
       addFollower(userId){
@@ -166,9 +163,12 @@ class Profile extends Component {
                     followers: user.followers,
                     following: user.following
                   },
-                  id: user.id
+                  id: user.id,
+                  validProfile: true
                 });
-                this.getPosts(user.id, 10, '', '')
+                if(user.id){
+                  this.getPosts(user.id, 10, '', '')
+                }
               }else{
                 this.setState({
                   token: localStorage.jwtToken
@@ -176,16 +176,19 @@ class Profile extends Component {
               }
             }else{
               dataByUsername(id).then((res)=>{
-                this.getPosts(res.data.id, 10, '', '')
-                getFollowUsernames(res.data.id).then((ress) => {
-                  this.setState({
-                    id: res.data.id,
-                    flw: {
-                      followers: ress.data.followers,
-                      following: ress.data.following
-                    }
+                if(res.data.id){
+                  this.getPosts(res.data.id, 10, '', '')
+                  getFollowUsernames(res.data.id).then((ress) => {
+                    this.setState({
+                      id: res.data.id,
+                      flw: {
+                        followers: ress.data.followers,
+                        following: ress.data.following
+                      },
+                      validProfile: true
+                    })
                   })
-                })
+                }
               });
               this.setState({
                 userdata: user,
@@ -205,7 +208,7 @@ class Profile extends Component {
             this.props.history.push("/");
         } else{
             const { user } = props.auth
-            const id = props.match.params.profileId;           
+            const id = props.match.params.profileId;     
 
             if(!id){
               if(!(!user)){
@@ -221,7 +224,9 @@ class Profile extends Component {
                   },
                   id: user.id
                 });
-                this.getPosts(user.id, 10, '', '')
+                if(user.id){
+                  this.getPosts(user.id, 10, '', '')
+                }
               }else{
                 this.setState({
                   token: localStorage.jwtToken
@@ -229,15 +234,18 @@ class Profile extends Component {
               }
             } else {
               dataByUsername(id).then((res)=>{
-                getFollowUsernames(res.data.id).then((ress) => {
-                  this.setState({
-                    id: res.data.id,
-                    flw: {
-                      followers: ress.data.followers,
-                      following: ress.data.following
-                    }
+                if(res.data.id){
+                  this.getPosts(res.data.id, 10, '', '')
+                  getFollowUsernames(res.data.id).then((ress) => {
+                    this.setState({
+                      id: res.data.id,
+                      flw: {
+                        followers: ress.data.followers,
+                        following: ress.data.following
+                      }
+                    })
                   })
-                })
+                }
               });
               this.setState({
                 userdata: user,
@@ -369,7 +377,7 @@ class Profile extends Component {
               this.state.flw.followers.map((follower, key) => {
                 return (
                   <React.Fragment key={key}>
-                    <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> <span><a href="#" onClick={() => this.removeFromFollower(follower.userId)}>Remove follower</a></span></li>
+                    <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined) && <span><a href="#" onClick={() => this.removeFromFollower(follower.userId)}>Remove follower</a></span>}</li>
                   </React.Fragment>
                 )
               })
@@ -383,7 +391,7 @@ class Profile extends Component {
               this.state.flw.following.map((follower, key) => {
                 return (
                   <React.Fragment key={key}>
-                    <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> <span><a href="#" onClick={() => this.removeFromFollowing(follower.userId)}>Remove following</a></span></li>
+                    <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined) && <span><a href="#" onClick={() => this.removeFromFollowing(follower.userId)}>Remove following</a></span>}</li>
                   </React.Fragment>
                 )
               })
@@ -393,22 +401,21 @@ class Profile extends Component {
 
         return (
           <div onScroll={this.handleScroll}>
+            <div>
+              <ul>
+                <strong>Followers:</strong>
+                {getFollowers}
+              </ul>
+              <ul>
+                <strong>Following:</strong>
+                {getFollowing}
+              </ul>
+            </div>
             {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)
             ? <>
                 <Link to="/profile/edit">
                   Edit profile
                 </Link>
-                <div>
-                  <ul>
-                    <strong>Followers:</strong>
-                    {getFollowers}
-                  </ul>
-                  <ul>
-                    <strong>Following:</strong>
-                    {getFollowing}
-                  </ul>
-                </div>
-
                 <div>
                   <h1>Your posts: </h1>
                   {this.showPosts()}

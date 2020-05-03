@@ -169,27 +169,10 @@ export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => {
     .catch(error => {console.log(error)})
 }
 
-export const getPostsProfile = (user, current, fit, lastDate, lastId) => dispatch => {
+export const getPostsProfile = (user,  fit, lastDate, lastId) => {
     return axios
-    .get(getHostname() + 'api/post/scrollProfile', { headers : {userId: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+    .get(getHostname() + 'api/post/scrollProfile', { params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
     .then(res => {
-        console.log(res.data);
-        let posts = res.data.post;
-        let postList = [];
-
-        Object.keys(posts).forEach((key) => (
-        postList.push(posts[key])
-        ))
-
-        dispatch({
-            type: GET_POSTS,
-            payload: postList
-        })
-
-        if(!res.data.last){
-            getPosts(user, current, fit, lastDate, lastId);
-        }
-
         return res;
     })
     .catch(error => {console.log(error)})
