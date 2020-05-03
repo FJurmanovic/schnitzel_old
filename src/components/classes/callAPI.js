@@ -129,6 +129,11 @@ export const unfollowUser = (idUser, id) => {
         .get(getHostname() + 'api/user/unfollow', { params: {idUser: idUser, id: id}})
 };
 
+export const removePost = (token, idPost) => {
+    return axios
+        .get(getHostname() + 'api/post/removePost', { headers: {token: token}, params: {idPost: idPost}})
+};
+
 export const getFollowUsernames = id => {
     return axios
         .post(getHostname() + 'api/user/getFollowerUsernames', { id: id })

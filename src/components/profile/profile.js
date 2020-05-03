@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import { userData, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile } from '../classes/callAPI';
+import { removePost, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile } from '../classes/callAPI';
 
 
 class Profile extends Component {
@@ -35,6 +35,7 @@ class Profile extends Component {
         this.checkFollowing = this.checkFollowing.bind(this);
         this.removeFromFollower = this.removeFromFollower.bind(this);
         this.removeFromFollowing = this.removeFromFollowing.bind(this);
+        this.deletePost = this.deletePost.bind(this);
       }
 
       getPosts(user, fit, lastDate, lastId){
@@ -72,15 +73,14 @@ class Profile extends Component {
         flw.following = user.following;
         flw.followers = user.followers;
         
-        flw.following.push({"userId": userId, "username": this.state.profileId})
+        flw.following.push({"userId": userId, "username": this.state.userdata.username})
 
         user.followers = flw.followers;
         user.following = flw.following;
 
         this.setState(
           {
-            userdata: user,
-            flw: flw
+            userdata: user
           }
         )
       }
@@ -105,39 +105,48 @@ class Profile extends Component {
 
         this.setState(
           {
-            userdata: user,
-            flw: flw
+            userdata: user
+          }
+        )
+      }
+
+      removeFromPost(id){
+        let { posts } = this.state
+
+        posts.splice(posts.findIndex(x => x.id == id), 1)
+
+        this.setState(
+          {
+            posts: posts
           }
         )
       }
 
       removeFromFollowerState(userId){
-        let { user } = this.props.auth
-        let flw = {
-          following: [],
-          followers: []
-        }
-        flw.following = user.following;
-        flw.followers = user.followers;
-
-        console.log(flw.following)
+        let { flw } = this.state
 
         flw.followers.splice(flw.following.findIndex(x => x.userId == userId), 1)
 
-        console.log(flw.following)
-
-        user.followers = flw.followers;
-        user.following = flw.following;
-
         this.setState(
           {
-            userdata: user,
             flw: flw
           }
         )
       }
 
-      componentDidMount() {
+      addToFollowerState(userId){
+        let { flw } = this.state
+
+        flw.followers.push({"userId": userId, "username": this.state.userdata.username})
+
+        this.setState(
+          {
+            flw: flw
+          }
+        )
+      }
+
+      componentWillMount() {
         let isAuthenticated = false;
         if (localStorage.jwtToken) {
           isAuthenticated = true;
@@ -200,7 +209,6 @@ class Profile extends Component {
             }
           }
         
-        window.addEventListener("scroll", this.handleScroll);
       }
     
       componentWillReceiveProps(props) {
@@ -264,6 +272,10 @@ class Profile extends Component {
         }
       }
 
+      componentDidMount() {
+        window.addEventListener("scroll", this.handleScroll);
+      }
+
       componentWillUnmount() {
           window.removeEventListener("scroll", this.handleScroll);
       }
@@ -303,7 +315,6 @@ class Profile extends Component {
       checkFollowing() {
         let following = [];
         following = this.state.userdata.following;
-        console.log(following)
         let isFollowing = false;
         if(!(!following)){
           following.map((user) => {
@@ -316,6 +327,12 @@ class Profile extends Component {
         console.log(isFollowing);
         return isFollowing;
       }
+
+      deletePost(postId) {
+        removePost(this.state.token, postId).then((res) => {
+          this.removeFromPost(postId)
+        })
+      }
       
       showPosts() {
         return(
@@ -324,6 +341,7 @@ class Profile extends Component {
                 return (
                 <React.Fragment key={key}>
                   <div className="post">
+                    {this.state.userdata.id === post.userId && <div><a href="#" onClick={() => this.deletePost(post.id)}>Delete post</a></div>}
                     <h3>{post.title}</h3>
                     <div>{post.content}</div>
                     <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
@@ -343,6 +361,7 @@ class Profile extends Component {
 
         unfollowUser(this.state.userdata.id, this.state.id).then(res => {
           this.removeFollower(this.state.id)
+          this.removeFromFollowerState(this.state.id)
         })
       }
 
@@ -352,6 +371,7 @@ class Profile extends Component {
         followUser(this.state.userdata.id, this.state.id).then(res =>
           {
             this.addFollower(this.state.id)
+            this.addToFollowerState(this.state.id)
           }
         )
       }
@@ -424,15 +444,23 @@ class Profile extends Component {
             : <>
                 <div>
                   {this.checkFollowing()
-                  ? <button onClick={this.handleUnfollowButton}>Unfollow</button>
-                  : <button onClick={this.handleFollowButton}>Follow</button>
+                  ? <>
+                      <button onClick={this.handleUnfollowButton}>Unfollow</button>
+                      <div>
+                        <h1>{this.state.profileId}</h1>
+                        {this.showPosts()}
+                      </div>
+                    </>
+                  : <>
+                      <button onClick={this.handleFollowButton}>Follow</button>
+                      <div>
+                        <h1>{this.state.profileId}</h1>
+                      </div>
+                    </>
                   }
                 </div>
 
-                <div>
-                  <h1>{this.state.profileId}</h1>
-                  {this.showPosts()}
-                </div>
+                
               </>
             }
             

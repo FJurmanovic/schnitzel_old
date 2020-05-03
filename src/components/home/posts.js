@@ -164,6 +164,7 @@ class Posts extends Component {
       <div className="posts" onScroll={this.handleScroll}>
         { this.state.posts.map((post, key) => {
             return (<React.Fragment key={key}><div className="post">
+              {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a></div>}
               <h3>{post.title}</h3>
               <div>{post.content}</div>
               <div>Author: <span></span>
