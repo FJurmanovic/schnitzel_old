@@ -22,10 +22,12 @@ class EditProfile extends Component {
             emailVal: '',
             passVal: '',
             pass2Val: '',
+            privacyVal: '',
             err: {},
             editEmail: false,
             editPassword: false,
-            editUsername: false
+            editUsername: false,
+            editPrivacy: false
         };
         
         
@@ -33,6 +35,7 @@ class EditProfile extends Component {
         this.handleEmail = this.handleEmail.bind(this);
         this.handlePass = this.handlePass.bind(this);
         this.handlePass2 = this.handlePass2.bind(this);
+        this.handlePrivacy = this.handlePrivacy.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
 
@@ -59,7 +62,16 @@ class EditProfile extends Component {
                 passVal: '',
                 token: localStorage.jwtToken,
                 deactivate: false,
-              });
+              })
+              if(user.isPrivate){
+                this.setState({
+                  privacyVal: "private"
+                })
+              } else {
+                this.setState({
+                  privacyVal: "public"
+                })
+              }
             }
             //const { user } = this.state.user;
             /*this.setState({
@@ -87,6 +99,15 @@ class EditProfile extends Component {
             token: localStorage.jwtToken,
             deactivate: false,
           });
+          if(user.isPrivate){
+            this.setState({
+              privacyVal: "private"
+            })
+          } else {
+            this.setState({
+              privacyVal: "public"
+            })
+          }
         }
     
         if (props.errors) {
@@ -111,6 +132,10 @@ class EditProfile extends Component {
       handlePass2(event) {
         this.setState({pass2Val: event.target.value});
       }
+
+      handlePrivacy(event) {
+        this.setState({privacyVal: event.target.value})
+      }
     
       handleSubmit(event) {
         event.preventDefault();
@@ -118,8 +143,7 @@ class EditProfile extends Component {
         const email = this.state.emailVal;
         const pass = this.state.passVal;
         const pass2 = this.state.pass2Val;
-
-        console.log("SASA")
+        const isPrivate = !(this.state.privacyVal === "public")
 
 
         if((pass === pass2 && pass.length > 6) || !this.state.editPassword || (this.state.editUsername && username.length > 0)){
@@ -137,7 +161,11 @@ class EditProfile extends Component {
           if(this.state.editPassword){
             editObject.password = pass
           }
+          if(this.state.editPrivacy){
+            editObject.isPrivate = isPrivate
+          }
 
+          console.log(editObject)
           this.props.editUser(editObject);
 
           if(!this.props.err){
@@ -169,6 +197,7 @@ class EditProfile extends Component {
               {this.props.err.type == 'email' && <span>{this.props.err.message}</span>}
               {this.props.err.type == 'username' && <span>{this.props.err.message}</span>}
               {this.props.err.type == 'password' && <span>{this.props.err.message}</span>}
+              {this.props.err.type == 'privacy' && <span>{this.props.err.message}</span>}
             </>)
       }
     
@@ -183,7 +212,6 @@ class EditProfile extends Component {
                 </label>
               : <span><input type="text" value={this.state.userVal} disabled /> <a href="#" onClick={() => {this.setState({editUsername: true})}}>Edit username</a></span>
               }
-                
                 <br />
               {this.state.editEmail
               ? <label>Email:<br />
@@ -191,9 +219,7 @@ class EditProfile extends Component {
                 </label>
               : <span><input type="email" value={this.state.emailVal} disabled /> <a href="#" onClick={() => {this.setState({editEmail: true})}}>Edit email</a></span>
               }
-                
                 <br />
-
               {this.state.editPassword
               ? <><label>New password:<br />
                 <input type="password" value={this.state.passVal} onChange={this.handlePass} />
@@ -205,7 +231,17 @@ class EditProfile extends Component {
               : <span><a href="#" onClick={() => {this.setState({editPassword: true, passVal: '', pass2Val: ''})}}>Edit password</a></span>
               }
                 <br />
-              {(this.state.editUsername || this.state.editEmail || this.state.editPassword) && 
+              {this.state.editPrivacy
+              ? <><label>Profile privacy:<br />
+                  <label>Private <input type="radio" value="private" checked={this.state.privacyVal === "private"} onChange={this.handlePrivacy}/></label>
+                  <label>Public <input type="radio" value="public" checked={this.state.privacyVal === "public"} onChange={this.handlePrivacy}/></label>
+                  <br />
+                </label></>
+              : <span><a href="#" onClick={() => {this.setState({editPrivacy: true})}}>Edit privacy</a></span>
+
+              }
+                <br />
+              {(this.state.editUsername || this.state.editEmail || this.state.editPassword || this.state.editPrivacy) && 
                 <input type="submit" value="Submit" />
               }
 

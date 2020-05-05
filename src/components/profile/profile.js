@@ -22,6 +22,7 @@ class Profile extends Component {
             err: {},
             last: false,
             id: '',
+            isPrivate: false,
             userdata: {},
             flw: {
               followers: [],
@@ -190,6 +191,7 @@ class Profile extends Component {
                   getFollowUsernames(res.data.id).then((ress) => {
                     this.setState({
                       id: res.data.id,
+                      isPrivate: res.data.isPrivate,
                       flw: {
                         followers: ress.data.followers,
                         following: ress.data.following
@@ -247,6 +249,7 @@ class Profile extends Component {
                   getFollowUsernames(res.data.id).then((ress) => {
                     this.setState({
                       id: res.data.id,
+                      isPrivate: res.data.isPrivate,
                       flw: {
                         followers: ress.data.followers,
                         following: ress.data.following
@@ -455,6 +458,9 @@ class Profile extends Component {
                       <button onClick={this.handleFollowButton}>Follow</button>
                       <div>
                         <h1>{this.state.profileId}</h1>
+                        {!(this.state.isPrivate) &&
+                          this.showPosts()
+                        }
                       </div>
                     </>
                   }

@@ -17,7 +17,8 @@ class Register extends Component {
             email2Val: '',
             passVal: '',
             pass2Val: '',
-            err: {}
+            err: {},
+            privacy: "private"
         };
     
         this.handleUsername = this.handleUsername.bind(this);
@@ -25,6 +26,7 @@ class Register extends Component {
         this.handleEmail2 = this.handleEmail2.bind(this);
         this.handlePass = this.handlePass.bind(this);
         this.handlePass2 = this.handlePass2.bind(this);
+        this.handlePrivacy = this.handlePrivacy.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
 
@@ -70,6 +72,7 @@ class Register extends Component {
         const emailConfirm = this.state.email2Val;
         const pass = this.state.passVal;
         const passConfirm = this.state.pass2Val;
+        const isPrivate = !(this.state.privacy === "public");
         
         if (email !== emailConfirm){
             this.setState({mailsMatch: false});
@@ -91,7 +94,8 @@ class Register extends Component {
             { 
                 username: username,
                 email: email, 
-                password: pass 
+                password: pass,
+                isPrivate: isPrivate
             };
 
             const loginObject = {
@@ -105,6 +109,12 @@ class Register extends Component {
             
         }   
       }
+
+      handlePrivacy(event){
+        this.setState({
+          privacy: event.target.value
+        });
+      }
     
       render() {
         const { err } = this.state;
@@ -113,21 +123,21 @@ class Register extends Component {
           <div>
             <form onSubmit={this.handleSubmit}>
                 <label>Username:<br />
-                <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} />
+                  <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} />
                     { this.props.err.type == 'username' 
                         ?   <div>Username is already registered</div>
                         :   <br />
                     }
                 </label>
                 <label>Email:<br />
-                <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
+                  <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
                     { this.props.err.type == 'email' 
                         ?   <div>Email is already registered</div>
                         :   <br />
                     }
                 </label>
                 <label>Confirm Email:<br />
-                <input type="email" value={this.state.email2Val} onChange={this.handleEmail2} />
+                  <input type="email" value={this.state.email2Val} onChange={this.handleEmail2} />
                     { this.state.mailsMatch === false 
                         ?   <div>Please make sure you entered correct emails.</div>
                         :   <br />
@@ -138,11 +148,16 @@ class Register extends Component {
                 </label>
                 <br />
                 <label>Confirm Password:<br />
-                <input type="password" value={this.state.pass2Val} onChange={this.handlePass2} />
+                  <input type="password" value={this.state.pass2Val} onChange={this.handlePass2} />
                     { this.state.passMatch === false
                         ?   <div>Please make sure you entered correct passwords.</div>
                         :   <br />
                     }
+                </label>
+                <label>Profile privacy:<br />
+                  <label>Private <input type="radio" value="private" checked={this.state.privacy === "private"} onChange={this.handlePrivacy}/></label>
+                  <label>Public <input type="radio" value="public" checked={this.state.privacy === "public"} onChange={this.handlePrivacy}/></label>
+                  <br />
                 </label>
                 <input type="submit" value="Submit" />
             </form>
