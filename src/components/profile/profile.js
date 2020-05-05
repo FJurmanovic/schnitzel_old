@@ -189,12 +189,14 @@ class Profile extends Component {
                 if(res.data.id){
                   this.getPosts(res.data.id, 10, '', '')
                   getFollowUsernames(res.data.id).then((ress) => {
+                    let followers = ress.data.followers.filter(x => x != null)
+                    let following = ress.data.following.filter(x => x != null)
                     this.setState({
                       id: res.data.id,
                       isPrivate: res.data.isPrivate,
                       flw: {
-                        followers: ress.data.followers,
-                        following: ress.data.following
+                        followers: followers,
+                        following: following
                       },
                       validProfile: true
                     })
@@ -247,12 +249,14 @@ class Profile extends Component {
                 if(res.data.id){
                   this.getPosts(res.data.id, 10, '', '')
                   getFollowUsernames(res.data.id).then((ress) => {
+                    let followers = ress.data.followers.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x)
+                    let following = ress.data.following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x)
                     this.setState({
                       id: res.data.id,
                       isPrivate: res.data.isPrivate,
                       flw: {
-                        followers: ress.data.followers,
-                        following: ress.data.following
+                        followers: followers,
+                        following: following
                       }
                     })
                   })
@@ -336,28 +340,6 @@ class Profile extends Component {
           this.removeFromPost(postId)
         })
       }
-      
-      showPosts() {
-        return(
-          <div className="posts">
-            { this.state.posts.map((post, key) => {
-                return (
-                <React.Fragment key={key}>
-                  <div className="post">
-                    {this.state.userdata.id === post.userId && <div><a href="#" onClick={() => this.deletePost(post.id)}>Delete post</a></div>}
-                    <h3>{post.title}</h3>
-                    <div>{post.content}</div>
-                    <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
-                    <div>Posted on: {this.formatDate(post.createdAt)}</div>
-                  </div>
-                  <hr />
-                </React.Fragment>
-                )
-              })
-            }
-          </div>
-        );
-      }
 
       handleUnfollowButton(event) {
         event.preventDefault();
@@ -393,45 +375,72 @@ class Profile extends Component {
         })
       }
 
-      render() {
-        const getFollowers = (
-          <>{ !(!this.state.flw.followers) && <>
-            { 
-              this.state.flw.followers.map((follower, key) => {
+      showFollowers() {
+        const followers = this.state.flw.followers || []
+        return(
+          <div className="followers">
+            { followers.map((follower, key) => {
                 return (
                   <React.Fragment key={key}>
                     <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined) && <span><a href="#" onClick={() => this.removeFromFollower(follower.userId)}>Remove follower</a></span>}</li>
                   </React.Fragment>
                 )
               })
-            } </> }
-          </>
-        )
+            }
+          </div>
+        );
+      }
 
-        const getFollowing = (
-          <>{ !(!this.state.flw.following) && <>
-            { 
-              this.state.flw.following.map((follower, key) => {
+      showFollowing() {
+        const following = this.state.flw.following || []
+        return(
+          <div className="following">
+            { following.map((follower, key) => {
                 return (
                   <React.Fragment key={key}>
                     <li><Link to={location => `/${follower.username}`}>{follower.username}</Link> {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined) && <span><a href="#" onClick={() => this.removeFromFollowing(follower.userId)}>Remove following</a></span>}</li>
                   </React.Fragment>
                 )
               })
-            } </> }
-          </>
-        )
+            }
+          </div>
+        );
+      }
+
+      showPosts() {
+        return(
+          <div className="posts">
+            { this.state.posts.map((post, key) => {
+                return (
+                <React.Fragment key={key}>
+                  <div className="post">
+                    {this.state.userdata.id === post.userId && <div><a href="#" onClick={() => this.deletePost(post.id)}>Delete post</a></div>}
+                    <h3>{post.title}</h3>
+                    <div>{post.content}</div>
+                    <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
+                    <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                  </div>
+                  <hr />
+                </React.Fragment>
+                )
+              })
+            }
+          </div>
+        );
+      }
+
+      render() {
 
         return (
           <div onScroll={this.handleScroll}>
             <div>
               <ul>
                 <strong>Followers:</strong>
-                {getFollowers}
+                {('followers' in this.state.flw) && this.showFollowers()}
               </ul>
               <ul>
                 <strong>Following:</strong>
-                {getFollowing}
+                {('following' in this.state.flw) && this.showFollowing()}
               </ul>
             </div>
             {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)
