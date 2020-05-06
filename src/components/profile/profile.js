@@ -189,8 +189,11 @@ class Profile extends Component {
                 if(res.data.id){
                   this.getPosts(res.data.id, 10, '', '')
                   getFollowUsernames(res.data.id).then((ress) => {
-                    let followers = ress.data.followers.filter(x => x != null)
-                    let following = ress.data.following.filter(x => x != null)
+                    let followers = ress.data.followers || [];
+                    let following = ress.data.following || [];
+
+                    followers = followers.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
+                    following = following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
                     this.setState({
                       id: res.data.id,
                       isPrivate: res.data.isPrivate,
@@ -249,8 +252,12 @@ class Profile extends Component {
                 if(res.data.id){
                   this.getPosts(res.data.id, 10, '', '')
                   getFollowUsernames(res.data.id).then((ress) => {
-                    let followers = ress.data.followers.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x)
-                    let following = ress.data.following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x)
+                    let followers = ress.data.followers || [];
+                    let following = ress.data.following || [];
+
+                    followers = followers.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
+                    following = following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
+
                     this.setState({
                       id: res.data.id,
                       isPrivate: res.data.isPrivate,
