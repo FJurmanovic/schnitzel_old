@@ -11,13 +11,30 @@ class Post extends Component {
         super(props);
         this.state = { 
             titleVal: '',
-            contentVal: '',
+            typeVal: 'post',
+            descriptionVal: '',
+            numIngredientsVal : 1,
+            ingredientsVal: [
+                {
+                    "name": "test",
+                    "amount": 0,
+                    "unit": "gram"
+                }
+            ],
+            directionsVal: '',
+            isRecipe: false,
             err: {}
          };
 
          
         this.handleTitle = this.handleTitle.bind(this);
-        this.handleContent = this.handleContent.bind(this);
+        this.handleType = this.handleType.bind(this);
+        this.handleDescription = this.handleDescription.bind(this);
+        this.handleNumIngredients = this.handleNumIngredients.bind(this);
+        this.handleIngredientsName = this.handleIngredientsName.bind(this);
+        this.handleIngredientsAmount = this.handleIngredientsAmount.bind(this);
+        this.handleIngredientsUnit = this.handleIngredientsUnit.bind(this);
+        this.handleDirections = this.handleDirections.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
@@ -67,39 +84,114 @@ class Post extends Component {
         this.setState({titleVal: event.target.value})
     }
 
-    handleContent(event){
+    handleType(event){
         event.preventDefault();
 
-        this.setState({contentVal: event.target.value})
+        this.setState({typeVal: event.target.value})
+    }
+
+    handleDescription(event){
+        event.preventDefault();
+
+        this.setState({descriptionVal: event.target.value})
+    }
+
+    handleNumIngredients(event){
+        event.preventDefault();
+        let ingredients = this.state.ingredientsVal;
+        ingredients.push({
+            "name": "",
+            "value": "",
+            "unit": ""
+        });
+
+        this.setState({numIngredientsVal: ++this.state.numIngredientsVal, ingredientsVal: ingredients})
+    }
+
+    handleIngredientsName(event, id){
+        let ingredients = this.state.ingredientsVal
+        ingredients[id].name = event.target.value;
+
+        this.setState({ingredientsVal: ingredients})
+    }
+
+    handleIngredientsAmount(event, id){
+        let ingredients = this.state.ingredientsVal
+        ingredients[id].amount = event.target.value;
+
+        this.setState({ingredientsVal: ingredients})
+    }
+
+    handleIngredientsUnit(event, id){
+        let ingredients = this.state.ingredientsVal
+        ingredients[id].unit = event.target.value;
+
+        this.setState({ingredientsVal: ingredients})
+    }
+
+    handleDirections(event){
+        event.preventDefault();
+
+        this.setState({directionsVal: event.target.value});
     }
 
     handleSubmit(event){
         event.preventDefault();
 
         console.log("Title: " + this.state.titleVal)
-        console.log("Content: " + this.state.contentVal)
+        console.log("Description: " + this.state.descriptionVal)
         console.log("UserId: " + this.state.userdata.id)
 
         const title = this.state.titleVal
-        const content = this.state.contentVal
+        const type = this.state.typeVal
+        const description = this.state.descriptionVal
         const userid = this.state.userdata.id
+        const ingredients = this.state.ingredientsVal
+        const directions = this.state.directionsVal
+        
 
-        if(title.length > 0 && content.length > 0 && userid.length > 0){
+        if(title.length > 0 && description.length > 0 && userid.length > 0){
             const postObject = {
                 title: title,
-                content: content,
-                userId: userid
+                type: type,
+                description: description,
+                userId: userid,
+                ingredients: ingredients,
+                directions: directions
             }
     
             this.props.createPost(postObject, this.props.history);
             this.setState({enablePost: false});
         }else if(!(title.length > 0)){
             console.log("Error: Title is blank")
-        }if(!(content.length > 0)){
-            console.log("Error: Content is blank")
+        }if(!(description.length > 0)){
+            console.log("Error: Description is blank")
         }if(!(userid.length > 0)){
             console.log("Error: User is not authenticated")
         }
+    }
+
+    showIngredients(){
+        let ingredients = this.state.ingredientsVal || []
+        return(
+        <div className="ingredients">
+        {ingredients.map((ingredient, i) => {
+            return (
+            <React.Fragment key={i}>
+                <div className="ingredient">
+                    <label>Ingredient: 
+                        <input type="text" value={ingredient.name} onChange={(e) => this.handleIngredientsName(e, i)} />
+                    </label>
+                    <label>Amount: 
+                        <input type="number" value={ingredient.amount} onChange={(e) => this.handleIngredientsAmount(e, i)} />
+                    </label>
+                    <label>Unit:
+                        <input type="text" value={ingredient.unit} onChange={(e) => this.handleIngredientsUnit(e, i)} />
+                    </label>
+                </div>
+            </React.Fragment>)
+        })}
+        </div>);
     }
 
     render() {
@@ -112,13 +204,35 @@ class Post extends Component {
                     <input type="text" value={this.state.titleVal} onChange={this.handleTitle} />
                     </label>
                     <br />
-                    <label>Content:<br />
+                    <label>Type:<br />
+                    <select onChange={this.handleType}>
+                        <option value="post">Showoff</option>
+                        <option value="recipe">Recipe</option>
+                    </select>
+                    </label>
+                    <br />
+                    <label>Description:<br />
                     <textarea 
-                        onChange={this.handleContent}
-                        value={this.state.contentVal}
+                        onChange={this.handleDescription}
+                        value={this.state.descriptionVal}
                     />
                     </label>
                     <br />
+                    {this.state.typeVal == "recipe" &&
+                    <>
+                        <label>Ingredients:<br /></label>
+                        {this.showIngredients()}
+                        <br />
+                        <label>Directions:<br />
+                        <textarea 
+                            onChange={this.handleDirections}
+                            value={this.state.directionsVal}
+                        />
+                        </label>
+                        <br />
+                    </>
+                    }
+                    <button onClick={this.handleNumIngredients}>Add new ingredient</button><br />
                     <input type="submit" value="Submit" />
                 </form>
             :   <button onClick={() => this.setState({enablePost: true})}>New Post</button>

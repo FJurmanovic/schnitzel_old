@@ -416,23 +416,59 @@ class Profile extends Component {
 
       showPosts() {
         return(
-          <div className="posts">
-            { this.state.posts.map((post, key) => {
-                return (
-                <React.Fragment key={key}>
-                  <div className="post">
-                    {this.state.userdata.id === post.userId && <div><a href="#" onClick={() => this.deletePost(post.id)}>Delete post</a></div>}
-                    <h3>{post.title}</h3>
-                    <div>{post.content}</div>
-                    <div>Author: <Link to={location => `/${post.username}`}>{post.username}</Link></div>
-                    <div>Posted on: {this.formatDate(post.createdAt)}</div>
-                  </div>
-                  <hr />
-                </React.Fragment>
-                )
-              })
-            }
-          </div>
+          <div className="posts" onScroll={this.handleScroll}>
+          { this.state.posts.map((post, key) => {
+              return (
+                
+              <React.Fragment key={key}>
+              <>
+              {post.type == "post" &&
+                <div className="post">
+                {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a></div>}
+                <h3>{post.title}</h3>
+                <div>{post.description}</div>
+                <div>Author: <span></span>
+                  {post.username == "DeletedUser" 
+                  ? <span>DeletedUser</span>
+                  : <Link to={location => `/${post.username}`}>{post.username}</Link>
+                  }
+                </div>
+                <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                <hr />
+              </div>
+              }
+              </>
+              <>
+              {post.type == "recipe" &&
+              <div className="post">
+                {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a></div>}
+                <h3>{post.title}</h3>
+                <div>{post.description}</div>
+                <div>{post.ingredients.map((ingredient, j) => {
+                  return <React.Fragment key={j}>
+                    <span>{ingredient.name}</span><span>{ingredient.value}</span><span>{ingredient.unit}</span>
+                  </React.Fragment>
+                  })}
+                </div>
+                <div>{post.directions}</div>
+                <div>Author: <span></span>
+                  {post.username == "DeletedUser" 
+                  ? <span>DeletedUser</span>
+                  : <Link to={location => `/${post.username}`}>{post.username}</Link>
+                  }
+                </div>
+                <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                <hr />
+              </div>
+              }
+              </>
+              </React.Fragment>
+              
+              )
+          })
+          }
+  
+        </div>
         );
       }
 
