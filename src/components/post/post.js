@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
 import {userData, createPost} from '../classes/callAPI';
+import {categories, firstUpper} from '../classes/Functions';
 
 
 class Post extends Component {
@@ -22,6 +23,8 @@ class Post extends Component {
                 }
             ],
             directionsVal: '',
+            categoriesVal: [],
+            checkedCats: new Map(),
             isRecipe: false,
             err: {}
          };
@@ -35,6 +38,8 @@ class Post extends Component {
         this.handleIngredientsAmount = this.handleIngredientsAmount.bind(this);
         this.handleIngredientsUnit = this.handleIngredientsUnit.bind(this);
         this.handleDirections = this.handleDirections.bind(this);
+        this.isChecked = this.isChecked.bind(this);
+        this.handleCategory = this.handleCategory.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
@@ -145,30 +150,60 @@ class Post extends Component {
         const title = this.state.titleVal
         const type = this.state.typeVal
         const description = this.state.descriptionVal
+        const categories = this.state.categoriesVal
         const userid = this.state.userdata.id
         const ingredients = this.state.ingredientsVal
         const directions = this.state.directionsVal
         
 
-        if(title.length > 0 && description.length > 0 && userid.length > 0){
-            const postObject = {
-                title: title,
-                type: type,
-                description: description,
-                userId: userid,
-                ingredients: ingredients,
-                directions: directions
+        if(type == "post"){
+            if(title.length > 0 && description.length > 0 && userid.length > 0){
+                const postObject = {
+                    title: title,
+                    type: type,
+                    description: description,
+                    categories: categories,
+                    userId: userid
+                }
+        
+                this.props.createPost(postObject, this.props.history);
+                this.setState({enablePost: false});
+            }else if(!(title.length > 0)){
+                console.log("Error: Title is blank")
+            }if(!(description.length > 0)){
+                console.log("Error: Description is blank")
+            }if(!(userid.length > 0)){
+                console.log("Error: User is not authenticated")
             }
-    
-            this.props.createPost(postObject, this.props.history);
-            this.setState({enablePost: false});
-        }else if(!(title.length > 0)){
-            console.log("Error: Title is blank")
-        }if(!(description.length > 0)){
-            console.log("Error: Description is blank")
-        }if(!(userid.length > 0)){
-            console.log("Error: User is not authenticated")
+        }else if(type == "recipe"){
+            if(title.length > 0 && description.length > 0 && userid.length > 0 && categories.length > 0 && ingredients.length > 0 && directions.length > 0){
+                const postObject = {
+                    title: title,
+                    type: type,
+                    description: description,
+                    categories: categories,
+                    userId: userid,
+                    ingredients: ingredients,
+                    directions: directions
+                }
+        
+                this.props.createPost(postObject, this.props.history);
+                this.setState({enablePost: false});
+            }else if(!(title.length > 0)){
+                console.log("Error: Title is blank")
+            }if(!(description.length > 0)){
+                console.log("Error: Description is blank")
+            }if(!(userid.length > 0)){
+                console.log("Error: User is not authenticated")
+            }if(!(categories.length > 0)){
+                console.log("Error: You need to select a category")
+            }if(!(ingredients.length > 0)){
+                console.log("Error: You need to add an ingredient")
+            }if(!(directions.length > 0)){
+                console.log("Error: Directions is blank")
+            }
         }
+        
     }
 
     showIngredients(){
@@ -194,6 +229,27 @@ class Post extends Component {
         </div>);
     }
 
+    isChecked(event){
+        event.preventDefault();
+
+        return categories.includes(event.target.value)
+    }
+
+    handleCategory(e){
+        const item = e.target.name;
+        const isChecked = e.target.checked;
+
+        let categoryList = this.state.categoriesVal || [];
+
+        if(isChecked){
+            categoryList.push(item)
+        }else{
+            categoryList.splice(categoryList.findIndex(x => x == item), 1)
+        }
+
+        this.setState({categoriesVal: categoryList });
+    }
+
     render() {
         const { err } = this.state;
         return(
@@ -211,6 +267,15 @@ class Post extends Component {
                     </select>
                     </label>
                     <br />
+                    <label>Category:<br />
+                        {categories.map((category, key) => {
+                            return <React.Fragment key={key}>
+                                <label><input type="checkbox" name={category} checked={this.state.categoriesVal.filter(x => x == category)[0]} onChange={this.handleCategory} value={category} /> {firstUpper(category)} </label>
+                                {((key + 1) % 7) == 0 && <br />}
+                            </React.Fragment>   
+                        })}
+                    </label>
+                    <br />
                     <label>Description:<br />
                     <textarea 
                         onChange={this.handleDescription}
@@ -223,6 +288,7 @@ class Post extends Component {
                         <label>Ingredients:<br /></label>
                         {this.showIngredients()}
                         <br />
+                        <button onClick={this.handleNumIngredients}>Add new ingredient</button><br />
                         <label>Directions:<br />
                         <textarea 
                             onChange={this.handleDirections}
@@ -232,7 +298,6 @@ class Post extends Component {
                         <br />
                     </>
                     }
-                    <button onClick={this.handleNumIngredients}>Add new ingredient</button><br />
                     <input type="submit" value="Submit" />
                 </form>
             :   <button onClick={() => this.setState({enablePost: true})}>New Post</button>

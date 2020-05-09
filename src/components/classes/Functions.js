@@ -1,19 +1,6 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-
-
-export const functions = {
-    refresh(){
-        
-    },
-
-    BackToLanding(){
-        return (
-            <div>
-            <Redirect to="../" />
-            </div>
-            
-        );
-    }
-}
+export const categories = ["other", "pizza", "chicken", "pork", "beef", "hamburger", "deserts", "snacks", "hot", "mild"];
     
+export const firstUpper = (s) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  };
