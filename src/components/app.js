@@ -18,6 +18,7 @@ import NoPage from './nopage/nopage';
 import { userData } from './classes/callAPI';
 
 import './app.scss';
+import Postscreen from './postscreen/postscreen';
 
 if (localStorage.jwtToken) {
   const token = localStorage.jwtToken;
@@ -55,11 +56,17 @@ function AppRouter(){
               <Profile />
             </Route>
             <Route path="/profile/edit" component={EditProfile} />
+            <Route path='/post/:postId'>
+              <Home />
+            </Route>
             <Route path='/:profileId'>
               <Profile />
             </Route>
             <Route component={NoPage} />
           </Switch>
+          <Route path='/post/:postId'>
+              <Postscreen />
+          </Route>
         </div>
       </div>
     </Router>

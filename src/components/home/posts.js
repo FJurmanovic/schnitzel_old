@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import {connect, dispatch} from 'react-redux';
-import {Link} from 'react-router-dom';
+import {Link, Switch, Route} from 'react-router-dom';
+import Postscreen from '../postscreen/postscreen';
 
 import axios from 'axios';
 
@@ -164,7 +165,7 @@ class Posts extends Component {
         <div className="posts" onScroll={this.handleScroll}>
         { this.state.posts.map((post, key) => {
             return (
-              
+            <>
             <React.Fragment key={key}>
             <>
             {post.type == "post" &&
@@ -179,6 +180,8 @@ class Posts extends Component {
                 }
               </div>
               <div>Posted on: {this.formatDate(post.createdAt)}</div>
+              
+              <div><Link to={location => `/post/${post.id}`}>More</Link></div>
               <hr />
             </div>
             }
@@ -203,12 +206,14 @@ class Posts extends Component {
                 }
               </div>
               <div>Posted on: {this.formatDate(post.createdAt)}</div>
+              
+              <div><Link to={location => `/post/${post.id}`}>More</Link></div>
               <hr />
             </div>
             }
             </>
             </React.Fragment>
-            
+            </>
             )
         })
         }
