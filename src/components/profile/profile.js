@@ -216,7 +216,6 @@ class Profile extends Component {
                 }
               }
             }
-            
         
       }
     
@@ -374,6 +373,7 @@ class Profile extends Component {
           }
         )
       }
+
 
       removeFromFollower(id) {
         event.preventDefault()

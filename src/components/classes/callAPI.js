@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, GET_POSTS, SET_FOLLOWERS } from "../../actions";
+import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, SET_COMMENTED, GET_POSTS, SET_FOLLOWERS } from "../../actions";
 
 export const getHostname = () => {
     const port = ":8080";
@@ -119,19 +119,55 @@ export const createPost = (post, history) => dispatch => {
         );
 };
 
+export const newComment = (comment, history) => dispatch => {
+    axios
+        .post(getHostname() + 'api/post/newComment', comment)
+        .then(res => {
+            dispatch({
+                type: SET_COMMENTED
+            })
+        })
+        .catch(err =>
+            dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+            })
+        );
+};
+
 export const followUser = (idUser, id) => {
     return axios
         .get(getHostname() + 'api/user/follow', { params: {idUser: idUser, id: id}})
 };
 
-export const addPoint = (token, id) => {
+export const addPoint = (token, id, type) => {
     return axios
-        .get(getHostname() + 'api/post/addPoint', { headers: {token: token}, params: {id: id}})
+        .get(getHostname() + 'api/post/addPoint', { headers: {token: token}, params: {id: id, type: type}})
 };
 
-export const removePoint = (token, id) => {
+export const removePoint = (token, id, type) => {
     return axios
-        .get(getHostname() + 'api/post/removePoint', { headers: {token: token}, params: {id: id}})
+        .get(getHostname() + 'api/post/removePoint', { headers: {token: token}, params: {id: id, type: type}})
+};
+
+export const addPointToComment = (token, id, type, commentId) => {
+    return axios
+        .get(getHostname() + 'api/post/addPoint', { headers: {token: token}, params: {id: id, type: type, commentId: commentId}})
+};
+
+export const removePointToComment = (token, id, type, commentId) => {
+    return axios
+        .get(getHostname() + 'api/post/removePoint', { headers: {token: token}, params: {id: id, type: type, commentId: commentId}})
+};
+
+export const addPointToReply = (token, id, type, commentId, replyId) => {
+    return axios
+        .get(getHostname() + 'api/post/addPoint', { headers: {token: token}, params: {id: id, type: type, commentId: commentId, replyId: replyId}})
+};
+
+export const removePointToReply = (token, id, type, commentId, replyId) => {
+    return axios
+        .get(getHostname() + 'api/post/removePoint', { headers: {token: token}, params: {id: id, type: type, commentId: commentId, replyId: replyId}})
 };
 
 

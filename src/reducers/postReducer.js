@@ -1,7 +1,8 @@
-import { SET_POSTED, UNSET_POSTED, GET_POSTS } from "../actions/index";
+import { SET_POSTED, UNSET_POSTED, GET_POSTS, SET_COMMENTED } from "../actions/index";
 
 const initialState = {
-    isPosted: false
+    isPosted: false,
+    isCommented: false
   };
   
   export default function(state = initialState, action) {
@@ -10,6 +11,11 @@ const initialState = {
             return {
                 ...state,
                 isPosted: true,
+            };
+        case SET_COMMENTED:
+            return {
+                ...state,
+                isCommented: true,
             };
         case UNSET_POSTED:
             return {

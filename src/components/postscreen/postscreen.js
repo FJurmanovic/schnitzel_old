@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {Link, withRouter} from 'react-router-dom';
 
+import Comment from './comment';
+
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
-import {getPostById} from '../classes/callAPI';
+import {getPostById, newComment, addPointToComment, removePointToComment} from '../classes/callAPI';
 
 import './postscreen.scss';
 
@@ -19,6 +21,7 @@ class Postscreen extends Component {
          
         this.goBack = this.goBack.bind(this);
         this.stayHere = this.stayHere.bind(this);
+        this.addPoint = this.addPoint.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -26,15 +29,27 @@ class Postscreen extends Component {
             this.props.history.push("/");
         } else {
             const { user } = props.auth;
+            const comment = props.post.isCommented;
 
-            this.setState({
-            userdata: user,
-            token: localStorage.jwtToken,
-            posts: {}
-            })    
-            getPostById(localStorage.jwtToken, this.props.match.params.postId).then(res => {
-            this.setState({post: res.data.post})
-            });
+            if(comment){
+                this.setState({
+                    userdata: user,
+                    isCommented: comment,
+                    token: localStorage.jwtToken,
+                    post: {}
+                }) 
+                getPostById(localStorage.jwtToken, this.props.match.params.postId).then(res => {
+                    this.setState({post: res.data.post})
+                    });
+            } else {
+                this.setState({
+                    userdata: user,
+                    token: localStorage.jwtToken,
+                    post: {}
+                }) 
+            }
+               
+            
         }
     }
 
@@ -86,6 +101,30 @@ class Postscreen extends Component {
           default:
             return (date[0] + " " + date[1]);
         }
+    }
+
+    addPoint(e, id) {
+        e.preventDefault();
+        
+        console.log("this")
+
+        let { post } = this.state
+        let { comments } = this.state.post;
+  
+        if(!comments[id]["isPointed"]){
+            comments[id]["isPointed"] = true;
+            comments[id]["points"].push({"userId": this.state.userdata.id})
+          addPointToComment(this.state.token, post.id, "comment", comments[id].id);
+          post["comments"] = comments;
+          this.setState({post: post})
+        }else{
+            comments[id]["isPointed"] = false;
+            comments[id]["points"].splice(comments[id]["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
+          removePointToComment(this.state.token, post.id, "comment", comments[id].id);
+          post["comments"] = comments;
+          this.setState({post: post})
+        }
+        
       }
 
     render() {
@@ -107,6 +146,21 @@ class Postscreen extends Component {
                             </div>
                             <div>Posted on: {this.formatDate(this.state.post.createdAt)}</div>
                             <hr />
+                            <Comment 
+                                postId = {this.state.post.id}
+                            />
+                            {this.state.post.comments.map((comment, k) => {
+                                return <React.Fragment key={k}>
+                                    <div>{comment.comment}</div>
+                                    <div>Author: <span></span>
+                                        {comment.username == "DeletedUser" 
+                                        ? <span>DeletedUser</span>
+                                        : <Link to={location => `/${comment.username}`}>{comment.username}</Link>
+                                        }
+                                    </div>
+                                    <div>Points: {comment.points.length} <button onClick={(e) => this.addPoint(e, k)}>^</button></div>
+                                </React.Fragment>  
+                            })}
                             </div>
                             }
                             {this.state.post.type == "recipe" &&
@@ -129,6 +183,18 @@ class Postscreen extends Component {
                             </div>
                             <div>Posted on: {this.formatDate(this.state.post.createdAt)}</div>
                             <hr />
+                            {this.state.post.comments.map((comment, k) => {
+                                return <React.Fragment key={k}>
+                                    <div>{comment.comment}</div>
+                                    <div>Author: <span></span>
+                                        {comment.username == "DeletedUser" 
+                                        ? <span>DeletedUser</span>
+                                        : <Link to={location => `/${comment.username}`}>{comment.username}</Link>
+                                        }
+                                    </div>
+                                    <div>Points: {comment.points.length} <button onClick={(e) => this.addPoint(e, k)}>^</button></div>
+                                </React.Fragment>  
+                            })}
                             </div>
                             }
                     </div>
@@ -141,11 +207,13 @@ class Postscreen extends Component {
 }
 
 Postscreen.propTypes = {
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    post: PropTypes.object.isRequired
   };
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    auth: state.auth,
+    post: state.post
 });
 
 export default withRouter(connect(mapStateToProps)(Postscreen));

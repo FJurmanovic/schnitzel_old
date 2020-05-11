@@ -171,13 +171,13 @@ class Posts extends Component {
         posts[id]["isPointed"] = true;
         posts[id]["points"].push({"userId": this.state.userdata.id})
 
-        addPoint(this.state.token, posts[id].id);
+        addPoint(this.state.token, posts[id].id, "post");
         this.setState({posts: posts})
       }else{
         posts[id]["isPointed"] = false;
         posts[id]["points"].splice(posts[id]["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
 
-        removePoint(this.state.token, posts[id].id);
+        removePoint(this.state.token, posts[id].id, "post");
         this.setState({posts: posts})
       }
       
