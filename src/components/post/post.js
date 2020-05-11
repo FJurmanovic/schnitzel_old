@@ -48,7 +48,7 @@ class Post extends Component {
         let isAuthenticated = false;
         if (localStorage.jwtToken) {
           isAuthenticated = true;
-          console.log(isAuthenticated)
+          //console.log(isAuthenticated)
         }
 
         if (!isAuthenticated) { 
@@ -56,7 +56,7 @@ class Post extends Component {
         } else {
             const token = jwt_decode(localStorage.jwtToken).user.id
             
-            console.log(token)
+            //console.log(token)
             this.setState({
                 userdata: this.props.auth.user,
                 token: localStorage.jwtToken

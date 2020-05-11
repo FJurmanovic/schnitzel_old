@@ -40,7 +40,7 @@ class Posts extends Component {
       return axios
       .get(getHostname() + 'api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
       .then(res => {
-          console.log(res.data);
+          //console.log(res.data);
           let posts = res.data.post;
           let postList = this.state.posts;
     
@@ -70,7 +70,7 @@ class Posts extends Component {
         let isAuthenticated = false;
         if (localStorage.jwtToken) {
           isAuthenticated = true;
-          console.log(isAuthenticated)
+          //console.log(isAuthenticated)
         }
 
         if (!isAuthenticated) { 
@@ -80,7 +80,7 @@ class Posts extends Component {
             
             
             this.getPosts(localStorage.jwtToken, 0, 10, '', '')
-            console.log(token)
+            //console.log(token)
             this.setState({
               userdata: this.props.auth,
               token: localStorage.jwtToken
@@ -89,7 +89,7 @@ class Posts extends Component {
     }
 
     componentWillReceiveProps(props) {
-      console.log(props.post.isPosted)
+      //console.log(props.post.isPosted)
       if (!props.auth.isAuthenticated) {
           this.props.history.push("/");
       } else {
@@ -142,7 +142,7 @@ class Posts extends Component {
         }
       }
 
-      console.log(body.offsetHeight)
+      //console.log(body.offsetHeight)
     }
 
     formatDate(datetime, type) {
@@ -176,7 +176,6 @@ class Posts extends Component {
       }else{
         posts[id]["isPointed"] = false;
         posts[id]["points"].splice(posts[id]["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
-        console.log(posts)
 
         removePoint(this.state.token, posts[id].id);
         this.setState({posts: posts})
@@ -190,7 +189,6 @@ class Posts extends Component {
         <div className="posts" onScroll={this.handleScroll}>
         { this.state.posts.map((post, key) => {
             return (
-            <>
             <React.Fragment key={key}>
             <>
             {post.type == "post" &&
@@ -238,7 +236,6 @@ class Posts extends Component {
             }
             </>
             </React.Fragment>
-            </>
             )
         })
         }

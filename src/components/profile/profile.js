@@ -95,11 +95,11 @@ class Profile extends Component {
         flw.following = user.following;
         flw.followers = user.followers;
 
-        console.log(flw.following)
+        //console.log(flw.following)
 
         flw.following.splice(flw.following.findIndex(x => x.userId == userId), 1)
 
-        console.log(flw.following)
+        //console.log(flw.following)
 
         user.followers = flw.followers;
         user.following = flw.following;
@@ -151,7 +151,6 @@ class Profile extends Component {
         let isAuthenticated = false;
         if (localStorage.jwtToken) {
           isAuthenticated = true;
-          console.log(isAuthenticated)
         }
 
         if (!isAuthenticated) { 
@@ -228,7 +227,11 @@ class Profile extends Component {
             const { user } = props.auth
             const id = props.match.params.profileId;     
 
-            if(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId)){
+
+            //console.log(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId ) || this.state.profileId == undefined)
+
+
+            if(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || (id != this.state.profileId && id != undefined)) || this.state.profileId == undefined){
             if(!id){
               if(!!user){
                 this.setState({
@@ -308,7 +311,6 @@ class Profile extends Component {
         const windowBottom = windowHeight + window.pageYOffset;
         if (windowBottom >= docHeight) {
           if(!this.state.last){
-            console.log("in")
             this.getPosts(this.state.id, 10, this.state.lastPost.createdAt, this.state.lastPost.id);
           }
         }
@@ -339,11 +341,11 @@ class Profile extends Component {
           following.map((user) => {
             if(user.userId == this.state.id){
               isFollowing = true;
-              console.log(user.userId)
+              //console.log(user.userId)
             }
           });
         }
-        console.log(isFollowing);
+        //console.log(isFollowing);
         return isFollowing;
       }
 
