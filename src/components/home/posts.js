@@ -8,7 +8,7 @@ import Postscreen from '../postscreen/postscreen';
 
 import axios from 'axios';
 
-import {userData, getUser, getPosts, getHostname} from '../classes/callAPI';
+import {userData, getUser, getPosts, getHostname, addPoint, removePoint} from '../classes/callAPI';
 
 import { UNSET_POSTED } from "../../actions";
 
@@ -22,6 +22,7 @@ class Posts extends Component {
             last: false
         };
         this.handleScroll = this.handleScroll.bind(this);
+        this.addPoint = this.addPoint.bind(this);
     }
 
     getPosts(user, current, fit, lastDate, lastId){
@@ -161,6 +162,28 @@ class Posts extends Component {
       }
     }
 
+    addPoint(e, id) {
+      e.preventDefault();
+
+      let { posts } = this.state;
+
+      if(!posts[id]["isPointed"]){
+        posts[id]["isPointed"] = true;
+        posts[id]["points"].push({"userId": this.state.userdata.id})
+
+        addPoint(this.state.token, posts[id].id);
+        this.setState({posts: posts})
+      }else{
+        posts[id]["isPointed"] = false;
+        posts[id]["points"].splice(posts[id]["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
+        console.log(posts)
+
+        removePoint(this.state.token, posts[id].id);
+        this.setState({posts: posts})
+      }
+      
+    }
+
     render() {
       
       return(
@@ -182,7 +205,7 @@ class Posts extends Component {
                 }
               </div>
               <div>Posted on: {this.formatDate(post.createdAt)}</div>
-              
+              <div>Points: {post.points.length} <button onClick={(e) => this.addPoint(e, key)}>^</button></div>
               <div><Link to={location => `/post/${post.id}`}>More</Link></div>
               <hr />
             </div>
@@ -208,6 +231,7 @@ class Posts extends Component {
                 }
               </div>
               <div>Posted on: {this.formatDate(post.createdAt)}</div>
+              <div>Points: {post.points.length} <button onClick={(e) => this.addPoint(e, key)}>^</button></div>
               <div><Link to={location => `/post/${post.id}`}>More</Link></div>
               <hr />
             </div>

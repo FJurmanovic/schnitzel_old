@@ -159,62 +159,65 @@ class Profile extends Component {
         } else {
             const { user } = this.props.auth
 
-            const id = this.props.match.params.profileId;           
+            const id = this.props.match.params.profileId;        
 
-            if(!id){
-              if(!(!user)){
-                this.setState({
-                  userdata: user,
-                  username: user.username,
-                  token: localStorage.jwtToken,
-                  profileId: user.username,
-                  posts: [],
-                  flw: {
-                    followers: user.followers,
-                    following: user.following
-                  },
-                  id: user.id,
-                  validProfile: true
-                });
-                if(user.id){
-                  this.getPosts(user.id, 10, '', '')
-                }
-              }else{
-                this.setState({
-                  token: localStorage.jwtToken
-                });
-              }
-            }else{
-              dataByUsername(id).then((res)=>{
-                if(res.data.id){
-                  this.getPosts(res.data.id, 10, '', '')
-                  getFollowUsernames(res.data.id).then((ress) => {
-                    let followers = ress.data.followers || [];
-                    let following = ress.data.following || [];
-
-                    followers = followers.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
-                    following = following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
+            if(this.props.match.path != 'post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId)){
+              if(!id){
+                  if(!(!user)){
                     this.setState({
-                      id: res.data.id,
-                      isPrivate: res.data.isPrivate,
+                      userdata: user,
+                      username: user.username,
+                      token: localStorage.jwtToken,
+                      profileId: user.username,
+                      posts: [],
                       flw: {
-                        followers: followers,
-                        following: following
+                        followers: user.followers,
+                        following: user.following
                       },
+                      id: user.id,
                       validProfile: true
-                    })
-                  })
+                    });
+                    if(user.id){
+                      this.getPosts(user.id, 10, '', '')
+                    }
+                  }else{
+                    this.setState({
+                      token: localStorage.jwtToken
+                    });
+                  }
+                }else{
+                  dataByUsername(id).then((res)=>{
+                    if(res.data.id){
+                      this.getPosts(res.data.id, 10, '', '')
+                      getFollowUsernames(res.data.id).then((ress) => {
+                        let followers = ress.data.followers || [];
+                        let following = ress.data.following || [];
+    
+                        followers = followers.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
+                        following = following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
+                        this.setState({
+                          id: res.data.id,
+                          isPrivate: res.data.isPrivate,
+                          flw: {
+                            followers: followers,
+                            following: following
+                          },
+                          validProfile: true
+                        })
+                      })
+                    }
+                  });
+                  this.setState({
+                    userdata: user,
+                    username: user.username,
+                    token: localStorage.jwtToken,
+                    posts: [],
+                    profileId: id
+                  });
                 }
-              });
-              this.setState({
-                userdata: user,
-                username: user.username,
-                token: localStorage.jwtToken,
-                posts: [],
-                profileId: id
-              });
+              }
             }
-          }
+            
         
       }
     
@@ -225,8 +228,9 @@ class Profile extends Component {
             const { user } = props.auth
             const id = props.match.params.profileId;     
 
+            if(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId)){
             if(!id){
-              if(!(!user)){
+              if(!!user){
                 this.setState({
                   userdata: user,
                   username: user.username,
@@ -277,6 +281,7 @@ class Profile extends Component {
                 profileId: id
               });
             }
+          }
         }
     
         if (props.errors) {
@@ -434,6 +439,7 @@ class Profile extends Component {
                   }
                 </div>
                 <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                <div><Link to={location => `/post/${post.id}/1`}>More</Link></div>
                 <hr />
               </div>
               }
@@ -458,6 +464,7 @@ class Profile extends Component {
                   }
                 </div>
                 <div>Posted on: {this.formatDate(post.createdAt)}</div>
+                 <div><Link to={location => `/post/${post.id}/1`}>More</Link></div>
                 <hr />
               </div>
               }

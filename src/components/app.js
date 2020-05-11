@@ -40,7 +40,7 @@ if (localStorage.jwtToken) {
   }
 }
 
-function AppRouter(){
+const AppRouter = () =>{
 
   return(
     <Router>
@@ -56,6 +56,9 @@ function AppRouter(){
               <Profile />
             </Route>
             <Route path="/profile/edit" component={EditProfile} />
+            <Route path='/post/:postId/1'>
+              <Profile />
+            </Route>
             <Route path='/post/:postId'>
               <Home />
             </Route>
@@ -84,7 +87,7 @@ class App extends Component {
     const { user } = this.props.auth
 
     return(
-      <AppRouter />
+      <AppRouter state={this.state} />
     );
     }
 }

@@ -64,7 +64,7 @@ class Postscreen extends Component {
     }
 
     goBack(){
-        this.props.history.push('/');
+        this.props.history.goBack();
     }
 
     stayHere(event){

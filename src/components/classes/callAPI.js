@@ -124,6 +124,17 @@ export const followUser = (idUser, id) => {
         .get(getHostname() + 'api/user/follow', { params: {idUser: idUser, id: id}})
 };
 
+export const addPoint = (token, id) => {
+    return axios
+        .get(getHostname() + 'api/post/addPoint', { headers: {token: token}, params: {id: id}})
+};
+
+export const removePoint = (token, id) => {
+    return axios
+        .get(getHostname() + 'api/post/removePoint', { headers: {token: token}, params: {id: id}})
+};
+
+
 export const unfollowUser = (idUser, id) => {
     return axios
         .get(getHostname() + 'api/user/unfollow', { params: {idUser: idUser, id: id}})
