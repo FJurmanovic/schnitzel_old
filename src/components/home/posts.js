@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import {connect, dispatch} from 'react-redux';
-import {Link, Switch, Route} from 'react-router-dom';
+import {Link, Switch, Route, withRouter} from 'react-router-dom';
 import Postscreen from '../postscreen/postscreen';
+
 
 import axios from 'axios';
 
-import {userData, getHomePosts, getUser, getPosts, getHostname} from '../classes/callAPI';
+import {userData, getUser, getPosts, getHostname} from '../classes/callAPI';
 
 import { UNSET_POSTED } from "../../actions";
 
@@ -133,11 +134,14 @@ class Posts extends Component {
       const html = document.documentElement;
       const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
       const windowBottom = windowHeight + window.pageYOffset;
+
       if (windowBottom >= docHeight) {
         if(!this.state.last){
           this.getPosts(localStorage.jwtToken, 0, 10, this.state.lastPost.createdAt, this.state.lastPost.id);
         }
       }
+
+      console.log(body.offsetHeight)
     }
 
     formatDate(datetime, type) {
@@ -158,8 +162,6 @@ class Posts extends Component {
     }
 
     render() {
-
-      
       
       return(
         <div className="posts" onScroll={this.handleScroll}>
@@ -206,7 +208,6 @@ class Posts extends Component {
                 }
               </div>
               <div>Posted on: {this.formatDate(post.createdAt)}</div>
-              
               <div><Link to={location => `/post/${post.id}`}>More</Link></div>
               <hr />
             </div>
@@ -217,8 +218,8 @@ class Posts extends Component {
             )
         })
         }
-
       </div>
+      
       );
     }
 }
@@ -235,6 +236,6 @@ Posts.propTypes = {
     post: state.post
   });
   
-  export default connect(
+  export default withRouter(connect(
     mapStateToProps
-  )(Posts);
+  )(Posts));

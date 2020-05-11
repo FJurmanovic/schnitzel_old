@@ -139,13 +139,13 @@ export const getFollowUsernames = id => {
         .post(getHostname() + 'api/user/getFollowerUsernames', { id: id })
 };
 
-export const getHomePosts = user => {
+export const getPostById = (user, id) => {
     return axios
-        .get(getHostname() + 'api/post/home', { headers : {token: user }})
-        .then(res => {
-            return res;
-        })
-        .catch(error => {console.log(error)})
+    .get(getHostname() + 'api/post/getPost', { headers : {token: user }, params: {id: id}})
+    .then(res => {
+        return res;
+    })
+    .catch(error => {console.log(error)})
 }
 
 export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => {
