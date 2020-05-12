@@ -12,6 +12,8 @@ class Comment extends Component {
         this.state = {
             commentVal: '',
             postId: '',
+            type: '',
+            commentId: '',
             err: {}
         }
 
@@ -35,7 +37,9 @@ class Comment extends Component {
             this.setState({
                 userdata: this.props.auth.user,
                 token: localStorage.jwtToken,
-                postId: this.props.postId
+                postId: this.props.postId,
+                type: this.props.type || '',
+                commentId: this.props.commentId || ''
             });
         }
     }
@@ -68,13 +72,26 @@ class Comment extends Component {
     handleSubmit(event){
         event.preventDefault();
 
-        const commentObject = {
-            comment: this.state.commentVal,
-            userId: this.state.userdata.id,
-            postId: this.state.postId
+        if(this.state.type == "comment"){
+            const commentObject = {
+                comment: this.state.commentVal,
+                userId: this.state.userdata.id,
+                postId: this.state.postId
+            }
+    
+            this.props.newComment(commentObject, this.props.history);
+        } else if (this.state.type == "reply"){
+            const replyObject = {
+                comment: this.state.commentVal,
+                userId: this.state.userdata.id,
+                postId: this.state.postId,
+                commentId: this.state.commentId
+            }
+
+            this.props.newComment(replyObject, this.props.history);
         }
 
-        this.props.newComment(commentObject, this.props.history);
+        
     }
 
     render() {
