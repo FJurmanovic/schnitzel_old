@@ -36,34 +36,38 @@ class Posts extends Component {
 
         this.setState({posts: postList, lastPost: postList[postList.length-1]})
       });*/
+      if(!this.state.end){
+        return axios
+        .get(getHostname() + 'api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
+        .then(res => {
+            //console.log(res.data);
 
-      return axios
-      .get(getHostname() + 'api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
-      .then(res => {
-          //console.log(res.data);
-          let posts = res.data.post;
-          let postList = this.state.posts;
-    
-          Object.keys(posts).forEach((key) => (
-          postList.push(posts[key])
-          ))
+            if(!res.data.end){
+              let posts = res.data.post;
+              let postList = this.state.posts;
+        
+              Object.keys(posts).forEach((key) => (
+              postList.push(posts[key])
+              ))
 
-          let lastPost = postList[postList.length-1];
+              let lastPost = postList[postList.length-1];
 
-          //console.log(lastPost)
+              //console.log(lastPost)
 
-          this.setState({posts: postList, lastPost: lastPost, last: res.data.last})
-    
-          /*
-          if(!res.data.last){
-              this.getPostss(user, current, fit, lastPost.createdAt, lastPost._id);
-              console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
-          }*/
-    
-          return res;
-      })
-      .catch(error => {console.log(error)})
+              this.setState({posts: postList, lastPost: lastPost, last: res.data.last})
+              /*
+              if(!res.data.last){
+                  this.getPostss(user, current, fit, lastPost.createdAt, lastPost._id);
+                  console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
+              }*/
+            }else{
+              this.setState({end: true})
+            }
       
+            return res;
+        })
+        .catch(error => {console.log(error)})
+      }
     }
     
     componentWillMount() {

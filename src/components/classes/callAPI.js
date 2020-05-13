@@ -223,7 +223,7 @@ export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => {
 
 export const getPostsProfile = (user,  fit, lastDate, lastId) => {
     return axios
-    .get(getHostname() + 'api/post/scrollProfile', { params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
+    .get(getHostname() + 'api/post/scrollProfile', { headers : {token: localStorage.jwtToken }, params: {userId: user, fit: fit, lastDate: lastDate, lastId: lastId}})
     .then(res => {
         return res;
     })

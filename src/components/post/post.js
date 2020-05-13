@@ -13,6 +13,7 @@ class Post extends Component {
         this.state = { 
             titleVal: '',
             typeVal: 'post',
+            privacyVal: 'private',
             descriptionVal: '',
             numIngredientsVal : 1,
             ingredientsVal: [
@@ -32,6 +33,7 @@ class Post extends Component {
          
         this.handleTitle = this.handleTitle.bind(this);
         this.handleType = this.handleType.bind(this);
+        this.handlePrivacy = this.handlePrivacy.bind(this);
         this.handleDescription = this.handleDescription.bind(this);
         this.handleNumIngredients = this.handleNumIngredients.bind(this);
         this.handleIngredientsName = this.handleIngredientsName.bind(this);
@@ -95,6 +97,12 @@ class Post extends Component {
         this.setState({typeVal: event.target.value})
     }
 
+    handlePrivacy(event){
+        event.preventDefault();
+
+        this.setState({privacyVal: event.target.value})
+    }
+
     handleDescription(event){
         event.preventDefault();
 
@@ -149,6 +157,7 @@ class Post extends Component {
 
         const title = this.state.titleVal
         const type = this.state.typeVal
+        const privacy = this.state.privacyVal == "private"
         const description = this.state.descriptionVal
         const categories = this.state.categoriesVal
         const userid = this.state.userdata.id
@@ -161,6 +170,7 @@ class Post extends Component {
                 const postObject = {
                     title: title,
                     type: type,
+                    isPrivate: privacy, 
                     description: description,
                     categories: categories,
                     userId: userid
@@ -180,6 +190,7 @@ class Post extends Component {
                 const postObject = {
                     title: title,
                     type: type,
+                    isPrivate: privacy, 
                     description: description,
                     categories: categories,
                     userId: userid,
@@ -264,6 +275,13 @@ class Post extends Component {
                     <select onChange={this.handleType}>
                         <option value="post">Showoff</option>
                         <option value="recipe">Recipe</option>
+                    </select>
+                    </label>
+                    <br />
+                    <label>Post privacy:<br />
+                    <select onChange={this.handlePrivacy}>
+                        <option value="private">Private</option>
+                        <option value="public">Public</option>
                     </select>
                     </label>
                     <br />

@@ -21,6 +21,7 @@ class Profile extends Component {
             passVal: '',
             err: {},
             last: false,
+            end: false,
             id: '',
             isPrivate: false,
             userdata: {},
@@ -40,7 +41,9 @@ class Profile extends Component {
       }
 
       getPosts(user, fit, lastDate, lastId){
+        if(!this.state.end){
           getPostsProfile(user, fit, lastDate, lastId).then((res) => {
+            if(!res.data.end){
               let posts = res.data.post;
               let postList = this.state.posts;
               
@@ -59,10 +62,14 @@ class Profile extends Component {
                   this.getPostss(user, current, fit, lastPost.createdAt, lastPost._id);
                   console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
               }*/
-        
+            }else{
+              this.setState({end: true});
+            }
               return res;
+              
           })
           .catch(error => {console.log(error)})
+        }
       }
 
       addFollower(userId){
@@ -164,6 +171,7 @@ class Profile extends Component {
               if(!id){
                   if(!(!user)){
                     this.setState({
+                      end: false,
                       userdata: user,
                       username: user.username,
                       token: localStorage.jwtToken,
@@ -181,7 +189,8 @@ class Profile extends Component {
                     }
                   }else{
                     this.setState({
-                      token: localStorage.jwtToken
+                      token: localStorage.jwtToken,
+                      end: false,
                     });
                   }
                 }else{
@@ -196,6 +205,7 @@ class Profile extends Component {
                         following = following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
                         this.setState({
                           id: res.data.id,
+                          end: false,
                           isPrivate: res.data.isPrivate,
                           flw: {
                             followers: followers,
@@ -211,7 +221,8 @@ class Profile extends Component {
                     username: user.username,
                     token: localStorage.jwtToken,
                     posts: [],
-                    profileId: id
+                    profileId: id,
+                    end: false,
                   });
                 }
               }
@@ -234,6 +245,7 @@ class Profile extends Component {
             if(!id){
               if(!!user){
                 this.setState({
+                  end: false,
                   userdata: user,
                   username: user.username,
                   token: localStorage.jwtToken,
@@ -265,6 +277,7 @@ class Profile extends Component {
                     following = following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
 
                     this.setState({
+                      end: false,
                       id: res.data.id,
                       isPrivate: res.data.isPrivate,
                       flw: {
@@ -276,6 +289,7 @@ class Profile extends Component {
                 }
               });
               this.setState({
+                end: false,
                 userdata: user,
                 username: user.username,
                 token: localStorage.jwtToken,
