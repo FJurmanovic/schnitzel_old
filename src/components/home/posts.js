@@ -5,6 +5,7 @@ import {connect, dispatch} from 'react-redux';
 import {Link, Switch, Route, withRouter} from 'react-router-dom';
 import Postscreen from '../postscreen/postscreen';
 
+import {Image} from 'cloudinary-react';
 
 import axios from 'axios';
 
@@ -198,6 +199,7 @@ class Posts extends Component {
             {post.type == "post" &&
               <div className="post">
               {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a> | <Link to={location => `/post/edit/${post.id}`}>Edit post</Link></div>}
+              {post.hasPhoto && <div><Image cloudName="dj7ju136o"  publicId={`post/${post.id}/${post.id}${post.photoExt}`} /></div>}
               <h3>{post.title}</h3>
               <div>{post.description}</div>
               <div>Author: <span></span>

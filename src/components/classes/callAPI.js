@@ -103,10 +103,15 @@ export const register = (user, history) => dispatch => {
         );
 };
 
-export const createPost = (post, history) => dispatch => {
+export const createPost = (post, data, history) => dispatch => {
     axios
         .post(getHostname() + 'api/post/create', post)
-        .then(res => {
+        .then((res) => {
+            console.log(data)
+            let postId = res.data.id
+            if(!!data){
+                uploadImage(data, {"id": postId, "type": "post"})
+            }
             dispatch({
                 type: SET_POSTED
             })
@@ -114,10 +119,21 @@ export const createPost = (post, history) => dispatch => {
         .catch(err =>
             dispatch({
             type: GET_ERRORS,
-            payload: err.response.data
+            payload: err.data
             })
         );
 };
+
+export const uploadImage = (data, headers) => {
+    return axios
+        .post(getHostname() + 'api/post/image-upload', data, {headers: headers})
+        .then(res => {
+            return res;
+        })
+        .catch(err => {
+            return err;
+        });
+}
 
 export const editPost = (post, history) => dispatch => {
     axios

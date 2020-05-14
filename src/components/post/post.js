@@ -3,7 +3,9 @@ import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import {userData, createPost} from '../classes/callAPI';
+const path = require("path"); 
+
+import {userData, createPost, uploadImage} from '../classes/callAPI';
 import {categories, firstUpper} from '../classes/Functions';
 
 
@@ -27,6 +29,7 @@ class Post extends Component {
             categoriesVal: [],
             checkedCats: new Map(),
             isRecipe: false,
+            selectedFile: null,
             err: {}
          };
 
@@ -42,6 +45,7 @@ class Post extends Component {
         this.handleDirections = this.handleDirections.bind(this);
         this.isChecked = this.isChecked.bind(this);
         this.handleCategory = this.handleCategory.bind(this);
+        this.handleImage = this.handleImage.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
@@ -61,7 +65,8 @@ class Post extends Component {
             //console.log(token)
             this.setState({
                 userdata: this.props.auth.user,
-                token: localStorage.jwtToken
+                token: localStorage.jwtToken,
+                selectedFile: null
             });
         }
     }
@@ -74,7 +79,8 @@ class Post extends Component {
             
             this.setState({
             userdata: user,
-            token: localStorage.jwtToken
+            token: localStorage.jwtToken,
+            selectedFile: null
             })
         }
 
@@ -148,6 +154,12 @@ class Post extends Component {
         this.setState({directionsVal: event.target.value});
     }
 
+    handleImage(e){
+        this.setState({
+            selectedFile: e.target.files[0]
+          })
+    }
+
     handleSubmit(event){
         event.preventDefault();
 
@@ -164,10 +176,12 @@ class Post extends Component {
         const ingredients = this.state.ingredientsVal
         const directions = this.state.directionsVal
         
+        let data = new FormData() 
+        data.append('file', this.state.selectedFile)
 
         if(type == "post"){
             if(title.length > 0 && description.length > 0 && userid.length > 0){
-                const postObject = {
+                let postObject = {
                     title: title,
                     type: type,
                     isPrivate: privacy, 
@@ -175,9 +189,22 @@ class Post extends Component {
                     categories: categories,
                     userId: userid
                 }
-        
-                this.props.createPost(postObject, this.props.history);
-                this.setState({enablePost: false});
+                if(this.state.selectedFile == null){
+                    postObject["hasPhoto"] = false
+                    this.props.createPost(postObject, this.props.history)
+                    this.setState({enablePost: false, selectedFile: null});
+                }else{
+                    if(!this.state.selectedFile.name.match(/.(jpg|jpeg|png|gif)$/i)){
+                        console.log("Error: File is not a valid format")
+                    }else{
+                        postObject["hasPhoto"] = true
+                        postObject["photoExt"] = path.extname(this.state.selectedFile.name)
+                        this.props.createPost(postObject, data, this.props.history)
+                        this.setState({enablePost: false, selectedFile: null});
+                    } 
+                }
+                
+                
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
             }if(!(description.length > 0)){
@@ -187,7 +214,7 @@ class Post extends Component {
             }
         }else if(type == "recipe"){
             if(title.length > 0 && description.length > 0 && userid.length > 0 && categories.length > 0 && ingredients.length > 0 && directions.length > 0){
-                const postObject = {
+                let postObject = {
                     title: title,
                     type: type,
                     isPrivate: privacy, 
@@ -197,9 +224,21 @@ class Post extends Component {
                     ingredients: ingredients,
                     directions: directions
                 }
-        
-                this.props.createPost(postObject, this.props.history);
-                this.setState({enablePost: false});
+                if(this.state.selectedFile == null){
+                    postObject["hasPhoto"] = false
+                    this.props.createPost(postObject, this.props.history)
+                    this.setState({enablePost: false, selectedFile: null});
+                }else{
+                    if(!this.state.selectedFile.name.match(/.(jpg|jpeg|png|gif)$/i)){
+                        console.log("Error: File is not a valid format")
+                    }else{
+                        postObject["hasPhoto"] = true
+                        postObject["photoExt"] = path.extname(this.state.selectedFile.name)
+                        this.props.createPost(postObject, data, this.props.history)
+                        this.setState({enablePost: false, selectedFile: null});
+                    }
+                    
+                }
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
             }if(!(description.length > 0)){
@@ -214,6 +253,7 @@ class Post extends Component {
                 console.log("Error: Directions is blank")
             }
         }
+
         
     }
 
@@ -285,6 +325,10 @@ class Post extends Component {
                     </select>
                     </label>
                     <br />
+                    <label>Image:<br />
+                    <input type="file" onChange= {this.handleImage} />
+                    </label>
+                    <br />
                     <label>Category:<br />
                         {categories.map((category, key) => {
                             return <React.Fragment key={key}>
@@ -339,5 +383,5 @@ Post.propTypes = {
   
   export default connect(
     mapStateToProps,
-    { createPost }
+    { createPost, uploadImage }
   )(Post);

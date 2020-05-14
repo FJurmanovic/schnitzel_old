@@ -30,6 +30,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "cloudinary-react": "^1.5.0",
     "is-empty": "^1.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

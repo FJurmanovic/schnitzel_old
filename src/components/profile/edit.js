@@ -7,7 +7,11 @@ import jwt_decode from "jwt-decode";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
-import { deactivateUser, userData, editUser, setAuthToken} from '../classes/callAPI';
+import {Image} from 'cloudinary-react';
+
+const path = require("path");
+
+import { deactivateUser, userData, editUser, setAuthToken, uploadImage } from '../classes/callAPI';
 import store from '../store';
 
 import axios from 'axios';
@@ -27,7 +31,9 @@ class EditProfile extends Component {
             editEmail: false,
             editPassword: false,
             editUsername: false,
-            editPrivacy: false
+            editPrivacy: false,
+            editAvatar: false,
+            selectedFile: null
         };
         
         
@@ -36,6 +42,7 @@ class EditProfile extends Component {
         this.handlePass = this.handlePass.bind(this);
         this.handlePass2 = this.handlePass2.bind(this);
         this.handlePrivacy = this.handlePrivacy.bind(this);
+        this.handleImage = this.handleImage.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
       }
 
@@ -60,6 +67,7 @@ class EditProfile extends Component {
                 userVal: user.username,
                 emailVal: user.email,
                 passVal: '',
+                selectedFile: null,
                 token: localStorage.jwtToken,
                 deactivate: false,
               })
@@ -97,6 +105,9 @@ class EditProfile extends Component {
             emailVal: user.email,
             passVal: '',
             token: localStorage.jwtToken,
+            hasPhoto: user.hasPhoto || false,
+            photoExt: user.photoExt || false,
+            selectedFile: null,
             deactivate: false,
           });
           if(user.isPrivate){
@@ -165,6 +176,14 @@ class EditProfile extends Component {
           if(this.state.editPrivacy){
             editObject.isPrivate = isPrivate
           }
+          if(this.state.editAvatar){
+            editObject.hasPhoto = true,
+            editObject.photoExt = path.extname(this.state.selectedFile.name)
+
+            let data = new FormData()
+            data.append('file', this.state.selectedFile)
+            uploadImage(data, {"id": this.state.id, "type": "avatar"})
+          }
 
           console.log(editObject)
           this.props.editUser(editObject);
@@ -191,6 +210,12 @@ class EditProfile extends Component {
         this.props.deactivateUser(token);
       }
 
+      handleImage(e){
+        this.setState({
+            selectedFile: e.target.files[0]
+          })
+      }
+
       errorMessages(){
           return(
             <>
@@ -207,6 +232,14 @@ class EditProfile extends Component {
         return (
           <div>
             <form onSubmit={this.handleSubmit}>
+              {this.state.editAvatar
+              ? <label>Image:<br />
+                {this.state.hasPhoto && <Image cloudName="dj7ju136o"  publicId={`avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} />}
+                <input type="file" onChange={this.handleImage} />
+                </label>
+              : <span><a href="#" onClick={() => {this.setState({editAvatar: true})}}>Edit profile picture</a></span>
+              }
+                <br />
               {this.state.editUsername 
               ? <label>Username:<br />
                 <input type="text" value={this.state.userVal} onChange={this.handleUsername} /> <a href="#" onClick={() => {this.setState({editUsername: false})}}>Cancel</a>
@@ -242,7 +275,7 @@ class EditProfile extends Component {
 
               }
                 <br />
-              {(this.state.editUsername || this.state.editEmail || this.state.editPassword || this.state.editPrivacy) && 
+              {(this.state.editUsername || this.state.editEmail || this.state.editPassword || this.state.editPrivacy || this.state.editAvatar) && 
                 <input type="submit" value="Submit" />
               }
 
