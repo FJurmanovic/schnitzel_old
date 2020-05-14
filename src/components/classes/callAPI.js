@@ -119,6 +119,22 @@ export const createPost = (post, history) => dispatch => {
         );
 };
 
+export const editPost = (post, history) => dispatch => {
+    axios
+        .post(getHostname() + 'api/post/edit', post)
+        .then(res => {
+            dispatch({
+                type: SET_POSTED
+            })
+        })
+        .catch(err =>
+            dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+            })
+        );
+};
+
 export const newComment = (comment, history) => dispatch => {
     axios
         .post(getHostname() + 'api/post/newComment', comment)
@@ -189,6 +205,15 @@ export const getFollowUsernames = id => {
 export const getPostById = (user, id) => {
     return axios
     .get(getHostname() + 'api/post/getPost', { headers : {token: user }, params: {id: id}})
+    .then(res => {
+        return res;
+    })
+    .catch(error => {console.log(error)})
+}
+
+export const getPostForEdit = (user, id) => {
+    return axios
+    .get(getHostname() + 'api/post/getPostForEdit', { headers : {token: user }, params: {id: id}})
     .then(res => {
         return res;
     })

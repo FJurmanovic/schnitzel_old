@@ -197,7 +197,7 @@ class Posts extends Component {
             <>
             {post.type == "post" &&
               <div className="post">
-              {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a></div>}
+              {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a> | <Link to={location => `/post/edit/${post.id}`}>Edit post</Link></div>}
               <h3>{post.title}</h3>
               <div>{post.description}</div>
               <div>Author: <span></span>
@@ -216,7 +216,7 @@ class Posts extends Component {
             <>
             {post.type == "recipe" &&
             <div className="post">
-              {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a></div>}
+              {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a> | <Link to={location => `/post/edit/${post.id}`}>Edit post</Link></div>}
               <h3>{post.title}</h3>
               <div>{post.description}</div>
               <div>{post.ingredients.map((ingredient, j) => {

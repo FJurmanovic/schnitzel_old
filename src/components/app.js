@@ -12,6 +12,7 @@ import Login from './login/login';
 import Register from './register/register';
 import Profile from './profile/profile';
 import EditProfile from './profile/edit';
+import EditPost from './post/editpost';
 import Navbar from './navbar/navbar';
 import NoPage from './nopage/nopage';
 
@@ -56,10 +57,13 @@ const AppRouter = () =>{
               <Profile />
             </Route>
             <Route path="/profile/edit" component={EditProfile} />
+            <Route path="/post/edit/:postId">
+              <EditPost />
+            </Route>
             <Route path='/post/:postId/1'>
               <Profile />
             </Route>
-            <Route path='/post/:postId'>
+            <Route exact path='/post/:postId'>
               <Home />
             </Route>
             <Route path='/:profileId'>
@@ -67,7 +71,10 @@ const AppRouter = () =>{
             </Route>
             <Route component={NoPage} />
           </Switch>
-          <Route path='/post/:postId'>
+          <Route exact path='/post/:postId'>
+              <Postscreen />
+          </Route>
+          <Route path='/post/:postId/1'>
               <Postscreen />
           </Route>
         </div>

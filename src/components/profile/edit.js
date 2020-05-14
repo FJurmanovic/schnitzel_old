@@ -43,7 +43,7 @@ class EditProfile extends Component {
         let isAuthenticated = false;
         if (localStorage.jwtToken) {
           isAuthenticated = true;
-          console.log(isAuthenticated)
+          //console.log(isAuthenticated)
         }
 
         if (!isAuthenticated) { 
@@ -149,6 +149,7 @@ class EditProfile extends Component {
         if((pass === pass2 && pass.length > 6) || !this.state.editPassword || (this.state.editUsername && username.length > 0)){
           let editObject = 
           {   
+            token: this.state.token,
             id: this.state.id
           };
 

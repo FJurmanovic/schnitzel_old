@@ -43,6 +43,10 @@ class Postscreen extends Component {
                     post: {},
                 }) 
                 getPostById(localStorage.jwtToken, this.props.match.params.postId).then(res => {
+                    if (!!res.data.message){
+                        this.props.history.goBack();
+                    }
+
                     let { post } = res.data
                     let { comments } = post
                     comments.map((comment, key) => {
@@ -77,6 +81,10 @@ class Postscreen extends Component {
             this.props.history.push("/");
         } else {
             getPostById(localStorage.jwtToken, this.props.match.params.postId).then(res => {
+                if (!!res.data.message){
+                    this.props.history.goBack();
+                }
+                
                 let { post } = res.data
                 let { comments } = post
                 comments.map((comment, key) => {
