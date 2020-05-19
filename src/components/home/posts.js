@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import {connect, dispatch} from 'react-redux';
@@ -15,7 +15,7 @@ import {userData, getUser, getPosts, getHostname, addPoint, removePoint} from '.
 import { UNSET_POSTED } from "../../actions";
 
 
-class Posts extends Component {
+class Posts extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
@@ -168,7 +168,7 @@ class Posts extends Component {
       }
     }
 
-    addPoint(e, id) {
+    addPoint (e, id) {
       e.preventDefault();
 
       let { posts } = this.state;
@@ -195,7 +195,7 @@ class Posts extends Component {
         <div className="posts" onScroll={this.handleScroll}>
         { this.state.posts.map((post, key) => {
             return (
-              <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={this.addPoint} authUser={this.props.auth.user.id} />
+              <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)} authUser={this.props.auth.user.id} from="home" />
             )
         })
         }

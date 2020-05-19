@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 
 import { Link, withRouter } from "react-router-dom";
 
+import {Post} from '../../elements/post';
+
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
 import axios from 'axios';
 
-import { removePost, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile } from '../classes/callAPI';
+import { removePost, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile, addPoint, removePoint } from '../classes/callAPI';
 
 
 class Profile extends Component {
@@ -37,6 +39,7 @@ class Profile extends Component {
         this.checkFollowing = this.checkFollowing.bind(this);
         this.removeFromFollower = this.removeFromFollower.bind(this);
         this.removeFromFollowing = this.removeFromFollowing.bind(this);
+        this.addPoint = this.addPoint.bind(this);
         this.deletePost = this.deletePost.bind(this);
       }
 
@@ -435,64 +438,25 @@ class Profile extends Component {
         );
       }
 
-      showPosts() {
-        return(
-          <div className="posts" onScroll={this.handleScroll}>
-          { this.state.posts.map((post, key) => {
-              return (
-                
-              <React.Fragment key={key}>
-              <>
-              {post.type == "post" &&
-                <div className="post">
-                {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a></div>}
-                <h3>{post.title}</h3>
-                <div>{post.description}</div>
-                <div>Author: <span></span>
-                  {post.username == "DeletedUser" 
-                  ? <span>DeletedUser</span>
-                  : <Link to={location => `/${post.username}`}>{post.username}</Link>
-                  }
-                </div>
-                <div>Posted on: {this.formatDate(post.createdAt)}</div>
-                <div><Link to={location => `/post/${post.id}/1`}>More</Link></div>
-                <hr />
-              </div>
-              }
-              </>
-              <>
-              {post.type == "recipe" &&
-              <div className="post">
-                {(this.state.userdata.id == post.userId || this.props.auth.user.id == post.userId) && <div><a href="">Delete post</a></div>}
-                <h3>{post.title}</h3>
-                <div>{post.description}</div>
-                <div>{post.ingredients.map((ingredient, j) => {
-                  return <React.Fragment key={j}>
-                    <span>{ingredient.name}</span><span>{ingredient.value}</span><span>{ingredient.unit}</span>
-                  </React.Fragment>
-                  })}
-                </div>
-                <div>{post.directions}</div>
-                <div>Author: <span></span>
-                  {post.username == "DeletedUser" 
-                  ? <span>DeletedUser</span>
-                  : <Link to={location => `/${post.username}`}>{post.username}</Link>
-                  }
-                </div>
-                <div>Posted on: {this.formatDate(post.createdAt)}</div>
-                 <div><Link to={location => `/post/${post.id}/1`}>More</Link></div>
-                <hr />
-              </div>
-              }
-              </>
-              </React.Fragment>
-              
-              )
-          })
-          }
+      addPoint (e, id) {
+        e.preventDefault();
   
-        </div>
-        );
+        let { posts } = this.state;
+  
+        if(!posts[id]["isPointed"]){
+          posts[id]["isPointed"] = true;
+          posts[id]["points"].push({"userId": this.state.userdata.id})
+  
+          addPoint(this.state.token, posts[id].id, "post");
+          this.setState({posts: posts})
+        }else{
+          posts[id]["isPointed"] = false;
+          posts[id]["points"].splice(posts[id]["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
+  
+          removePoint(this.state.token, posts[id].id, "post");
+          this.setState({posts: posts})
+        }
+        
       }
 
       render() {
@@ -516,7 +480,14 @@ class Profile extends Component {
                 </Link>
                 <div>
                   <h1>Your posts: </h1>
-                  {this.showPosts()}
+                  <div className="posts" onScroll={this.handleScroll}>
+                    { this.state.posts.map((post, key) => {
+                        return (
+                          <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                        )
+                      })
+                    }
+                  </div>
                 </div>
               </>
             : <>
@@ -526,7 +497,14 @@ class Profile extends Component {
                       <button onClick={this.handleUnfollowButton}>Unfollow</button>
                       <div>
                         <h1>{this.state.profileId}</h1>
-                        {this.showPosts()}
+                        <div className="posts" onScroll={this.handleScroll}>
+                          { this.state.posts.map((post, key) => {
+                              return (
+                                <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                              )
+                            })
+                          }
+                        </div>
                       </div>
                     </>
                   : <>
@@ -534,7 +512,14 @@ class Profile extends Component {
                       <div>
                         <h1>{this.state.profileId}</h1>
                         {!(this.state.isPrivate) &&
-                          this.showPosts()
+                          <div className="posts" onScroll={this.handleScroll}>
+                          { this.state.posts.map((post, key) => {
+                              return (
+                                <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                              )
+                            })
+                          }
+                        </div>
                         }
                       </div>
                     </>
