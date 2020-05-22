@@ -121,45 +121,45 @@ class Register extends Component {
 
         return (
           <div>
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} className="col-7 mx-auto text-center f4">
                 <label>Username:<br />
-                  <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} />
+                  <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} className="width-full f5 py-2" />
                     { this.props.err.type == 'username' 
                         ?   <div>Username is already registered</div>
                         :   <br />
                     }
                 </label>
                 <label>Email:<br />
-                  <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
+                  <input type="email" value={this.state.emailVal} onChange={this.handleEmail} className="width-full f5 py-2" />
                     { this.props.err.type == 'email' 
                         ?   <div>Email is already registered</div>
                         :   <br />
                     }
                 </label>
                 <label>Confirm Email:<br />
-                  <input type="email" value={this.state.email2Val} onChange={this.handleEmail2} />
+                  <input type="email" value={this.state.email2Val} onChange={this.handleEmail2} className="width-full f5 py-2" />
                     { this.state.mailsMatch === false 
                         ?   <div>Please make sure you entered correct emails.</div>
                         :   <br />
                     }
                 </label>
                 <label>Password:<br />
-                <input type="password" value={this.state.passVal} onChange={this.handlePass} />
+                <input type="password" value={this.state.passVal} onChange={this.handlePass} className="width-full f5 py-2" />
                 </label>
                 <br />
                 <label>Confirm Password:<br />
-                  <input type="password" value={this.state.pass2Val} onChange={this.handlePass2} />
+                  <input type="password" value={this.state.pass2Val} onChange={this.handlePass2} className="width-full f5 py-2" />
                     { this.state.passMatch === false
                         ?   <div>Please make sure you entered correct passwords.</div>
                         :   <br />
                     }
                 </label>
                 <label>Profile privacy:<br />
-                  <label>Private <input type="radio" value="private" checked={this.state.privacy === "private"} onChange={this.handlePrivacy}/></label>
-                  <label>Public <input type="radio" value="public" checked={this.state.privacy === "public"} onChange={this.handlePrivacy}/></label>
+                  <label className="mx-2">Private <input type="radio" value="private" checked={this.state.privacy === "private"} onChange={this.handlePrivacy}/></label>
+                  <label className="mx-2">Public <input type="radio" value="public" checked={this.state.privacy === "public"} onChange={this.handlePrivacy}/></label>
                   <br />
                 </label>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Register" className="width-full f3 btn btn-blue-transparent border-blue" />
             </form>
             { this.state.succRegister === true &&
                 <div>Succesfully registred</div>

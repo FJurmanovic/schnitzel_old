@@ -7,6 +7,10 @@ import { logout } from '../classes/callAPI';
 
 
 class Navbar extends React.Component {
+    detailsClose() {
+      let profile = document.getElementById("profile");
+      profile.removeAttribute("open");
+    }
 
     render() {
       const { user } = this.props.auth
@@ -28,13 +32,13 @@ class Navbar extends React.Component {
 
       const loggedLink = (
         <div className="header-item">
-          <details className="header-dropdown">
+          <details className="header-dropdown" id="profile">
             <summary className="btn btn-default px-7 header-button">{user.username}</summary>
             <ul className="header-dropdown-menu dropdown-menu-dark">
-              <Link to="/profile" className="dropdown-item">View Profile</Link>
-              <Link to="/profile/edit" className="dropdown-item">Edit Profile</Link>
+              <Link to="/profile" className="dropdown-item" onClick={() => this.detailsClose()}>View Profile</Link>
+              <Link to="/profile/edit" className="dropdown-item" onClick={() => this.detailsClose()}>Edit Profile</Link>
               <li className="dropdown-divider"/>
-              <Link to="/profile/edit" className="dropdown-item">Logout</Link>
+              <Link to="/logout" className="dropdown-item" onClick={() => this.detailsClose()}>Logout</Link>
             </ul>
           </details>
         </div>

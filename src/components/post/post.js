@@ -307,22 +307,22 @@ class Post extends Component {
         <>
             {this.state.enablePost
             ?   
-            <>
-                <button className="btn btn-link float-right" onClick={() => this.setState({enablePost: false})}>Cancel</button>
-                <form onSubmit={this.handleSubmit}>
+            <div>
+                <button className="btn btn-link float-right mr-9 mt-n3" onClick={() => this.setState({enablePost: false})}>Cancel</button>
+                <form onSubmit={this.handleSubmit} className="col-7 mx-auto">
                     <label>Title:<br />
-                    <input type="text" value={this.state.titleVal} onChange={this.handleTitle} />
+                    <input type="text" value={this.state.titleVal} onChange={this.handleTitle} className="width-full py-3 f4" />
                     </label>
                     <br />
                     <label>Type:<br />
-                    <select onChange={this.handleType}>
+                    <select onChange={this.handleType} className="width-full py-3 f4">
                         <option value="post">Showoff</option>
                         <option value="recipe">Recipe</option>
                     </select>
                     </label>
                     <br />
                     <label>Post privacy:<br />
-                    <select onChange={this.handlePrivacy}>
+                    <select onChange={this.handlePrivacy} className="width-full py-3 f4">
                         <option value="private">Private</option>
                         <option value="public">Public</option>
                     </select>
@@ -332,7 +332,7 @@ class Post extends Component {
                     <input type="file" onChange= {this.handleImage} />
                     </label>
                     <br />
-                    <label>Category:<br />
+                    <label className="f4">Category:<br /> 
                         {categories.map((category, key) => {
                             return <React.Fragment key={key}>
                                 <label><input type="checkbox" name={category} checked={this.state.categoriesVal.filter(x => x == category)[0]} onChange={this.handleCategory} value={category} /> {firstUpper(category)} </label>
@@ -345,6 +345,7 @@ class Post extends Component {
                     <textarea 
                         onChange={this.handleDescription}
                         value={this.state.descriptionVal}
+                        className="width-full py-3 f4"
                     />
                     </label>
                     <br />
@@ -363,10 +364,10 @@ class Post extends Component {
                         <br />
                     </>
                     }
-                    <input type="submit" value="Submit" />
+                    <input type="submit" value="Submit" className="btn btn-blue width-full" />
                 </form>
-            </>
-            :   <button className="btn" onClick={() => this.setState({enablePost: true})}>New Post</button>
+            </div>
+            :   <button className="btn btn-blue-transparent d-block width-full py-4" onClick={() => this.setState({enablePost: true})}>New Post</button>
             } 
         </>
         

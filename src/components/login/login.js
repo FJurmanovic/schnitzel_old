@@ -67,18 +67,18 @@ class Login extends Component {
       render() {
         return (
           <div>
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} className="mx-auto col-7 text-center f4">
                 <label>Email:<br />
-                <input type="email" value={this.state.emailVal} onChange={this.handleEmail} />
+                <input type="email" value={this.state.emailVal} onChange={this.handleEmail} className="width-full f5 py-2" />
                 </label>
                 {this.props.err.type == 'email' && <div>{this.props.err.message}</div>}
                 <br />
                 <label>Password:<br />
-                <input type="password" value={this.state.passVal} onChange={this.handlePass} />
+                <input type="password" value={this.state.passVal} onChange={this.handlePass} className="width-full f5 py-2" />
                 </label>
                 {this.props.err.type == 'password' && <div>{this.props.err.message}</div>}
                 <br />
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Login" className="my-3 width-full btn btn-blue-transparent border-blue" />
             </form>
             
             <div></div>

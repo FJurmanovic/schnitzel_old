@@ -9,6 +9,7 @@ import store from './store';
 
 import Home from './home/home';
 import Login from './login/login';
+import Logout from './logout/logout';
 import Register from './register/register';
 import Profile from './profile/profile';
 import EditProfile from './profile/edit';
@@ -52,7 +53,7 @@ const AppRouter = () =>{
             <Route exact path="/" component={Home} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
-            <Route path="/logout" component={Home} />
+            <Route path="/logout" component={Logout} />
             <Route exact path="/profile">
               <Profile />
             </Route>

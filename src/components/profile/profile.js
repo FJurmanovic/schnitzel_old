@@ -483,7 +483,7 @@ class Profile extends Component {
                   <div className="posts" onScroll={this.handleScroll}>
                     { this.state.posts.map((post, key) => {
                         return (
-                          <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                          <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                         )
                       })
                     }
@@ -500,7 +500,7 @@ class Profile extends Component {
                         <div className="posts" onScroll={this.handleScroll}>
                           { this.state.posts.map((post, key) => {
                               return (
-                                <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                                <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                               )
                             })
                           }
@@ -515,7 +515,7 @@ class Profile extends Component {
                           <div className="posts" onScroll={this.handleScroll}>
                           { this.state.posts.map((post, key) => {
                               return (
-                                <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                                <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                               )
                             })
                           }

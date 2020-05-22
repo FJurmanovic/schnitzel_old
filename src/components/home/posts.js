@@ -195,7 +195,7 @@ class Posts extends React.Component {
         <div className="posts" onScroll={this.handleScroll}>
         { this.state.posts.map((post, key) => {
             return (
-              <Post post={post} key={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)} authUser={this.props.auth.user.id} from="home" />
+              <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)} authUser={this.props.auth.user.id} from="home" />
             )
         })
         }
