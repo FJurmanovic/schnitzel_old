@@ -306,7 +306,10 @@ class Post extends Component {
         return(
         <>
             {this.state.enablePost
-            ?   <form onSubmit={this.handleSubmit}>
+            ?   
+            <>
+                <button className="btn btn-link float-right" onClick={() => this.setState({enablePost: false})}>Cancel</button>
+                <form onSubmit={this.handleSubmit}>
                     <label>Title:<br />
                     <input type="text" value={this.state.titleVal} onChange={this.handleTitle} />
                     </label>
@@ -362,7 +365,8 @@ class Post extends Component {
                     }
                     <input type="submit" value="Submit" />
                 </form>
-            :   <button onClick={() => this.setState({enablePost: true})}>New Post</button>
+            </>
+            :   <button className="btn" onClick={() => this.setState({enablePost: true})}>New Post</button>
             } 
         </>
         

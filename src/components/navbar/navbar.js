@@ -13,45 +13,42 @@ class Navbar extends React.Component {
 
       const notLoggedLink = (
         <>
-          <li className="auth">
-            <Link to="/login">
+          <div className="header-item">
+            <Link to="/login" className="header-link">
               Login
             </Link>
-          </li>
-          <li className="auth">
-            <Link to="/register">
+          </div>
+          <div className="header-item">
+            <Link to="/register" className="header-link">
               Register
             </Link>
-          </li>
+          </div>
         </>
       )
 
       const loggedLink = (
-        <>
-          <li className="auth">
-            <Link to="/profile">
-              {user.username}
-            </Link>
-          </li>
-          <li className="auth">
-            <Link to="/logout" onClick={this.props.logout}>
-              Logout
-            </Link>
-          </li>
-        </>
+        <div className="header-item">
+          <details className="header-dropdown">
+            <summary className="btn btn-default px-7 header-button">{user.username}</summary>
+            <ul className="header-dropdown-menu dropdown-menu-dark">
+              <Link to="/profile" className="dropdown-item">View Profile</Link>
+              <Link to="/profile/edit" className="dropdown-item">Edit Profile</Link>
+              <li className="dropdown-divider"/>
+              <Link to="/profile/edit" className="dropdown-item">Logout</Link>
+            </ul>
+          </details>
+        </div>
       )
 
     return(
-      <div className="Navigation">
-        <ul>
-          <li>
-            <Link to="../../">
+      <header className="header border-bottom border-black p-5 f4">
+          <div className="header-item--full">
+            <Link to="../../" className="header-link">
               Home
             </Link>
-          </li>
+          </div>
           { this.props.auth.isAuthenticated ? loggedLink : notLoggedLink }
-        </ul>
-      </div>
+      </header>
     );
     }
 }

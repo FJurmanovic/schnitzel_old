@@ -40,7 +40,7 @@ export const Post = (props) => {
                         }
                     </div>
                     <div>Posted on: {formatDate(post.createdAt)}</div>
-                    <div>Points: {post.points.length} <button onClick={(e) => addPoint(e, key)}>^</button></div>
+                    <div>Points: {post.points.length} <button className="btn-icon" onClick={(e) => addPoint(e, key)}><div className="gg-arrow-up p--3"></div></button></div>
                     <div><OpenButton from={from} id={post.id} /></div>
                     <hr />
                 </div>

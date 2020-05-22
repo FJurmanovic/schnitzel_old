@@ -234,31 +234,12 @@ class Postscreen extends Component {
                 <div className='overlay' onClick={this.goBack}>
                     <div className='poston' onClick={this.stayHere}>
                         <Link to='/'>Back</Link>
-                        {this.state.post.type == "post" &&
+                        { !!this.state.post.type  &&
                             <div className="post">
                             {(this.state.userdata.id == this.state.post.userId || this.props.auth.user.id == this.state.post.userId) && <div><a href="">Delete post</a></div>}
                             <h3>{this.state.post.title}</h3>
                             <div>{this.state.post.description}</div>
-                            <div>Author: <span></span>
-                                {this.state.post.username == "DeletedUser" 
-                                ? <span>DeletedUser</span>
-                                : <Link to={location => `/${this.state.post.username}`}>{this.state.post.username}</Link>
-                                }
-                            </div>
-                            <div>Posted on: {this.formatDate(this.state.post.createdAt)}</div>
-                            <hr />
-                            <Comment 
-                                type = "comment"
-                                postId = {this.state.post.id}
-                            />
-                            {this.renderComments()}
-                            </div>
-                            }
-                            {this.state.post.type == "recipe" &&
-                            <div className="post">
-                            {(this.state.userdata.id == this.state.post.userId || this.props.auth.user.id == this.state.post.userId) && <div><a href="">Delete post</a></div>}
-                            <h3>{this.state.post.title}</h3>
-                            <div>{this.state.post.description}</div>
+                            {this.state.post.type == "recipe" && <>
                             <div>{this.state.post.ingredients.map((ingredient, j) => {
                                 return <React.Fragment key={j}>
                                 <span>{ingredient.name}</span><span>{ingredient.value}</span><span>{ingredient.unit}</span>
@@ -266,6 +247,7 @@ class Postscreen extends Component {
                                 })}
                             </div>
                             <div>{this.state.post.directions}</div>
+                            </>}
                             <div>Author: <span></span>
                                 {this.state.post.username == "DeletedUser" 
                                 ? <span>DeletedUser</span>
@@ -280,10 +262,9 @@ class Postscreen extends Component {
                             />
                             {this.renderComments()}
                             </div>
-                            }
+                        }
                     </div>
                 </div>
-                
                 
             </>
         );
