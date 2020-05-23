@@ -6,7 +6,8 @@ const initialState = {};
 
 const middleware = [thunk];
 
-const store = createStore(
+//Creates redux store
+const store = createStore( 
   rootReducer,
   initialState,
   compose(

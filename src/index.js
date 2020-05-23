@@ -6,7 +6,7 @@ import App from './components/App';
 
 import store from './components/store';
 
-
+//Provides redux store to everything under App
 ReactDOM.render(
     <Provider store={store}>
         <App />

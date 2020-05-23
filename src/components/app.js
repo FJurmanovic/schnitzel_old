@@ -27,7 +27,8 @@ if (localStorage.jwtToken) {
   setAuthToken(token);
   const decoded = jwt_decode(token);
   
-  userData(token).then(resp => {
+  //if token is present in localStorage setsAuthToken with it
+  userData(token).then(resp => { //gets data for current user and dispatches it into redux store
     let usrData = resp.data;
     
     store.dispatch(setCurrentUser(usrData));
@@ -36,8 +37,8 @@ if (localStorage.jwtToken) {
   })
 
   const currentTime = Date.now() / 1000; // to get in milliseconds
-  if (decoded.exp < currentTime) {
-    store.dispatch(logout());
+  if (decoded.exp < currentTime) { //If token expires, send back to login
+    store.dispatch(logout()); 
     window.location.href = "./login";
   }
 }

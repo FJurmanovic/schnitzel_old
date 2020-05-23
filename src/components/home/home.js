@@ -18,6 +18,7 @@ class Home extends Component {
     componentWillMount() {
     }
 
+    //If logged in shows feed, else shows welcome page
     render() {
     return(
     <div>
