@@ -160,7 +160,6 @@ class EditProfile extends Component {
         if((pass === pass2 && pass.length > 6) || !this.state.editPassword || (this.state.editUsername && username.length > 0)){
           let editObject = 
           {   
-            token: this.state.token,
             id: this.state.id
           };
 

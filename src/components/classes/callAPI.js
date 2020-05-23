@@ -105,7 +105,7 @@ export const register = (user, history) => dispatch => { //Sends registration da
 
 export const createPost = (post, data, history) => dispatch => { //sends post data to backend and returns postId
     axios
-        .post(getHostname() + 'api/post/create', post)
+        .post(getHostname() + 'api/post/create', post, {headers: {token: localStorage.jwtToken}})
         .then((res) => {
             console.log(data)
             let postId = res.data.id
@@ -137,7 +137,7 @@ export const uploadImage = (data, headers) => { //Sends image data with headers(
 
 export const editPost = (post, history) => dispatch => { //Sends post data that needs to be updated to backend
     axios
-        .post(getHostname() + 'api/post/edit', post)
+        .post(getHostname() + 'api/post/edit', post, {headers: {token: localStorage.jwtToken}})
         .then(res => {
             dispatch({
                 type: SET_POSTED
@@ -153,7 +153,7 @@ export const editPost = (post, history) => dispatch => { //Sends post data that 
 
 export const newComment = (comment, history) => dispatch => { //Sends comment data and postID to backend
     axios
-        .post(getHostname() + 'api/post/newComment', comment)
+        .post(getHostname() + 'api/post/newComment', comment, {headers: {token: localStorage.jwtToken}})
         .then(res => {
             dispatch({
                 type: SET_COMMENTED
@@ -169,7 +169,7 @@ export const newComment = (comment, history) => dispatch => { //Sends comment da
 
 export const followUser = (idUser, id) => { //Sends user id's to backend that adds them to follow list in database
     return axios
-        .get(getHostname() + 'api/user/follow', { params: {idUser: idUser, id: id}})
+        .get(getHostname() + 'api/user/follow', { params: {idUser: idUser, id: id}, headers: {token: localStorage.jwtToken}})
 };
 
 export const addPoint = (token, id, type) => { //Sends token with post id that adds new point to post
@@ -205,7 +205,7 @@ export const removePointToReply = (token, id, type, commentId, replyId) => { // 
 
 export const unfollowUser = (idUser, id) => { //Sends user id's to backend that removes them from follow list in database
     return axios
-        .get(getHostname() + 'api/user/unfollow', { params: {idUser: idUser, id: id}})
+        .get(getHostname() + 'api/user/unfollow', { params: {idUser: idUser, id: id}, headers: {token: localStorage.jwtToken}})
 };
 
 export const removePost = (token, idPost) => { //Sends token with postID that removes post if authenticated
@@ -215,7 +215,7 @@ export const removePost = (token, idPost) => { //Sends token with postID that re
 
 export const getFollowUsernames = id => { //Sends user id and returns followers for that user
     return axios
-        .post(getHostname() + 'api/user/getFollowerUsernames', { id: id })
+        .post(getHostname() + 'api/user/getFollowerUsernames', { id: id }, {headers: {token: localStorage.jwtToken}})
 };
 
 export const getPostById = (user, id) => { //Sends token and postID and returns postdata for that post
@@ -280,7 +280,7 @@ export const logout = () => dispatch => {
 
 export const editUser = (editProps, history) => dispatch => { //Sends edit data for editing current user
     axios
-        .post(getHostname() + 'api/user/edit', editProps)
+        .post(getHostname() + 'api/user/edit', editProps, {headers: {token: localStorage.jwtToken}})
         .then(res => {
             userData(res.data.token).then(resp => {
                 dispatch(setCurrentUser(resp.data));
