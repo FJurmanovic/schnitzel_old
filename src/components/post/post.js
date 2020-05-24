@@ -332,14 +332,17 @@ class Post extends Component {
                     <input type="file" onChange= {this.handleImage} />
                     </label>
                     <br />
-                    <label className="f4">Category:<br /> 
+                    <div className="f4">Category:<br /> 
                         {categories.map((category, key) => {
                             return <React.Fragment key={key}>
-                                <label><input type="checkbox" name={category} checked={this.state.categoriesVal.filter(x => x == category)[0]} onChange={this.handleCategory} value={category} /> {firstUpper(category)} </label>
-                                {((key + 1) % 7) == 0 && <br />}
+                                <div className="btn-checkbox">
+                                    <input type="checkbox" name={category} id={category} checked={this.state.categoriesVal.filter(x => x == category)[0]} onChange={this.handleCategory} value={category} />
+                                    <label htmlFor={category}> {firstUpper(category)}</label>
+                                </div>
+                                
                             </React.Fragment>   
                         })}
-                    </label>
+                    </div>
                     <br />
                     <label>Description:<br />
                     <textarea 
