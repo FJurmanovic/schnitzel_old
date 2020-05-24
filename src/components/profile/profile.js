@@ -7,6 +7,8 @@ import {Post} from '../../elements/post';
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
+import FollowerScreen from './followerscreen';
+
 import axios from 'axios';
 
 import { removePost, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile, addPoint, removePoint } from '../classes/callAPI';
@@ -30,7 +32,9 @@ class Profile extends Component {
             flw: {
               followers: [],
               following: []
-            }
+            },
+            showFollowers: false,
+            showFollowing: false
         };
         this.handleScroll = this.handleScroll.bind(this);
         this.handleFollowButton = this.handleFollowButton.bind(this);
@@ -41,6 +45,7 @@ class Profile extends Component {
         this.removeFromFollowing = this.removeFromFollowing.bind(this);
         this.addPoint = this.addPoint.bind(this);
         this.deletePost = this.deletePost.bind(this);
+        this.exitScreen = this.exitScreen.bind(this);
       }
 
       getPosts(user, fit, lastDate, lastId){
@@ -235,12 +240,29 @@ class Profile extends Component {
     
       componentWillReceiveProps(props) {
         if (!props.auth.isAuthenticated) {
-            this.props.history.push("/");
+            props.history.push("/");
         } else{
             const { user } = props.auth
             const id = props.match.params.profileId;     
 
-
+            if(this.state.profileId != user.username && !id){
+              this.setState({
+                end: false,
+                userdata: user,
+                username: user.username,
+                token: localStorage.jwtToken,
+                profileId: user.username,
+                posts: [],
+                flw: {
+                  followers: user.followers,
+                  following: user.following
+                },
+                id: user.id
+              });
+              if(user.id){
+                this.getPosts(user.id, 10, '', '')
+              }
+            }
             //console.log(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId ) || this.state.profileId == undefined)
 
 
@@ -459,18 +481,27 @@ class Profile extends Component {
         
       }
 
+      exitScreen(e) {
+        e.preventDefault()
+
+        this.setState({
+          showFollowers: false,
+          showFollowing: false
+        })
+      }
+
       render() {
 
         return (
           <div onScroll={this.handleScroll}>
             <div>
-              <ul>
-                <strong>Followers:</strong>
-                {('followers' in this.state.flw) && this.showFollowers()}
+              <ul className="d-inline-block m-3">
+                <button className="btn btn-blue-transparent btn-rounder border-blue d-inline-block" onClick={() => this.setState({showFollowers: true})}>Followers</button>
+                {this.state.showFollowers && <FollowerScreen title="Followers" list={this.state.flw.followers} owner={(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)} exitScreen={this.exitScreen.bind(this)} removeFromFollower={this.removeFromFollower.bind(this)} />}
               </ul>
-              <ul>
-                <strong>Following:</strong>
-                {('following' in this.state.flw) && this.showFollowing()}
+              <ul className="d-inline-block m-3">
+                <button className="btn btn-blue-transparent btn-rounder border-blue" onClick={() => this.setState({showFollowing: true})}>Following</button>
+                {this.state.showFollowing && <FollowerScreen title="Following" list={this.state.flw.following} owner={(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)} exitScreen={this.exitScreen.bind(this)} removeFromFollowing={this.removeFromFollowing.bind(this)}/>}
               </ul>
             </div>
             {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)
@@ -494,7 +525,7 @@ class Profile extends Component {
                 <div>
                   {this.checkFollowing()
                   ? <>
-                      <button onClick={this.handleUnfollowButton}>Unfollow</button>
+                      <button className="btn btn-orange btn-rounder" onClick={this.handleUnfollowButton}>Unfollow</button>
                       <div>
                         <h1>{this.state.profileId}</h1>
                         <div className="posts" onScroll={this.handleScroll}>
@@ -508,7 +539,7 @@ class Profile extends Component {
                       </div>
                     </>
                   : <>
-                      <button onClick={this.handleFollowButton}>Follow</button>
+                      <button className="btn btn-lightgreen btn-rounder" onClick={this.handleFollowButton}>Follow</button>
                       <div>
                         <h1>{this.state.profileId}</h1>
                         {!(this.state.isPrivate) &&
