@@ -3,6 +3,15 @@
 
 body{
     font-family: 'Roboto', sans-serif;
+    .header {
+        
+        .logo{
+            position: absolute;
+            width: 43px;
+            height: 43px;
+            top: 12px
+        }
+    }
     .Navigation {
         position: absolute;
         left: 0;
@@ -36,9 +45,121 @@ body{
             color: #000000;
         }
     }
+
+    .ingredient {
+        .ingr-item {
+            width: 30%;
+            --ingr-val: calc(1.2vw / 3);
+            margin-right: var(--ingr-val);
+            margin-left: var(--ingr-val);
+        }
+        margin-top: 2px;
+        margin-bottom: 6px;
+    }
     
     .container {
         margin-top: 15px;
+        .card, .screen-post {
+            .comment {
+                margin-top: 25px;
+                padding-left: 15px;
+                padding-right: 15px;
+                ul {
+                    list-style-type: none;
+                    margin-left: 20px;
+                    li {
+                        border-left: 1px solid #000000;
+                        padding-left: 20px;
+                        margin-top: 20px;
+                    }
+                }
+            }
+            .top-card {
+                padding-left: unset !important;
+                margin-left: 8px;
+            }
+
+            .card-body, .screen-body {
+                padding: 7px;
+                padding-bottom: 0;
+                .description, .directions {
+                    overflow: hidden;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    margin-top: 2px;
+                    margin-bottom: 2px;
+                }
+
+                .ingredients, .screen-ingredients {
+                    margin-top: 4px;
+                    margin-bottom: 4px;
+
+                    .ingredient-name {
+                        margin-right: 6px;
+                        font-weight: 600;
+                    }
+                    .ingredient-amount {
+                        margin-right: 2px;
+                    }
+                }
+
+                .description, .screen-description{
+                    color: #5f5f5f;
+                }
+
+                .screen-directions, .screen-description {
+                    margin-bottom: 6px;
+                    margin-top: 6px;
+                }
+
+                .btn-icon {
+                    padding: 1px !important;
+                }
+            }
+            
+
+            .card-img-top{
+                padding: 0 !important;
+                border-top-left-radius: 0.5em;
+                border-top-right-radius: 0.5em;
+            }
+            
+                
+            .card-footer {
+                position: relative;
+                bottom: 0;
+                width: 100%;
+                height: 25px;
+                display: block;
+                background: #fbfafa;
+                text-align: center;
+                border-top: 1px solid #e2e2e2;
+                border-bottom-left-radius: calc(.25rem - 1px);
+                border-bottom-right-radius: calc(.25rem - 1px);
+            }
+            .card-image {
+                max-height: 471px;
+                overflow: hidden;
+
+                .card-img-top {
+                    margin: auto; 
+                    min-height: 100%;
+                    min-width: 100%;
+                    left: -100%;
+                    right: -100%;
+                    top: -100%;
+                    bottom: -100%;
+                }
+            }
+        }
+        
+
+        .screen-post {
+            .card-image {
+                max-height: 810px !important;
+            }
+        }
     }
 
     .btn-checkbox {
@@ -71,4 +192,54 @@ body{
        
     }
     
+}
+
+@media only screen and (max-width: 865px){
+    .container {
+        .posts {
+            .card {
+                width: 630px !important;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 630px){
+    .container {
+        .posts {
+            .card {
+                width: 100% !important;
+                border-radius: 0;
+                img {
+                    border-radius: 0;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 475px){
+    .container {
+        .posts {
+            .card {
+                .date {
+                    display: block;
+                    margin-left: 0 !important;
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 275px){
+    .container {
+        .posts {
+            .card {
+                .author {
+                    display: block;
+                    margin-left: 0 !important;
+                }
+            }
+        }
+    }
 }

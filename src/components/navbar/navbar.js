@@ -3,7 +3,16 @@ import { Link, withRouter } from 'react-router-dom'
 import {connect} from 'react-redux';
 import PropTypes from "prop-types";
 
+import { getRandomInt } from '../classes/Functions';
+
 import { logout } from '../classes/callAPI';
+
+const Logo = (props) => {
+  const logos = ["chicken", "hamburger", "beef", "salad"];
+  return(
+    <img src={`api/logos/${logos[getRandomInt(0,3)]}.svg`} className="logo"></img>
+  )
+}
 
 
 class Navbar extends React.Component {
@@ -48,7 +57,7 @@ class Navbar extends React.Component {
       <header className="header border-bottom border-black p-5 f4">
           <div className="header-item--full">
             <Link to="../../" className="header-link">
-              Home
+              <Logo />
             </Link>
           </div>
           { this.props.auth.isAuthenticated ? loggedLink : notLoggedLink }

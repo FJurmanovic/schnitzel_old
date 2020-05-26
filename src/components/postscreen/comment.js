@@ -96,14 +96,15 @@ class Comment extends Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} className="mb-8">
                 <label>New comment: <br />
                     <textarea 
                         onChange={this.handleComment}
                         value={this.state.commentVal}
+                        className="width-full"
                     />
                 </label>
-                <input type="submit" value="Submit" />
+                <input type="submit" value="Submit" className="btn btn-default btn-squared px-6" />
             </form>
         )
     }

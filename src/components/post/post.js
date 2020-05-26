@@ -20,9 +20,9 @@ class Post extends Component {
             numIngredientsVal : 1,
             ingredientsVal: [
                 {
-                    "name": "test",
-                    "amount": 0,
-                    "unit": "gram"
+                    "name": "",
+                    "amount": "",
+                    "unit": ""
                 }
             ],
             directionsVal: '',
@@ -265,15 +265,9 @@ class Post extends Component {
             return (
             <React.Fragment key={i}>
                 <div className="ingredient">
-                    <label>Ingredient: 
-                        <input type="text" value={ingredient.name} onChange={(e) => this.handleIngredientsName(e, i)} />
-                    </label>
-                    <label>Amount: 
-                        <input type="number" value={ingredient.amount} onChange={(e) => this.handleIngredientsAmount(e, i)} />
-                    </label>
-                    <label>Unit:
-                        <input type="text" value={ingredient.unit} onChange={(e) => this.handleIngredientsUnit(e, i)} />
-                    </label>
+                        <input className="ingr-item" type="text" value={ingredient.name} placeholder="Ingredient" onChange={(e) => this.handleIngredientsName(e, i)} />
+                        <input className="ingr-item" type="number" value={ingredient.amount} placeholder="Amount" onChange={(e) => this.handleIngredientsAmount(e, i)} />
+                        <input className="ingr-item" type="text" value={ingredient.unit} placeholder="Unit" onChange={(e) => this.handleIngredientsUnit(e, i)} />
                 </div>
             </React.Fragment>)
         })}
@@ -357,12 +351,13 @@ class Post extends Component {
                         <label>Ingredients:<br /></label>
                         {this.showIngredients()}
                         <br />
-                        <button onClick={this.handleNumIngredients}>Add new ingredient</button><br />
-                        <label>Directions:<br />
-                        <textarea 
-                            onChange={this.handleDirections}
-                            value={this.state.directionsVal}
-                        />
+                        <button className="btn btn-default mt-n4 mb-4" onClick={this.handleNumIngredients}>Add new ingredient</button><br />
+                        <label className="">Directions:<br />
+                            <textarea 
+                                onChange={this.handleDirections}
+                                value={this.state.directionsVal}
+                                className="width-full py-3 f4"
+                            />
                         </label>
                         <br />
                     </>

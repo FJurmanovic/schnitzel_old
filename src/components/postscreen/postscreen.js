@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {Link, withRouter} from 'react-router-dom';
 
+import {Image} from 'cloudinary-react';
 import Comment from './comment';
 
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
-import {getPostById, newComment, addPointToComment, removePointToComment, addPointToReply, removePointToReply} from '../classes/callAPI';
+import {getPostById, newComment, addPoint, removePoint, addPointToComment, removePointToComment, addPointToReply, removePointToReply} from '../classes/callAPI';
 
 import './postscreen.scss';
 
@@ -26,6 +27,7 @@ class Postscreen extends Component {
         this.addPointToReply = this.addPointToReply.bind(this);
         this.renderComments = this.renderComments.bind(this);
         this.openReply = this.openReply.bind(this);
+        this.addPoint = this.addPoint.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -154,54 +156,78 @@ class Postscreen extends Component {
     }
 
     addPointToReply(e, id, replyId) {
-    e.preventDefault();
-    let { post } = this.state
-    let { comments } = post;
-    let { reply } = comments[id]
+        e.preventDefault();
+        let { post } = this.state
+        let { comments } = post;
+        let { reply } = comments[id]
 
-    console.log(id)
+        console.log(id)
 
-    if(!reply[replyId].isPointed){
-        reply[replyId]["isPointed"] = true;
-        reply[replyId]["points"].push({"userId": this.state.userdata.id})
-        addPointToReply(this.state.token, post.id, "reply", comments[id].id, reply[replyId].id);
-        post["comments"] = comments;
-        this.setState({post: post})
-    }else{
-        reply[replyId]["isPointed"] = false;
-        reply[replyId]["points"].splice(reply[replyId]["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
-        removePointToReply(this.state.token, post.id, "reply", comments[id].id, reply[replyId].id);
-        comments[id]["reply"] = reply;
-        post["comments"] = comments;
-        this.setState({post: post})
-    }
+        if(!reply[replyId].isPointed){
+            reply[replyId]["isPointed"] = true;
+            reply[replyId]["points"].push({"userId": this.state.userdata.id})
+            addPointToReply(this.state.token, post.id, "reply", comments[id].id, reply[replyId].id);
+            post["comments"] = comments;
+            this.setState({post: post})
+        }else{
+            reply[replyId]["isPointed"] = false;
+            reply[replyId]["points"].splice(reply[replyId]["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
+            removePointToReply(this.state.token, post.id, "reply", comments[id].id, reply[replyId].id);
+            comments[id]["reply"] = reply;
+            post["comments"] = comments;
+            this.setState({post: post})
+        }
     
     }
+    
+    addPoint (e) {
+        e.preventDefault();
+  
+        let { post } = this.state;
+  
+        if(!post["isPointed"]){
+          post["isPointed"] = true;
+          post["points"].push({"userId": this.state.userdata.id})
+  
+          addPoint(this.state.token, post.id, "post");
+          this.setState({post: post})
+        }else{
+          post["isPointed"] = false;
+          post["points"].splice(post["points"].findIndex(x => x.userId == this.state.userdata.id), 1)
+  
+          removePoint(this.state.token, post.id, "post");
+          this.setState({post: post})
+        }
+        
+      }
 
     renderComments () {
     return <>{this.state.post.comments.map((comment, k) => {
         return <React.Fragment key={k}>
-            <div>{comment.comment}</div>
-            <div>Author: <span></span>
-                {comment.username == "DeletedUser" 
-                ? <span>DeletedUser</span>
-                : <Link to={location => `/${comment.username}`}>{comment.username}</Link>
-                }
+            <div className="comment">
+                <div>{comment.comment}</div>
+                <div>Author: <span></span>
+                    {comment.username == "DeletedUser" 
+                    ? <span>DeletedUser</span>
+                    : <Link to={location => `/${comment.username}`}>{comment.username}</Link>
+                    }
+                </div>
+                <div><span>Points: {comment.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToComment(e, k)}>{!comment.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span> <span><button onClick={(e) => this.openReply(e, k)}>Reply</button></span></div>
+                <ul>{comment.replyOn && <li><Comment type="reply" postId={this.state.post.id} commentId={comment.id} /></li>}
+                {comment.reply.map((repl, r) => {
+                        return <React.Fragment key={r}><li>
+                        <div>{repl.comment}</div>
+                        <div>Author: <span></span>
+                            {repl.username == "DeletedUser" 
+                            ? <span>DeletedUser</span>
+                            : <Link to={location => `/${repl.username}`}>{repl.username}</Link>
+                            }
+                        </div>
+                        <div><span>Points: {repl.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToReply(e, k, r)}>{!repl.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span></div>
+                    </li></React.Fragment> 
+                })}</ul>
+                <hr className="mb-n4" />
             </div>
-            <div><span>Points: {comment.points.length} <button onClick={(e) => this.addPointToComment(e, k)}>^</button></span> <span><button onClick={(e) => this.openReply(e, k)}>Reply</button></span></div>
-            <ul>{comment.replyOn && <li><Comment type="reply" postId={this.state.post.id} commentId={comment.id} /></li>}
-            {comment.reply.map((repl, r) => {
-                    return <React.Fragment key={r}><li>
-                    <div>{repl.comment}</div>
-                    <div>Author: <span></span>
-                        {repl.username == "DeletedUser" 
-                        ? <span>DeletedUser</span>
-                        : <Link to={location => `/${repl.username}`}>{repl.username}</Link>
-                        }
-                    </div>
-                    <div><span>Points: {repl.points.length} <button onClick={(e) => this.addPointToReply(e, k, r)}>^</button></span></div>
-                </li></React.Fragment> 
-            })}</ul>
         </React.Fragment>  
     })}</>
     }
@@ -231,22 +257,24 @@ class Postscreen extends Component {
     render() {
         return (
             <>
+            { !!this.state.post.type  &&
                 <div className='overlay' onClick={this.goBack}>
-                    <div className='poston' onClick={this.stayHere}>
-                        <Link to='/'>Back</Link>
-                        { !!this.state.post.type  &&
-                            <div className="post">
-                            {(this.state.userdata.id == this.state.post.userId || this.props.auth.user.id == this.state.post.userId) && <div><a href="">Delete post</a></div>}
+                    <div className='poston screen-post' onClick={this.stayHere}>
+                             {this.state.post.hasPhoto && <div className="card-image"><Image cloudName="dj7ju136o" className="card-img-top"  publicId={`post/${this.state.post.id}/${this.state.post.id}${this.state.post.photoExt}`} /></div>}
+                            <div className="screen-body">    
+                            {(this.state.userdata.id == this.state.post.userId || this.props.auth.user.id == this.state.post.userId) && <span className="float-right"><a href="">Delete post</a> | <Link to={location => `/post/edit/${this.state.post.id}`}>Edit post</Link></span>}
                             <h3>{this.state.post.title}</h3>
-                            <div>{this.state.post.description}</div>
+                            <div className="screen-description">{this.state.post.description}</div>
                             {this.state.post.type == "recipe" && <>
-                            <div>{this.state.post.ingredients.map((ingredient, j) => {
+                            <div className="screen-ingredients">{this.state.post.ingredients.map((ingredient, j) => {
                                 return <React.Fragment key={j}>
-                                <span>{ingredient.name}</span><span>{ingredient.value}</span><span>{ingredient.unit}</span>
+                                <div className="ingredient">
+                                    <span className="ingredient-name">{ingredient.name}</span><span className="ingredient-amount">{ingredient.amount}</span><span className="ingredient-unit">{ingredient.unit}</span>
+                                </div>
                                 </React.Fragment>
                                 })}
                             </div>
-                            <div>{this.state.post.directions}</div>
+                            <div className="screen-directions">{this.state.post.directions}</div>
                             </>}
                             <div>Author: <span></span>
                                 {this.state.post.username == "DeletedUser" 
@@ -255,6 +283,8 @@ class Postscreen extends Component {
                                 }
                             </div>
                             <div>Posted on: {this.formatDate(this.state.post.createdAt)}</div>
+                           
+                            <div className="f5">Points: {this.state.post.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPoint(e)}>{!this.state.post.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button> <span className="mx-5">Comments: {this.state.post.comments.length}</span></div>
                             <hr />
                             <Comment 
                                 type = "comment"
@@ -262,10 +292,10 @@ class Postscreen extends Component {
                             />
                             {this.renderComments()}
                             </div>
-                        }
+                       
                     </div>
                 </div>
-                
+            }
             </>
         );
     }
