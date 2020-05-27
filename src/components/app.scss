@@ -12,6 +12,11 @@ body{
             top: 12px
         }
 
+        .py-5px {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+
         
     }
     .Navigation {
@@ -192,6 +197,67 @@ body{
             }
         }
        
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1001;
+        background: rgba(0, 0, 0, 0.3);
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+    
+    .poston{
+        z-index: 1005;
+        top: 5%;
+        width: 1080px;
+        padding-bottom: 10px;
+        margin: 25px auto;
+        background: #ffffff;
+        box-shadow: 1px 1px 5px -5px #868686;
+        border-radius: 0.5em;
+    }
+    
+    @media only screen and (max-width: 1145px){
+        .poston {
+            left: 2%;
+            right: 2%;
+            width: 96%;
+            
+            .card-image {
+                --div-width: calc(100vw);
+                width: var(--div-width) - 2%;
+                height: calc(var(--div-width) * 3 / 4);
+            }
+        }
+    }
+    
+    .followers{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1005;
+        width: 300px;
+        height: 300px;
+        margin: 0;
+        background: #ffffff;
+        border: 1px #b8b8b8 solid;
+        border-radius: 0.5em;
+    
+        .title{
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 1px solid #b8b8b8;
+        }
+    
+        li{
+            list-style-type: none;
+        }
     }
     
 }

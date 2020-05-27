@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
 
-import './followerscreen.scss';
-
 const FollowerScreen = (props) => {
     const { title, list, owner, exitScreen, removeFromFollowers, removeFromFollowing } = props;
 

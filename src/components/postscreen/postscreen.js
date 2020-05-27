@@ -9,8 +9,6 @@ import { connect } from 'react-redux';
 
 import {getPostById, newComment, addPoint, removePoint, addPointToComment, removePointToComment, addPointToReply, removePointToReply} from '../classes/callAPI';
 
-import './postscreen.scss';
-
 
 class Postscreen extends Component {
     constructor(props) {

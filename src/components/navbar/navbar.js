@@ -27,12 +27,12 @@ class Navbar extends React.Component {
       const notLoggedLink = (
         <>
           <div className="header-item">
-            <Link to="/login" className="header-link py-2">
+            <Link to="/login" className="header-link py-5px">
               Login
             </Link>
           </div>
           <div className="header-item">
-            <Link to="/register" className="header-link py-2">
+            <Link to="/register" className="header-link py-5px">
               Register
             </Link>
           </div>

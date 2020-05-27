@@ -1,18 +1,16 @@
 import React from 'react';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
-import {connect, dispatch} from 'react-redux';
-import {Link, Switch, Route, withRouter} from 'react-router-dom';
-import Postscreen from '../postscreen/postscreen';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 
 import {Post} from '../../elements/post.js';
 
 import axios from 'axios';
 
-import {userData, getUser, getPosts, getHostname, addPoint, removePoint} from '../classes/callAPI';
+import { getHostname, addPoint, removePoint} from '../classes/callAPI';
 
-import { UNSET_POSTED } from "../../actions";
 
 
 class Posts extends React.Component {

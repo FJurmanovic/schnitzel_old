@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import './home.scss';
 
 import Post from '../post/post';
 import Posts from './posts';
-
-import axios from 'axios';
 
 
 class Home extends Component {

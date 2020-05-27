@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 
 import FollowerScreen from './followerscreen';
 
-import axios from 'axios';
 
 import { removePost, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile, addPoint, removePoint } from '../classes/callAPI';
 
@@ -203,6 +202,11 @@ class Profile extends Component {
                   }
                 }else{
                   dataByUsername(id).then((res)=>{
+                    if(res.data.type == "fetch"){
+                      this.setState({
+                        validProfile: false,
+                      })
+                    }
                     if(res.data.id){
                       this.getPosts(res.data.id, 10, '', '')
                       getFollowUsernames(res.data.id).then((ress) => {
@@ -292,6 +296,11 @@ class Profile extends Component {
               }
             } else {
               dataByUsername(id).then((res)=>{
+                if(res.data.type == "fetch"){
+                  this.setState({
+                    validProfile: false,
+                  })
+                }
                 if(res.data.id){
                   this.getPosts(res.data.id, 10, '', '')
                   getFollowUsernames(res.data.id).then((ress) => {
@@ -493,6 +502,8 @@ class Profile extends Component {
       render() {
 
         return (
+          <>
+          {this.state.validProfile ? 
           <div onScroll={this.handleScroll}>
             <div>
               <ul className="d-inline-block m-3">
@@ -560,8 +571,9 @@ class Profile extends Component {
                 
               </>
             }
-            
           </div>
+          : <div>User could not be found.</div>
+        }</>
         );
       }
 }
