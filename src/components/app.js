@@ -19,7 +19,7 @@ import NoPage from './nopage/nopage';
 
 import { userData } from './classes/callAPI';
 
-import './app.scss';
+//import './app.scss';
 import Postscreen from './postscreen/postscreen';
 
 if (localStorage.jwtToken) {
