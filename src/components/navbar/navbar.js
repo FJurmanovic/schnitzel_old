@@ -10,7 +10,7 @@ import { logout } from '../classes/callAPI';
 const Logo = (props) => {
   const logos = ["chicken", "hamburger", "beef", "salad"];
   return(
-    <img src={`api/logos/${logos[getRandomInt(0,3)]}.svg`} className="logo"></img>
+    <img src={`/api/logos/${logos[getRandomInt(0,3)]}.svg`} className="logo"></img>
   )
 }
 

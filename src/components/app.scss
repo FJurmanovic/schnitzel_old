@@ -128,8 +128,6 @@ body{
 
             .card-img-top{
                 padding: 0 !important;
-                border-top-left-radius: 0.5em;
-                border-top-right-radius: 0.5em;
             }
             
                 
@@ -220,6 +218,10 @@ body{
         background: #ffffff;
         box-shadow: 1px 1px 5px -5px #868686;
         border-radius: 0.5em;
+
+        .card-img-top {
+            width: 100% !important;
+        }
     }
     
     @media only screen and (max-width: 1145px){
