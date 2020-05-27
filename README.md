@@ -20,6 +20,18 @@ Schnitzel frontend is still in the development and changes are certain. Current 
 - Comments (point them, reply to them)
 
 
+Plans for the future
+---------------
+
+Future features are all the things I am planning to add in the future updates:
+
+ - Real time notifications (points, comments, posts, new follower, dm's)
+ - Explore option and search (find new public recipes that are trending (most points in specific time), find new users to follow)
+ - Direct messages
+ - Save posts in collections (cook books)
+ - Dark and light modes
+
+
 Installation
 ------------
 
