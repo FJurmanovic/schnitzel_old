@@ -7,7 +7,7 @@ It is built with [MongoDB](https://www.mongodb.com/) for database, [ExpressJS](h
 
 [Go to Schnitzel backend](https://github.com/Yurma/schnitzel_backend)
 
-### [Live site](https://yurma.wtf/)
+### [Live site](https://schnitzel.yurma.wtf/)
 Features
 --------
 
