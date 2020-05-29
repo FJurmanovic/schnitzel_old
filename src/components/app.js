@@ -16,6 +16,7 @@ import EditProfile from './profile/edit';
 import EditPost from './post/editpost';
 import Navbar from './navbar/navbar';
 import NoPage from './nopage/nopage';
+import Explore from './explore/explore';
 
 import { userData } from './classes/callAPI';
 
@@ -55,6 +56,13 @@ const AppRouter = () =>{
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route path="/logout" component={Logout} />
+            <Route path="/explore/f/:categoryId">
+              <Explore />
+            </Route>
+            <Route path="/explore/f">
+              <Redirect to="/explore" />
+            </Route>
+            <Route path="/explore" component={Explore} />
             <Route exact path="/profile">
               <Profile />
             </Route>
@@ -64,6 +72,10 @@ const AppRouter = () =>{
             </Route>
             <Route path='/post/:postId/1'>
               <Profile />
+            </Route>
+            
+            <Route path='/post/:postId/2'>
+              <Explore />
             </Route>
             <Route exact path='/post/:postId'>
               <Home />
@@ -77,6 +89,9 @@ const AppRouter = () =>{
               <Postscreen />
           </Route>
           <Route path='/post/:postId/1'>
+              <Postscreen />
+          </Route>
+          <Route path='/post/:postId/2'>
               <Postscreen />
           </Route>
         </div>

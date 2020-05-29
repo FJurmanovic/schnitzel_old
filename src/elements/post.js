@@ -8,6 +8,8 @@ const OpenButton = (props) => {
         return <Link to={location => `/post/${props.id}`}>{props.children}</Link>
     } else if (props.from == "profile") {
         return <Link to={location => `/post/${props.id}/1`}>{props.children}</Link>
+    } else if (props.from == "explore") {
+        return <Link to={location => `/post/${props.id}/2`}>{props.children}</Link>
     }
 }
 
@@ -17,7 +19,7 @@ export const Post = (props) => {
     return(
         <React.Fragment key={iter}>
             <>
-                <div className="card col-9 my-4">
+                <div className="card col-9 my-6">
                     {post.hasPhoto && <div className="card-image"><OpenButton from={from} id={post.id}><Image cloudName="dj7ju136o" className="card-img-top"  publicId={`post/${post.id}/${post.id}${post.photoExt}`} /></OpenButton></div>}
                     
                     <div className="f5 pr-5 mb-n3 mt-3 top-card">

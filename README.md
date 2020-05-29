@@ -30,6 +30,7 @@ Future features are all the things I am planning to add in the future updates:
  - Direct messages
  - Save posts in collections (cook books)
  - Dark and light modes
+ - Mobile application (ReactNative)
 
 
 Installation

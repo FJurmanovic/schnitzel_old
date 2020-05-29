@@ -2,7 +2,7 @@ import React from 'react';
 import jwt_decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 
 import {Post} from '../../elements/post.js';
@@ -192,13 +192,19 @@ class Posts extends React.Component {
       
       return(
         <div className="posts" onScroll={this.handleScroll}>
-        { this.state.posts.map((post, key) => {
-            return (
-              <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)} authUser={this.props.auth.user.id} from="home" />
-            )
-        })
-        }
-      </div>
+          { this.state.posts.length > 0 
+          ? <>
+            { this.state.posts.map((post, key) => {
+                return (
+                  <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)} authUser={this.props.auth.user.id} from="home" />
+                )
+              })
+            }
+            { this.state.end && <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div>}
+            </>
+          : <div className="text-center f2">There are no posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div>
+          }
+        </div>
       
       );
     }

@@ -54,23 +54,28 @@ class Navbar extends React.Component {
       )
 
       const loggedLink = (
-        <div className="header-item">
-          <details className="header-dropdown" id="profile">
-            <summary className="btn btn-default px-7 header-button">{user.username}</summary>
-            <ul className="header-dropdown-menu dropdown-menu-dark">
-              <Link to="/profile" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>View Profile</Link>
-              <Link to="/profile/edit" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>Edit Profile</Link>
-              <li className="dropdown-divider"/>
-              <Link to="/logout" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>Logout</Link>
-            </ul>
-          </details>
-        </div>
+        <>
+          <div className="header-item mr-5">
+              <Link to="/explore" className="btn btn-white btn-rounder explore-btn" onClick={() => this.changeLogo()}>Explore</Link>
+          </div>
+          <div className="header-item">
+            <details className="header-dropdown" id="profile">
+              <summary className="btn btn-default px-7 header-button">{user.username}</summary>
+              <ul className="header-dropdown-menu dropdown-menu-dark">
+                <Link to="/profile" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>View Profile</Link>
+                <Link to="/profile/edit" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>Edit Profile</Link>
+                <li className="dropdown-divider"/>
+                <Link to="/logout" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>Logout</Link>
+              </ul>
+            </details>
+          </div>
+        </>
       )
 
     return(
       <header className="header border-bottom border-black p-5 f4">
-          <div className="header-item--full">
-            <Link to="../../" className="header-link" onClick={() => this.changeLogo()}>
+          <div className={this.props.auth.isAuthenticated ? "header-item--full" : "header-item--full"}>
+            <Link to="../../" className="" onClick={() => this.changeLogo()}>
               <Logo change={this.state.changeLogo} />
             </Link>
           </div>
