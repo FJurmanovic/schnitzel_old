@@ -84,6 +84,8 @@ class Explore extends React.Component {
     }
     
     componentWillMount() {
+      const { props } = this
+
         let isAuthenticated = false;
         if (localStorage.jwtToken) {
           isAuthenticated = true;
@@ -101,13 +103,13 @@ class Explore extends React.Component {
                 let partOf = categories.includes(categoryId)
                 if(partOf){
                     category = categoryId
+                    this.getPosts(localStorage.jwtToken, 0, 10, '', '', props.match.params.categoryId, true)
                 }else{
                     props.history.push("/explore")
                 }
-            }
-            if(this.props.match.path == "/explore"){
-                this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
-            }
+            } else if (props.match.path == "/explore") {
+              this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
+            } 
             this.setState({
               userdata: this.props.auth,
               token: localStorage.jwtToken
@@ -115,59 +117,7 @@ class Explore extends React.Component {
         }
     }
 
-    componentWillReceiveProps(props) {
-      //console.log(props.post.isPosted)
-      if (!props.auth.isAuthenticated) {
-          this.props.history.push("/");
-      } else if(props.match.path != "/post/:postId/2") {
-            const { user } = props.auth;
-            let { categoryId } = props.match.params;
-
-            
-            if(this.state.category != categoryId && this.state.path != props.match.path){
-                this.setState({ 
-                    path: "",
-                    posts: [],
-                    end: false
-                })
-            }
-
-            if(!!categoryId) {
-                let partOf = categories.includes(categoryId)
-                if(partOf){
-                    //if(this.state.category != categoryId){
-                        this.getPosts(localStorage.jwtToken, 0, 10, '', '', props.match.params.categoryId, true)
-                    //}
-                    this.setState({
-                        category: categoryId,
-                        path: props.match.path
-                    })
-                    
-                }else{
-                    props.history.push("/explore")
-                }
-            } else {
-                this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
-                this.setState({
-                    path: props.match.path
-                })
-            }
-
-            
-            this.setState({
-                userdata: user,
-                token: localStorage.jwtToken
-            })
-      }
-
-      if (props.errors) {
-          this.setState({
-          err: props.err
-          });
-      }
-
-      return
-    }
+    
 
     componentDidMount() {
       window.addEventListener("scroll", this.handleScroll);
@@ -177,7 +127,65 @@ class Explore extends React.Component {
         window.removeEventListener("scroll", this.handleScroll);
     }
 
+
+    componentDidUpdate(prevProps, prevState) {
+      //console.log(props.post.isPosted
+      const {props} = this;
+      if ((prevProps.match.path !== this.props.match.path || (!!props.match.params.categoryId && (prevProps.match.params.categoryId != props.match.params.categoryId))) && (prevProps.match.path != "/post/:postId/2") || (prevProps.match.path == "/post/:postId/2" && this.state.posts.length < 1 )){
+        if (!props.auth.isAuthenticated) {
+            this.props.history.push("/");
+        } else if(props.match.path != "/post/:postId/2") {
+              const { user } = props.auth;
+              let { categoryId } = props.match.params;
+
+              
+              if(this.state.category != categoryId && this.state.path != props.match.path){
+                  this.setState({ 
+                      path: "",
+                      posts: [],
+                      end: false
+                  })
+              }
+
+              if(!!categoryId) {
+                  let partOf = categories.includes(categoryId)
+                  if(partOf){
+                      //if(this.state.category != categoryId){
+                          this.getPosts(localStorage.jwtToken, 0, 10, '', '', props.match.params.categoryId, true)
+                      //}
+                      this.setState({
+                          category: categoryId,
+                          path: props.match.path
+                      })
+                      
+                  }else{
+                      props.history.push("/explore")
+                  }
+              } else {
+                  this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
+                  this.setState({
+                      path: props.match.path
+                  })
+              }
+
+              
+              this.setState({
+                  userdata: user,
+                  token: localStorage.jwtToken
+              })
+        }
+
+        if (props.errors) {
+            this.setState({
+            err: props.err
+            });
+        }
+
+      }
+    }
+
     handleScroll(event) {
+      console.log("Ok")
       const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
       const body = document.body;
       const html = document.documentElement;
@@ -258,7 +266,7 @@ class Explore extends React.Component {
                             )
                         })
                         }
-                        { this.state.end && <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div>}
+                        { this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleScroll}>Load more posts</button></div>}
                         </>
                     : <div className="text-center f2">There are no posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div>
                     }

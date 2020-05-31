@@ -203,25 +203,30 @@ class Postscreen extends Component {
     return <>{this.state.post.comments.map((comment, k) => {
         return <React.Fragment key={k}>
             <div className="comment">
-                <div>{comment.comment}</div>
-                <div>Author: <span></span>
-                    {comment.username == "DeletedUser" 
-                    ? <span>DeletedUser</span>
-                    : <Link to={location => `/${comment.username}`}>{comment.username}</Link>
-                    }
+                <div className="f6">
+                    <div className="d-inline-block mr-4">Author: <span></span>
+                        {comment.username == "DeletedUser" 
+                        ? <span>DeletedUser</span>
+                        : <Link to={location => `/${comment.username}`}>{comment.username}</Link>
+                        }
+                    </div>
+                    <div className="d-inline-block"><span>Points: {comment.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToComment(e, k)}>{!comment.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span> <span><button onClick={(e) => this.openReply(e, k)}>Reply</button></span></div>
                 </div>
-                <div><span>Points: {comment.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToComment(e, k)}>{!comment.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span> <span><button onClick={(e) => this.openReply(e, k)}>Reply</button></span></div>
+                <div>{comment.comment}</div>
                 <ul>{comment.replyOn && <li><Comment type="reply" postId={this.state.post.id} commentId={comment.id} /></li>}
                 {comment.reply.map((repl, r) => {
                         return <React.Fragment key={r}><li>
-                        <div>{repl.comment}</div>
-                        <div>Author: <span></span>
-                            {repl.username == "DeletedUser" 
-                            ? <span>DeletedUser</span>
-                            : <Link to={location => `/${repl.username}`}>{repl.username}</Link>
-                            }
+                            
+                        <div className="f6">
+                            <div className="d-inline-block mr-4">Author: <span></span>
+                                {repl.username == "DeletedUser" 
+                                ? <span>DeletedUser</span>
+                                : <Link to={location => `/${repl.username}`}>{repl.username}</Link>
+                                }
+                            </div>
+                            <div className="d-inline-block"><span>Points: {repl.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToReply(e, k, r)}>{!repl.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span></div>   
                         </div>
-                        <div><span>Points: {repl.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToReply(e, k, r)}>{!repl.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span></div>
+                        <div>{repl.comment}</div>
                     </li></React.Fragment> 
                 })}</ul>
                 <hr className="mb-n4" />
