@@ -185,7 +185,6 @@ class Explore extends React.Component {
     }
 
     handleScroll(event) {
-      console.log("Ok")
       const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
       const body = document.body;
       const html = document.documentElement;
@@ -246,10 +245,10 @@ class Explore extends React.Component {
             <>
                 <div className="d-flex">
                     <div className="d-inline-block mx-auto">
-                        <Link className="btn btn-lightgreen btn-rounder mx-1" to={`/explore`}>All</Link>
+                        <Link className="btn btn-lightgreen btn-rounder mx-1 my-1" to={`/explore`}>All</Link>
                         {categories.map((category, key) => {
                             return <React.Fragment key={key}>
-                                <Link className="btn btn-lightgreen btn-rounder mx-1" to={`/explore/f/${category}`}>{firstUpper(category)}</Link>
+                                <Link className="btn btn-lightgreen btn-rounder mx-1 my-1" to={`/explore/f/${category}`}>{firstUpper(category)}</Link>
                             </React.Fragment>
                         })}
                     </div>
@@ -266,7 +265,7 @@ class Explore extends React.Component {
                             )
                         })
                         }
-                        { this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleScroll}>Load more posts</button></div>}
+                        { this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button onClick={this.handleScroll} className="btn btn-blue btn-squared p-4">Load more posts</button></div>}
                         </>
                     : <div className="text-center f2">There are no posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div>
                     }

@@ -74,7 +74,7 @@ class EditPost extends Component {
                     privacy = "public"
                 }
 
-                console.log(privacy)
+                //console.log(privacy)
 
                 if(post.type == "post"){
                     this.setState({
@@ -157,7 +157,7 @@ class EditPost extends Component {
         let ingredients = this.state.ingredientsVal;
         ingredients.push({
             "name": "",
-            "value": "",
+            "amount": "",
             "unit": ""
         });
 
@@ -194,9 +194,9 @@ class EditPost extends Component {
     handleSubmit(event){
         event.preventDefault();
 
-        console.log("Title: " + this.state.titleVal)
-        console.log("Description: " + this.state.descriptionVal)
-        console.log("UserId: " + this.state.userdata.id)
+        //console.log("Title: " + this.state.titleVal)
+        //console.log("Description: " + this.state.descriptionVal)
+        //console.log("UserId: " + this.state.userdata.id)
 
         const title = this.state.titleVal
         const type = this.state.typeVal
@@ -224,10 +224,28 @@ class EditPost extends Component {
                 this.props.editPost(postObject, this.props.history);
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
+                this.setState({
+                    err: {
+                        type: "title",
+                        message: "Error: Title is blank"
+                    }
+                })
             }if(!(description.length > 0)){
                 console.log("Error: Description is blank")
+                this.setState({
+                    err: {
+                        type: "description",
+                        message: "Error: Description is blank"
+                    }
+                })
             }if(!(userid.length > 0)){
                 console.log("Error: User is not authenticated")
+                this.setState({
+                    err: {
+                        type: "user",
+                        message: "Error: User is not authenticated"
+                    }
+                })
             }
         }else if(type == "recipe"){
             if(title.length > 0 && description.length > 0 && userid.length > 0 && categories.length > 0 && ingredients.length > 0 && directions.length > 0){
@@ -247,16 +265,52 @@ class EditPost extends Component {
                 this.props.editPost(postObject, this.props.history);
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
+                this.setState({
+                    err: {
+                        type: "title",
+                        message: "Error: Title is blank"
+                    }
+                })
             }if(!(description.length > 0)){
                 console.log("Error: Description is blank")
+                this.setState({
+                    err: {
+                        type: "description",
+                        message: "Error: Description is blank"
+                    }
+                })
             }if(!(userid.length > 0)){
                 console.log("Error: User is not authenticated")
+                this.setState({
+                    err: {
+                        type: "user",
+                        message: "Error: User is not authenticated"
+                    }
+                })
             }if(!(categories.length > 0)){
                 console.log("Error: You need to select a category")
+                this.setState({
+                    err: {
+                        type: "category",
+                        message: "Error: You need to select a category"
+                    }
+                })
             }if(!(ingredients.length > 0)){
                 console.log("Error: You need to add an ingredient")
+                this.setState({
+                    err: {
+                        type: "ingredient",
+                        message: "Error: You need to add an ingredient"
+                    }
+                })
             }if(!(directions.length > 0)){
                 console.log("Error: Directions is blank")
+                this.setState({
+                    err: {
+                        type: "directions",
+                        message: "Error: Directions is blank"
+                    }
+                })
             }
         }
         
@@ -270,15 +324,9 @@ class EditPost extends Component {
             return (
             <React.Fragment key={i}>
                 <div className="ingredient">
-                    <label>Ingredient: 
-                        <input type="text" value={ingredient.name} onChange={(e) => this.handleIngredientsName(e, i)} />
-                    </label>
-                    <label>Amount: 
-                        <input type="number" value={ingredient.amount} onChange={(e) => this.handleIngredientsAmount(e, i)} />
-                    </label>
-                    <label>Unit:
-                        <input type="text" value={ingredient.unit} onChange={(e) => this.handleIngredientsUnit(e, i)} />
-                    </label>
+                    <input className="ingr-item" type="text" value={ingredient.name} onChange={(e) => this.handleIngredientsName(e, i)} />
+                    <input className="ingr-item" type="number" value={ingredient.amount} onChange={(e) => this.handleIngredientsAmount(e, i)} />
+                    <input className="ingr-item" type="text" value={ingredient.unit} onChange={(e) => this.handleIngredientsUnit(e, i)} />
                 </div>
             </React.Fragment>)
         })}
@@ -309,58 +357,88 @@ class EditPost extends Component {
     render() {
         const { err } = this.state;
         return(
-        <form onSubmit={this.handleSubmit}>
-            <label>Title:<br />
-            <input type="text" value={this.state.titleVal} onChange={this.handleTitle} />
-            </label>
-            <br />
-            <label>Type:<br />
-            <select onChange={this.handleType}>
-                <option value="post" selected={this.state.typeVal == "post"}>Showoff</option>
-                <option value="recipe" selected={this.state.typeVal == "recipe"}>Recipe</option>
-            </select>
-            </label>
-            <br />
-            <label>Post privacy:<br />
-            <select onChange={this.handlePrivacy}>
-                <option value="private" selected={this.state.privacyVal == "private"}>Private</option>
-                <option value="public" selected={this.state.privacyVal == "public"}>Public</option>
-            </select>
-            </label>
-            <br />
-            <label>Category:<br />
-                {categories.map((category, key) => {
-                    return <React.Fragment key={key}>
-                        <label><input type="checkbox" name={category} checked={this.state.categoriesVal.filter(x => x == category)[0]} onChange={this.handleCategory} value={category} /> {firstUpper(category)} </label>
-                        {((key + 1) % 7) == 0 && <br />}
-                    </React.Fragment>   
-                })}
-            </label>
-            <br />
-            <label>Description:<br />
-            <textarea 
-                onChange={this.handleDescription}
-                value={this.state.descriptionVal}
-            />
-            </label>
-            <br />
-            {this.state.typeVal == "recipe" &&
-            <>
-                <label>Ingredients:<br /></label>
-                {this.showIngredients()}
-                <br />
-                <button onClick={this.handleNumIngredients}>Add new ingredient</button><br />
-                <label>Directions:<br />
-                <textarea 
-                    onChange={this.handleDirections}
-                    value={this.state.directionsVal}
-                />
+        <div>  
+            <button className="btn btn-link float-right mr-9 mt-n3" onClick={() => this.props.history.goBack()}>Cancel</button>
+            <form onSubmit={this.handleSubmit} className="col-7 mx-auto">
+                <label>Title:<br />
+                <input type="text" value={this.state.titleVal} onChange={this.handleTitle} className="width-full py-3 f4" required />
+                { this.state.err.type == 'title' 
+                    ?   <div>{this.state.err.message}</div>
+                    :   <br />
+                }
                 </label>
                 <br />
-            </>
-            }
-            <input type="submit" value="Submit" />
-        </form>
+                <label>Type:<br />
+                <select onChange={this.handleType} className="width-full py-3 f4">
+                    <option value="post" selected={this.state.typeVal == "post"}>Showoff</option>
+                    <option value="recipe" selected={this.state.typeVal == "recipe"}>Recipe</option>
+                </select>
+                </label>
+                <br />
+                <label>Post privacy:<br />
+                <select onChange={this.handlePrivacy} className="width-full py-3 f4">
+                    <option value="private" selected={this.state.privacyVal == "private"}>Private</option>
+                    <option value="public" selected={this.state.privacyVal == "public"}>Public</option>
+                </select>
+                </label>
+                <br />
+                <div className="f4">Category:<br />
+                    {categories.map((category, key) => {
+                        return <React.Fragment key={key}>
+                            
+                            <div className="btn-checkbox">
+                                <input type="checkbox" name={category} checked={this.state.categoriesVal.filter(x => x == category)[0]} onChange={this.handleCategory} value={category} />
+                                <label htmlFor={category}> {firstUpper(category)} </label>
+                            </div>
+                        </React.Fragment>   
+                    })}
+                    { this.state.err.type == 'category' 
+                        ?   <div>{this.state.err.message}</div>
+                        :   <br />
+                    }
+                </div>
+                <br />
+                <label>Description:<br />
+                <textarea 
+                    onChange={this.handleDescription}
+                    value={this.state.descriptionVal}
+                    className="width-full py-3 f4"
+                    required
+                />
+                { this.state.err.type == 'description' 
+                    ?   <div>{this.state.err.message}</div>
+                    :   <br />
+                }
+                </label>
+                <br />
+                {this.state.typeVal == "recipe" &&
+                <>
+                    <label>Ingredients:<br /></label>
+                    {this.showIngredients()}
+                        { this.state.err.type == 'ingredient' 
+                            ?   <div>{this.state.err.message}</div>
+                            :   <br />
+                        }
+                    <br />
+                            <button className="btn btn-default mt-n4 mb-4" onClick={this.handleNumIngredients}>Add new ingredient</button><br />
+                    <label>Directions:<br />
+                    <textarea 
+                        onChange={this.handleDirections}
+                        value={this.state.directionsVal}
+                        className="width-full py-3 f4"
+                        required
+                    />
+                    { this.state.err.type == 'directions' 
+                        ?   <div>{this.state.err.message}</div>
+                        :   <br />
+                    }
+                    </label>
+                    <br />
+                </>
+                }
+                <input type="submit" value="Submit" className="btn btn-blue width-full mb-7" />
+            </form>
+        </div>
         );
     }
 }

@@ -7,7 +7,7 @@ import Comment from './comment';
 import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
-import {getPostById, newComment, addPoint, removePoint, addPointToComment, removePointToComment, addPointToReply, removePointToReply} from '../classes/callAPI';
+import {getPostById, newComment, addPoint, removePoint, addPointToComment, removePointToComment, addPointToReply, removePointToReply, removePost} from '../classes/callAPI';
 
 
 class Postscreen extends Component {
@@ -52,7 +52,7 @@ class Postscreen extends Component {
                     comments.map((comment, key) => {
                         comment["replyOn"] = false;
                     })
-                    console.log(comments)
+                    //console.log(comments)
                     post["comments"] = comments
 
                     this.setState({post: post})
@@ -90,7 +90,7 @@ class Postscreen extends Component {
                 comments.map((comment, key) => {
                     comment["replyOn"] = false;
                 })
-                console.log(comments)
+                //console.log(comments)
                 post["comments"] = comments
 
                 this.setState({post: post})
@@ -159,7 +159,7 @@ class Postscreen extends Component {
         let { comments } = post;
         let { reply } = comments[id]
 
-        console.log(id)
+        //console.log(id)
 
         if(!reply[replyId].isPointed){
             reply[replyId]["isPointed"] = true;
@@ -265,7 +265,7 @@ class Postscreen extends Component {
                     <div className='poston screen-post' onClick={this.stayHere}>
                              {this.state.post.hasPhoto && <div className="card-image"><Image cloudName="dj7ju136o" className="card-img-top"  publicId={`post/${this.state.post.id}/${this.state.post.id}${this.state.post.photoExt}`} /></div>}
                             <div className="screen-body">    
-                            {(this.state.userdata.id == this.state.post.userId || this.props.auth.user.id == this.state.post.userId) && <span className="float-right"><a href="">Delete post</a> | <Link to={location => `/post/edit/${this.state.post.id}`}>Edit post</Link></span>}
+                            {(this.state.userdata.id == this.state.post.userId || this.props.auth.user.id == this.state.post.userId) && <span className="float-right"><a href="./" onClick={() => {removePost(this.state.post.id); this.props.history.push("/")}}>Delete post</a> | <Link to={location => `/post/edit/${this.state.post.id}`}>Edit post</Link></span>}
                             <h3>{this.state.post.title}</h3>
                             <div className="screen-description">{this.state.post.description}</div>
                             {this.state.post.type == "recipe" && <>

@@ -36,7 +36,7 @@ class Posts extends React.Component {
 
         this.setState({posts: postList, lastPost: postList[postList.length-1]})
       });*/
-      console.log(!this.state.end || this.props.post.isPosted)
+      //console.log(!this.state.end || this.props.post.isPosted)
       if(!this.state.end || this.props.post.isPosted){
         return axios
         .get(getHostname() + 'api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})

@@ -3,6 +3,8 @@ import {Link} from 'react-router-dom'
 
 import {Image} from 'cloudinary-react';
 
+import {removePost} from '../components/classes/callAPI';
+
 const OpenButton = (props) => {
     if (props.from == "home") {   
         return <Link to={location => `/post/${props.id}`}>{props.children}</Link>
@@ -23,8 +25,8 @@ export const Post = (props) => {
                     {post.hasPhoto && <div className="card-image"><OpenButton from={from} id={post.id}><Image cloudName="dj7ju136o" className="card-img-top"  publicId={`post/${post.id}/${post.id}${post.photoExt}`} /></OpenButton></div>}
                     
                     <div className="f5 pr-5 mb-n3 mt-3 top-card">
-                    {(userdata.id == post.userId || authUser == post.userId) &&<span className="float-right"><a href="">Delete post</a> | <Link to={location => `/post/edit/${post.id}`}>Edit post</Link></span>}
-                         <span className="author mr-2">Author: 
+                    {(userdata.id == post.userId || authUser == post.userId) &&<span className="float-right"><a href="./" onClick={() => removePost(post.id)}>Delete post</a> | <Link to={location => `/post/edit/${post.id}`}>Edit post</Link></span>}
+                         <span className="author mr-2">Author: <span></span>
                             {post.username == "DeletedUser" 
                             ? <span>DeletedUser</span>
                             : <Link className="f5" to={location => `/${post.username}`}>{post.username}</Link>

@@ -102,7 +102,7 @@ class Register extends Component {
               email: email,
               password: pass
             };
-            console.log(registerObject);
+            //console.log(registerObject);
             
             this.props.register(registerObject, this.props.history);
 
@@ -120,35 +120,35 @@ class Register extends Component {
         const { err } = this.state;
 
         return (
-          <div>
-            <form onSubmit={this.handleSubmit} className="col-7 mx-auto text-center f4">
+          <div className="text-center">
+            <form onSubmit={this.handleSubmit} className="col-7 mx-auto f4">
                 <label>Username:<br />
-                  <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} className="width-full f5 py-2" />
+                  <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} className="width-full f5 py-2" required />
                     { this.props.err.type == 'username' 
                         ?   <div>Username is already registered</div>
                         :   <br />
                     }
                 </label>
                 <label>Email:<br />
-                  <input type="email" value={this.state.emailVal} onChange={this.handleEmail} className="width-full f5 py-2" />
+                  <input type="email" value={this.state.emailVal} onChange={this.handleEmail} className="width-full f5 py-2" required />
                     { this.props.err.type == 'email' 
                         ?   <div>Email is already registered</div>
                         :   <br />
                     }
                 </label>
                 <label>Confirm Email:<br />
-                  <input type="email" value={this.state.email2Val} onChange={this.handleEmail2} className="width-full f5 py-2" />
+                  <input type="email" value={this.state.email2Val} onChange={this.handleEmail2} className="width-full f5 py-2" required />
                     { this.state.mailsMatch === false 
                         ?   <div>Please make sure you entered correct emails.</div>
                         :   <br />
                     }
                 </label>
                 <label>Password:<br />
-                <input type="password" value={this.state.passVal} onChange={this.handlePass} className="width-full f5 py-2" />
+                <input type="password" value={this.state.passVal} onChange={this.handlePass} className="width-full f5 py-2" required />
                 </label>
                 <br />
                 <label>Confirm Password:<br />
-                  <input type="password" value={this.state.pass2Val} onChange={this.handlePass2} className="width-full f5 py-2" />
+                  <input type="password" value={this.state.pass2Val} onChange={this.handlePass2} className="width-full f5 py-2" required />
                     { this.state.passMatch === false
                         ?   <div>Please make sure you entered correct passwords.</div>
                         :   <br />
@@ -164,7 +164,8 @@ class Register extends Component {
             { this.state.succRegister === true &&
                 <div>Succesfully registred</div>
             }
-            <div></div>
+            
+            <div className="my-5"><Link to="/demologin">Login with demo account</Link></div>
           </div>
         );
       }

@@ -120,7 +120,7 @@ class Post extends Component {
         let ingredients = this.state.ingredientsVal;
         ingredients.push({
             "name": "",
-            "value": "",
+            "amount": "",
             "unit": ""
         });
 
@@ -163,9 +163,9 @@ class Post extends Component {
     handleSubmit(event){
         event.preventDefault();
 
-        console.log("Title: " + this.state.titleVal)
-        console.log("Description: " + this.state.descriptionVal)
-        console.log("UserId: " + this.state.userdata.id)
+        //console.log("Title: " + this.state.titleVal)
+        //console.log("Description: " + this.state.descriptionVal)
+        //console.log("UserId: " + this.state.userdata.id)
 
         const title = this.state.titleVal
         const type = this.state.typeVal
@@ -196,6 +196,12 @@ class Post extends Component {
                 }else{
                     if(!this.state.selectedFile.name.match(/.(jpg|jpeg|png|gif)$/i)){
                         console.log("Error: File is not a valid format")
+                        this.setState({
+                            err: {
+                                type: "file",
+                                message: "Error: File is not a valid format"
+                            }
+                        })
                     }else{
                         postObject["hasPhoto"] = true
                         postObject["photoExt"] = path.extname(this.state.selectedFile.name)
@@ -207,10 +213,28 @@ class Post extends Component {
                 
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
+                this.setState({
+                    err: {
+                        type: "title",
+                        message: "Error: Title is blank"
+                    }
+                })
             }if(!(description.length > 0)){
                 console.log("Error: Description is blank")
+                this.setState({
+                    err: {
+                        type: "description",
+                        message: "Error: Description is blank"
+                    }
+                })
             }if(!(userid.length > 0)){
                 console.log("Error: User is not authenticated")
+                this.setState({
+                    err: {
+                        type: "user",
+                        message: "Error: User is not authenticated"
+                    }
+                })
             }
         }else if(type == "recipe"){
             if(title.length > 0 && description.length > 0 && userid.length > 0 && categories.length > 0 && ingredients.length > 0 && directions.length > 0){
@@ -231,6 +255,12 @@ class Post extends Component {
                 }else{
                     if(!this.state.selectedFile.name.match(/.(jpg|jpeg|png|gif)$/i)){
                         console.log("Error: File is not a valid format")
+                        this.setState({
+                            err: {
+                                type: "file",
+                                message: "Error: File is not a valid format"
+                            }
+                        })
                     }else{
                         postObject["hasPhoto"] = true
                         postObject["photoExt"] = path.extname(this.state.selectedFile.name)
@@ -241,16 +271,52 @@ class Post extends Component {
                 }
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
+                this.setState({
+                    err: {
+                        type: "title",
+                        message: "Error: Title is blank"
+                    }
+                })
             }if(!(description.length > 0)){
                 console.log("Error: Description is blank")
+                this.setState({
+                    err: {
+                        type: "description",
+                        message: "Error: Description is blank"
+                    }
+                })
             }if(!(userid.length > 0)){
                 console.log("Error: User is not authenticated")
+                this.setState({
+                    err: {
+                        type: "user",
+                        message: "Error: User is not authenticated"
+                    }
+                })
             }if(!(categories.length > 0)){
                 console.log("Error: You need to select a category")
+                this.setState({
+                    err: {
+                        type: "category",
+                        message: "Error: You need to select a category"
+                    }
+                })
             }if(!(ingredients.length > 0)){
                 console.log("Error: You need to add an ingredient")
+                this.setState({
+                    err: {
+                        type: "ingredient",
+                        message: "Error: You need to add an ingredient"
+                    }
+                })
             }if(!(directions.length > 0)){
                 console.log("Error: Directions is blank")
+                this.setState({
+                    err: {
+                        type: "directions",
+                        message: "Error: Directions is blank"
+                    }
+                })
             }
         }
 
@@ -305,7 +371,11 @@ class Post extends Component {
                 <button className="btn btn-link float-right mr-9 mt-n3" onClick={() => this.setState({enablePost: false})}>Cancel</button>
                 <form onSubmit={this.handleSubmit} className="col-7 mx-auto">
                     <label>Title:<br />
-                    <input type="text" value={this.state.titleVal} onChange={this.handleTitle} className="width-full py-3 f4" />
+                    <input type="text" value={this.state.titleVal} onChange={this.handleTitle} className="width-full py-3 f4" required />
+                    { this.state.err.type == 'title' 
+                        ?   <div>{this.state.err.message}</div>
+                        :   <br />
+                    }
                     </label>
                     <br />
                     <label>Type:<br />
@@ -324,6 +394,10 @@ class Post extends Component {
                     <br />
                     <label>Image:<br />
                     <input type="file" onChange= {this.handleImage} />
+                    { this.state.err.type == 'file' 
+                        ?   <div>{this.state.err.message}</div>
+                        :   <br />
+                    }
                     </label>
                     <br />
                     <div className="f4">Category:<br /> 
@@ -336,6 +410,10 @@ class Post extends Component {
                                 
                             </React.Fragment>   
                         })}
+                        { this.state.err.type == 'category' 
+                            ?   <div>{this.state.err.message}</div>
+                            :   <br />
+                        }
                     </div>
                     <br />
                     <label>Description:<br />
@@ -343,7 +421,12 @@ class Post extends Component {
                         onChange={this.handleDescription}
                         value={this.state.descriptionVal}
                         className="width-full py-3 f4"
+                        required
                     />
+                    { this.state.err.type == 'description' 
+                        ?   <div>{this.state.err.message}</div>
+                        :   <br />
+                    }
                     </label>
                     <br />
                     {this.state.typeVal == "recipe" &&
@@ -351,13 +434,22 @@ class Post extends Component {
                         <label>Ingredients:<br /></label>
                         {this.showIngredients()}
                         <br />
+                        { this.state.err.type == 'ingredient' 
+                            ?   <div>{this.state.err.message}</div>
+                            :   <br />
+                        }
                         <button className="btn btn-default mt-n4 mb-4" onClick={this.handleNumIngredients}>Add new ingredient</button><br />
                         <label className="">Directions:<br />
                             <textarea 
                                 onChange={this.handleDirections}
                                 value={this.state.directionsVal}
                                 className="width-full py-3 f4"
+                                required
                             />
+                            { this.state.err.type == 'directions' 
+                                ?   <div>{this.state.err.message}</div>
+                                :   <br />
+                            }
                         </label>
                         <br />
                     </>

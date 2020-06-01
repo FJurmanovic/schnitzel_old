@@ -60,7 +60,6 @@ class EditProfile extends Component {
 
             const { user } = this.props.auth
             
-            console.log(token)
             if(this.props.auth.isAuthenticated){
               this.setState({
                 id: user.id,
@@ -184,7 +183,7 @@ class EditProfile extends Component {
             uploadImage(data, {"id": this.state.id, "type": "avatar"})
           }
 
-          console.log(editObject)
+          //(editObject)
           this.props.editUser(editObject);
 
           if(!this.props.err){

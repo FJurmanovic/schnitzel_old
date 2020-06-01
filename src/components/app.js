@@ -17,6 +17,7 @@ import EditPost from './post/editpost';
 import Navbar from './navbar/navbar';
 import NoPage from './nopage/nopage';
 import Explore from './explore/explore';
+import DemoLogin from './demologin/demologin';
 
 import { userData } from './classes/callAPI';
 
@@ -55,6 +56,7 @@ const AppRouter = () =>{
             <Route exact path="/" component={Home} />
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
+            <Route path="/demologin" component={DemoLogin} />
             <Route path="/logout" component={Logout} />
             <Route path="/explore/f/:categoryId">
               <Explore />

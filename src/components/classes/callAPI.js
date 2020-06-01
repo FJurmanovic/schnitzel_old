@@ -91,6 +91,15 @@ export const deactivateUser = user => dispatch => { //Sends token to backend tha
         .catch(error => {console.log(error)})
 }
 
+export const removePost = postId => {
+    return axios
+        .get(getHostname() + 'api/post/removePost', { headers: {token: localStorage.jwtToken}, params: {postId: postId}})
+        .then(res=> {
+            return res;
+        })
+        .catch(error => console.log(error))
+}
+
 export const register = (user, history) => dispatch => { //Sends registration data to backend and returns token
     axios
         .post(getHostname() + 'api/user/signup', user)
@@ -107,7 +116,7 @@ export const createPost = (post, data, history) => dispatch => { //sends post da
     axios
         .post(getHostname() + 'api/post/create', post, {headers: {token: localStorage.jwtToken}})
         .then((res) => {
-            console.log(data)
+            //console.log(data)
             let postId = res.data.id
             if(!!data){
                 uploadImage(data, {"id": postId, "type": "post"})
@@ -208,11 +217,6 @@ export const unfollowUser = (idUser, id) => { //Sends user id's to backend that 
         .get(getHostname() + 'api/user/unfollow', { params: {idUser: idUser, id: id}, headers: {token: localStorage.jwtToken}})
 };
 
-export const removePost = (token, idPost) => { //Sends token with postID that removes post if authenticated
-    return axios
-        .get(getHostname() + 'api/post/removePost', { headers: {token: token}, params: {idPost: idPost}})
-};
-
 export const getFollowUsernames = id => { //Sends user id and returns followers for that user
     return axios
         .post(getHostname() + 'api/user/getFollowerUsernames', { id: id }, {headers: {token: localStorage.jwtToken}})
@@ -240,7 +244,7 @@ export const getPosts = (user, current, fit, lastDate, lastId) => dispatch => { 
     return axios
     .get(getHostname() + 'api/post/scroll', { headers : {token: user }, params: {current: current, fit: fit, lastDate: lastDate, lastId: lastId}})
     .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         let posts = res.data.post;
         let postList = [];
 
@@ -287,7 +291,7 @@ export const editUser = (editProps, history) => dispatch => { //Sends edit data 
             })
         })
         .catch(err => {
-            console.log("err")
+            //console.log("err")
             dispatch({
                 type: GET_ERRORS,
                 payload: err.response.data
