@@ -212,7 +212,7 @@ class Postscreen extends Component {
                     </div>
                     <div className="d-inline-block"><span>Points: {comment.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToComment(e, k)}>{!comment.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span> <span><button onClick={(e) => this.openReply(e, k)}>Reply</button></span></div>
                 </div>
-                <div>{comment.comment}</div>
+                <div className="cmnt">{comment.comment}</div>
                 <ul>{comment.replyOn && <li><Comment type="reply" postId={this.state.post.id} commentId={comment.id} /></li>}
                 {comment.reply.map((repl, r) => {
                         return <React.Fragment key={r}><li>
@@ -226,7 +226,7 @@ class Postscreen extends Component {
                             </div>
                             <div className="d-inline-block"><span>Points: {repl.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPointToReply(e, k, r)}>{!repl.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button></span></div>   
                         </div>
-                        <div>{repl.comment}</div>
+                        <div className="cmnt">{repl.comment}</div>
                     </li></React.Fragment> 
                 })}</ul>
                 <hr className="mb-n4" />

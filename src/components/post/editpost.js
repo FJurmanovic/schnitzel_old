@@ -222,6 +222,7 @@ class EditPost extends Component {
                 }
         
                 this.props.editPost(postObject, this.props.history);
+                this.props.history.goBack();
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
                 this.setState({
@@ -263,6 +264,7 @@ class EditPost extends Component {
                 }
         
                 this.props.editPost(postObject, this.props.history);
+                this.props.history.goBack();
             }else if(!(title.length > 0)){
                 console.log("Error: Title is blank")
                 this.setState({
