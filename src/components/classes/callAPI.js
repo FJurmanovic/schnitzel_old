@@ -62,7 +62,7 @@ export const userData = user => { //Sends token to backend and returns user data
 
 export const dataByUsername = user => { //Sends username to backend and returns user data 
     return axios
-        .get(getHostname() + 'api/user/dataByUser', { headers : {username: user }})
+        .get(getHostname() + 'api/user/dataByUser', { headers : {token: localStorage.jwtToken, username: user }})
         .then(res => {  
             return res;
             

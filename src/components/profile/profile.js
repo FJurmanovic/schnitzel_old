@@ -173,7 +173,7 @@ class Profile extends Component {
         } else {
             const { user } = this.props.auth
 
-            const id = this.props.match.params.profileId;        
+            const id = this.props.match.params.profileId; 
 
             if(this.props.match.path != 'post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId)){
               if(!id){
@@ -250,7 +250,7 @@ class Profile extends Component {
             props.history.push("/");
         } else{
             const { user } = props.auth
-            const id = props.match.params.profileId;     
+            const id = props.match.params.profileId;   
 
             if(this.state.profileId != user.username && !id){
               this.setState({
@@ -358,6 +358,23 @@ class Profile extends Component {
           window.removeEventListener("scroll", this.handleScroll);
       }
 
+      componentDidUpdate(prevProps) {
+        let isFollowing = null
+
+        if (!!this.state.userdata.following) { isFollowing = this.state.userdata.following.filter(x => x.userId == this.state.id).map(x => x.userId == this.state.id)[0] || false }
+        
+        if(!!this.state.userdata.following && !!this.props.location.search && ((this.props.location.search == "?action=follow" && !isFollowing) || (this.props.location.search == "?action=unfollow" && isFollowing))){
+          if (this.props.location.search == "?action=follow" && isFollowing === false){
+            this.handleFollowButton()
+          }else if (this.props.location.search == "?action=unfollow" && isFollowing === true){
+            this.handleUnfollowButton()
+          }
+          
+          this.props.history.push(this.props.location.pathname)
+        }
+
+      }
+
       handleScroll() {
         event.preventDefault();
         const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
@@ -412,7 +429,9 @@ class Profile extends Component {
       }
 
       handleUnfollowButton(event) {
-        event.preventDefault();
+        if (!!event) event.preventDefault();
+
+        console.log("w")
 
         unfollowUser(this.state.userdata.id, this.state.id).then(res => {
           this.removeFollower(this.state.id)
@@ -421,7 +440,7 @@ class Profile extends Component {
       }
 
       handleFollowButton(event) {
-        event.preventDefault();
+        if (!!event) event.preventDefault();
 
         followUser(this.state.userdata.id, this.state.id).then(res =>
           {
@@ -515,15 +534,17 @@ class Profile extends Component {
           {this.state.validProfile ? 
           <div onScroll={this.handleScroll}>
             <div>
-            <div className="profile-image text-center">{this.state.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />}</div>
-              <ul className="d-inline-block m-3">
-                <button className="btn btn-blue-transparent btn-rounder border-blue d-inline-block" onClick={() => this.setState({showFollowers: true})}>Followers</button>
-                {this.state.showFollowers && <FollowerScreen title="Followers" list={this.state.flw.followers} owner={(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)} exitScreen={this.exitScreen.bind(this)} removeFromFollower={this.removeFromFollower.bind(this)} />}
-              </ul>
-              <ul className="d-inline-block m-3">
-                <button className="btn btn-blue-transparent btn-rounder border-blue" onClick={() => this.setState({showFollowing: true})}>Following</button>
-                {this.state.showFollowing && <FollowerScreen title="Following" list={this.state.flw.following} owner={(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)} exitScreen={this.exitScreen.bind(this)} removeFromFollowing={this.removeFromFollowing.bind(this)}/>}
-              </ul>
+              <div className="profile-image mx-auto text-center">{this.state.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />}</div>
+              <div className="mx-auto text-center">
+                <ul className="d-inline-block m-3 text-left">
+                  <button className="btn btn-blue-transparent btn-rounder border-blue d-inline-block" onClick={() => this.setState({showFollowers: true})}>Followers</button>
+                  {this.state.showFollowers && <FollowerScreen title="Followers" list={this.state.flw.followers} owner={(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)} exitScreen={this.exitScreen.bind(this)} removeFromFollower={this.removeFromFollower.bind(this)} />}
+                </ul>
+                <ul className="d-inline-block m-3 text-left">
+                  <button className="btn btn-blue-transparent btn-rounder border-blue" onClick={() => this.setState({showFollowing: true})}>Following</button>
+                  {this.state.showFollowing && <FollowerScreen title="Following" list={this.state.flw.following} owner={(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)} exitScreen={this.exitScreen.bind(this)} removeFromFollowing={this.removeFromFollowing.bind(this)}/>}
+                </ul>
+              </div>
             </div>
             {(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)
             ? <>
@@ -535,7 +556,7 @@ class Profile extends Component {
                   <div className="posts" onScroll={this.handleScroll}>
                     { this.state.posts.map((post, key) => {
                         return (
-                          <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                          <Post history={this.props.history} post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                         )
                       })
                     }{ this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleScroll}>Load more posts</button></div>}
@@ -546,13 +567,15 @@ class Profile extends Component {
                 <div>
                   {this.checkFollowing()
                   ? <>
-                      <button className="btn btn-orange btn-rounder" onClick={this.handleUnfollowButton}>Unfollow</button>
+                      <div className="mx-auto text-center">
+                        <button className="btn btn-orange btn-rounder px-11 folbtn" onClick={this.handleUnfollowButton}>Unfollow</button>
+                      </div>
                       <div>
-                        <h1>{this.state.profileId}</h1>
+                        <h1 className="text-center">{this.state.profileId}</h1>
                         <div className="posts" onScroll={this.handleScroll}>
                           { this.state.posts.map((post, key) => {
                               return (
-                                <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                                <Post history={this.props.history} post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                               )
                             })
                           }
@@ -561,14 +584,16 @@ class Profile extends Component {
                       </div>
                     </>
                   : <>
-                      <button className="btn btn-lightgreen btn-rounder" onClick={this.handleFollowButton}>Follow</button>
+                      <div className="mx-auto text-center">
+                        <button className="btn btn-lightgreen btn-rounder folbtn" onClick={this.handleFollowButton}>Follow</button>
+                      </div>
                       <div>
-                        <h1>{this.state.profileId}</h1>
+                        <h1 className="text-center">{this.state.profileId}</h1>
                         {!(this.state.isPrivate) &&
                           <div className="posts" onScroll={this.handleScroll}>
                           { this.state.posts.map((post, key) => {
                               return (
-                                <Post post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
+                                <Post history={this.props.history} post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                               )
                             })
                           }{ this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleScroll}>Load more posts</button></div>}

@@ -3,6 +3,8 @@ import { Link, withRouter } from 'react-router-dom'
 import {connect} from 'react-redux';
 import PropTypes from "prop-types";
 
+import {Image} from 'cloudinary-react';
+
 import { getRandomInt } from '../classes/Functions';
 
 import { logout } from '../classes/callAPI';
@@ -60,7 +62,7 @@ class Navbar extends React.Component {
           </div>
           <div className="header-item">
             <details className="header-dropdown" id="profile">
-              <summary className="btn btn-default px-7 header-button">{user.username}</summary>
+              <summary className="btn btn-default px-7 header-button"><span>{user.username}</span><i className="arrow"></i><div className="sml-photo mx-auto text-center">{this.state.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />}</div></summary>
               <ul className="header-dropdown-menu dropdown-menu-dark">
                 <Link to="/profile" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>View Profile</Link>
                 <Link to="/profile/edit" className="dropdown-item" onClick={() => {this.detailsClose(); this.changeLogo()}}>Edit Profile</Link>

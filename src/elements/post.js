@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Link} from 'react-router-dom'
 
 import {Image} from 'cloudinary-react';
 
-import {removePost} from '../components/classes/callAPI';
+import {removePost, dataByUsername} from '../components/classes/callAPI';
+
 
 const OpenButton = (props) => {
     if (props.from == "home") {   
@@ -18,6 +19,21 @@ const OpenButton = (props) => {
 export const Post = (props) => {
     const { post, iter, userdata, formatDate, addPoint, authUser, from } = props;
 
+    const [authorData, setAuthorData] = useState(
+        {
+            id: ''
+        }
+    );
+    const getAuthorData = (id) => {
+        if(authorData.username != id){
+            
+        console.log(authorData)
+            dataByUsername(id).then((res)=>{
+                setAuthorData(res.data)
+            });
+        }
+    }
+
     return(
         <React.Fragment key={iter}>
             <>
@@ -29,8 +45,20 @@ export const Post = (props) => {
                          <span className="author mr-2">Author: <span></span>
                             {post.username == "DeletedUser" 
                             ? <span>DeletedUser</span>
-                            : <Link className="f5" to={location => `/${post.username}`}>{post.username}</Link>
+                            : <Link className="f5" onMouseOver={() => getAuthorData(post.username)} to={location => `/${post.username}`}>{post.username}</Link>
                             }
+                            <Link className={(post.userId == userdata.id) ? "popover-author" : "popover-author flw"} to={location => `/${post.username}`}>
+                                <div className="" id={`popover_${iter}`}>
+                                    <div className="md-photo">
+                                        {authorData.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${authorData.id}/${authorData.id}${authorData.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />} 
+                                        <span className="author-user">{post.username}</span>
+                                        <span className="author-post">Posts: {authorData.postNum}</span>
+                                        { !(post.userId == userdata.id) &&
+                                        <span className="author-flw">{authorData.isFollowing ? <Link className="btn btn-orange btn-rounder" to={`${post.username}?action=unfollow`} onClick={() => setAuthorData({id:''})}>Unfollow</Link> : <Link className="btn btn-lightgreen btn-rounder" to={`${post.username}?action=follow`} onClick={() => setAuthorData({id:''})}>Follow</Link>}</span>
+                                        }
+                                    </div>
+                                </div>
+                            </Link>
                         </span>
                     <span className="f5 mx-2 date">Posted on: {formatDate(post.createdAt)}</span>
                     </div>
