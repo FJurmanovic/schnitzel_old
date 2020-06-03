@@ -59,6 +59,15 @@ body{
         margin-top: 2px;
         margin-bottom: 6px;
     }
+
+    .profile-image {
+        img{
+            width: 300px;
+            height: 300px;
+            border: 1px solid #000000;
+            border-radius: 100%;
+        }
+    }
     
     .container {
         margin-top: 15px;

@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 
 import FollowerScreen from './followerscreen';
 
+import {Image} from 'cloudinary-react';
 
 import { removePost, dataByUsername, followUser, unfollowUser, getHostname, getFollowUsernames, getPostsProfile, addPoint, removePoint } from '../classes/callAPI';
 
@@ -217,6 +218,8 @@ class Profile extends Component {
                         following = following.filter(x => x != null).filter(x => 'userId' in x).filter(x => 'username' in x) 
                         this.setState({
                           id: res.data.id,
+                          hasPhoto: res.data.hasPhoto,
+                          photoExt: res.data.photoExt,
                           end: false,
                           isPrivate: res.data.isPrivate,
                           flw: {
@@ -261,7 +264,9 @@ class Profile extends Component {
                   followers: user.followers,
                   following: user.following
                 },
-                id: user.id
+                id: user.id,
+                hasPhoto: user.hasPhoto,
+                photoExt: user.photoExt,
               });
               if(user.id){
                 this.getPosts(user.id, 10, '', '')
@@ -284,7 +289,9 @@ class Profile extends Component {
                     followers: user.followers,
                     following: user.following
                   },
-                  id: user.id
+                  id: user.id,
+                  hasPhoto: user.hasPhoto,
+                  photoExt: user.photoExt,
                 });
                 if(user.id){
                   this.getPosts(user.id, 10, '', '')
@@ -313,6 +320,8 @@ class Profile extends Component {
                     this.setState({
                       end: false,
                       id: res.data.id,
+                      hasPhoto: res.data.hasPhoto,
+                      photoExt: res.data.photoExt,
                       isPrivate: res.data.isPrivate,
                       flw: {
                         followers: followers,
@@ -506,6 +515,7 @@ class Profile extends Component {
           {this.state.validProfile ? 
           <div onScroll={this.handleScroll}>
             <div>
+            <div className="profile-image text-center">{this.state.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />}</div>
               <ul className="d-inline-block m-3">
                 <button className="btn btn-blue-transparent btn-rounder border-blue d-inline-block" onClick={() => this.setState({showFollowers: true})}>Followers</button>
                 {this.state.showFollowers && <FollowerScreen title="Followers" list={this.state.flw.followers} owner={(this.state.profileId == this.state.userdata.username || this.state.profileId == undefined)} exitScreen={this.exitScreen.bind(this)} removeFromFollower={this.removeFromFollower.bind(this)} />}
