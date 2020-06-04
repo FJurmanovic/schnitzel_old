@@ -552,7 +552,7 @@ class Profile extends Component {
                   Edit profile
                 </Link>
                 <div>
-                  <h1>Your posts: </h1>
+                  <h1 className="text-center">Your posts</h1>
                   <div className="posts" onScroll={this.handleScroll}>
                     { this.state.posts.map((post, key) => {
                         return (

@@ -239,7 +239,7 @@ class EditProfile extends Component {
               }
                 <br />
               {this.state.editUsername 
-              ? <label>Username:<br />
+              ? <label>Username(max. 10):<br />
                 <input type="text" value={this.state.userVal} onChange={this.handleUsername} /> <a href="#" onClick={() => {this.setState({editUsername: false})}}>Cancel</a>
                 </label>
               : <span><input type="text" value={this.state.userVal} disabled /> <a href="#" onClick={() => {this.setState({editUsername: true})}}>Edit username</a></span>

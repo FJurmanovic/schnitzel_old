@@ -122,16 +122,16 @@ class Register extends Component {
         return (
           <div className="text-center">
             <form onSubmit={this.handleSubmit} className="col-7 mx-auto f4">
-                <label>Username:<br />
+                <label>Username(max. 10):<br />
                   <input type="username" value={this.state.usernameVal} onChange={this.handleUsername} className="width-full f5 py-2" required />
-                    { this.props.err.type == 'username' 
-                        ?   <div>Username is already registered</div>
+                    { this.state.err.type == 'username' 
+                        ?   <div>{this.state.err.message}</div>
                         :   <br />
                     }
                 </label>
                 <label>Email:<br />
                   <input type="email" value={this.state.emailVal} onChange={this.handleEmail} className="width-full f5 py-2" required />
-                    { this.props.err.type == 'email' 
+                    { this.state.err.type == 'email' 
                         ?   <div>Email is already registered</div>
                         :   <br />
                     }
