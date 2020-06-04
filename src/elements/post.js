@@ -24,13 +24,22 @@ export const Post = (props) => {
             id: '',
         }
     );
-
-    const [isOwner, setIsOwner] = useState((post.userId == userdata.id) || false);
     
+
+    /*
+    let currentUser = false;
+    if(!!userdata.id) {
+        currentUser = userdata.id
+    }else if (!!userdata.user){
+        currentUser = userdata.user.id
+    }
+
+    const [isOwner, setIsOwner] = useState((post.userId == userdata.id) || false);    
+    */
+
     const getAuthorData = (id) => {
         if(authorData.username != id){
             
-        console.log(authorData)
             dataByUsername(id).then((res)=>{
                 setAuthorData(res.data)
             });
@@ -50,15 +59,12 @@ export const Post = (props) => {
                             ? <span>DeletedUser</span>
                             : <Link className="f5" onMouseOver={() => getAuthorData(post.username)} to={location => `/${post.username}`}>{post.username}</Link>
                             }
-                            <Link className={isOwner ? "popover-author" : "popover-author flw"} to={location => `/${post.username}`}>
+                            <Link className="popover-author" to={location => `/${post.username}`}>
                                 <div className="" id={`popover_${iter}`}>
                                     <div className="md-photo">
                                         {authorData.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${authorData.id}/${authorData.id}${authorData.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />} 
                                         <span className="author-user">{post.username}</span>
                                         <span className="author-post">Posts: {authorData.postNum}</span>
-                                        { !isOwner &&
-                                        <span className="author-flw">{authorData.isFollowing ? <Link className="btn btn-orange btn-rounder" to={`${post.username}?action=unfollow`} onClick={() => setAuthorData({id:''})}>Unfollow</Link> : <Link className="btn btn-lightgreen btn-rounder" to={`${post.username}?action=follow`} onClick={() => setAuthorData({id:''})}>Follow</Link>}</span>
-                                        }
                                     </div>
                                 </div>
                             </Link>

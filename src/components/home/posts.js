@@ -87,7 +87,7 @@ class Posts extends React.Component {
             this.getPosts(localStorage.jwtToken, 0, 10, '', '')
             //console.log(token)
             this.setState({
-              userdata: this.props.auth,
+              userdata: this.props.auth.user,
               token: localStorage.jwtToken
             });
         }

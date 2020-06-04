@@ -111,7 +111,7 @@ class Explore extends React.Component {
               this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
             } 
             this.setState({
-              userdata: this.props.auth,
+              userdata: this.props.auth.user,
               token: localStorage.jwtToken
             });
         }
@@ -131,6 +131,7 @@ class Explore extends React.Component {
     componentDidUpdate(prevProps, prevState) {
       //console.log(props.post.isPosted
       const {props} = this;
+
       if ((prevProps.match.path !== this.props.match.path || (!!props.match.params.categoryId && (prevProps.match.params.categoryId != props.match.params.categoryId))) && (prevProps.match.path != "/post/:postId/2") || (prevProps.match.path == "/post/:postId/2" && this.state.posts.length < 1 )){
         if (!props.auth.isAuthenticated) {
             this.props.history.push("/");
@@ -174,6 +175,8 @@ class Explore extends React.Component {
                   token: localStorage.jwtToken
               })
         }
+
+        
 
         if (props.errors) {
             this.setState({

@@ -5,7 +5,7 @@ import jwt_decode from "jwt-decode";
 import { GET_ERRORS, SET_CURRENT_USER, SET_POSTED, SET_COMMENTED, GET_POSTS, SET_FOLLOWERS } from "../../actions";
 
 export const getHostname = () => {
-    const port = ":8080"; //Port of react server
+    const port = ""; //Port of react server
     return (window.location.protocol + '//' + window.location.hostname + port + '/'); //Returns hostname 
 };
 
