@@ -21,7 +21,7 @@ import DemoLogin from './demologin/demologin';
 
 import { userData } from './classes/callAPI';
 
-//import './app.scss';
+import './app.scss';
 import Postscreen from './postscreen/postscreen';
 
 if (localStorage.jwtToken) {

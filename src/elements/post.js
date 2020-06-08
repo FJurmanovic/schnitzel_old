@@ -22,8 +22,12 @@ export const Post = (props) => {
     const [authorData, setAuthorData] = useState(
         {
             id: '',
+            postNum: 0,
+            username: post.username
         }
     );
+
+    const [isFetch, setIsFetch] = useState(false)
     
 
     /*
@@ -38,10 +42,11 @@ export const Post = (props) => {
     */
 
     const getAuthorData = (id) => {
-        if(authorData.username != id){
+        if(!isFetch){
             
             dataByUsername(id).then((res)=>{
                 setAuthorData(res.data)
+                setIsFetch(true)
             });
         }
     }
@@ -69,7 +74,7 @@ export const Post = (props) => {
                                 </div>
                             </Link>
                         </span>
-                    <span className="f5 mx-2 date">Posted on: {formatDate(post.createdAt)}</span>
+                    <span className="f5 mx-2 date">Posted {post.timeAgo}</span>
                     </div>
                     <div className="card-body">
                         <h3>{post.title}</h3>

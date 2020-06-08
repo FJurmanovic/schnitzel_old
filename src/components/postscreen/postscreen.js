@@ -285,7 +285,7 @@ class Postscreen extends Component {
                                 : <Link to={location => `/${this.state.post.username}`}>{this.state.post.username}</Link>
                                 }
                             </div>
-                            <div>Posted on: {this.formatDate(this.state.post.createdAt)}</div>
+                            <div>Posted {this.state.post.timeAgo}</div>
                            
                             <div className="f5">Points: {this.state.post.points.length} <button className="btn-icon ml-n2" onClick={(e) => this.addPoint(e)}>{!this.state.post.isPointed ? <div className="gg-chevron-up"></div> : <div className="gg-chevron-up text-blue"></div>}</button> <span className="mx-5">Comments: {this.state.post.comments.length}</span></div>
                             <hr />
