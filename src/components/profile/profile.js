@@ -37,6 +37,7 @@ class Profile extends Component {
             showFollowing: false
         };
         this.handleScroll = this.handleScroll.bind(this);
+        this.handleNewPosts = this.handleNewPosts.bind(this);
         this.handleFollowButton = this.handleFollowButton.bind(this);
         this.handleUnfollowButton = this.handleUnfollowButton.bind(this);
         this.addFollower = this.addFollower.bind(this);
@@ -252,7 +253,7 @@ class Profile extends Component {
             const { user } = props.auth
             const id = props.match.params.profileId;   
 
-            if(this.state.profileId != user.username && !id){
+            if(this.state.profileId != user.username && !id && props.match.path != '/post/:postId/1'){
               this.setState({
                 end: false,
                 userdata: user,
@@ -275,7 +276,7 @@ class Profile extends Component {
             //console.log(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId ) || this.state.profileId == undefined)
 
 
-            if(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || (id != this.state.profileId && id != undefined)) || this.state.profileId == undefined){
+            if(props.match.path != '/post/:postId/1' && (this.state.posts.length < 1  || (id != this.state.profileId && id != undefined)) || this.state.profileId == undefined){
             if(!id){
               if(!!user){
                 this.setState({
@@ -375,6 +376,12 @@ class Profile extends Component {
 
       }
 
+      handleNewPosts() {
+        if(!this.state.last && !!this.state.lastPost){
+          this.getPosts(this.state.id, 10, this.state.lastPost.createdAt, this.state.lastPost.id);
+        }
+      }
+
       handleScroll() {
         event.preventDefault();
         const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
@@ -383,9 +390,7 @@ class Profile extends Component {
         const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
         const windowBottom = windowHeight + window.pageYOffset;
         if (windowBottom >= docHeight) {
-          if(!this.state.last){
-            this.getPosts(this.state.id, 10, this.state.lastPost.createdAt, this.state.lastPost.id);
-          }
+          this.handleNewPosts()
         }
       }
 
@@ -408,11 +413,12 @@ class Profile extends Component {
 
       checkFollowing() {
         let following = [];
-        following = this.state.userdata.following;
+        let userd = this.props.auth.user || ''
+        following = this.state.flw.followers;
         let isFollowing = false;
         if(!(!following)){
           following.map((user) => {
-            if(user.userId == this.state.id){
+            if(user.userId == userd.id){
               isFollowing = true;
               //console.log(user.userId)
             }
@@ -579,7 +585,7 @@ class Profile extends Component {
                               )
                             })
                           }
-                          { this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleScroll}>Load more posts</button></div>}
+                          { this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleNewPosts}>Load more posts</button></div>}
                         </div>
                       </div>
                     </>
@@ -596,7 +602,7 @@ class Profile extends Component {
                                 <Post history={this.props.history} post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                               )
                             })
-                          }{ this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleScroll}>Load more posts</button></div>}
+                          }{ this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleNewPosts}>Load more posts</button></div>}
                         </div>
                         }
                       </div>
