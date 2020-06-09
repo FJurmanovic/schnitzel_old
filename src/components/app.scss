@@ -129,6 +129,24 @@ body{
 
     .container {
         margin-top: 15px;
+        .posts-placeholder {
+            height: 300px;
+            .text-placeholder {
+                background-color: #b9b9b9;
+                height: 20px;
+                width: 50%;
+            }
+            .title-placeholder {
+                background-color: #949494;
+                height: 30px;
+                width: 30%;
+            }
+            .description-placeholder {
+                background-color: #dddddd;
+                height: 20px;
+                width: 99%;
+            }
+        }
         .card, .screen-post {
             .author a {
                 padding-bottom: 5px;

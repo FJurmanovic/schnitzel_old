@@ -34,7 +34,8 @@ class Profile extends Component {
               following: []
             },
             showFollowers: false,
-            showFollowing: false
+            showFollowing: false,
+            postsFetching: false
         };
         this.handleScroll = this.handleScroll.bind(this);
         this.handleNewPosts = this.handleNewPosts.bind(this);
@@ -74,6 +75,8 @@ class Profile extends Component {
             }else{
               this.setState({end: true});
             }
+
+              this.setState({postsFetching: false})
               return res;
               
           })
@@ -194,7 +197,10 @@ class Profile extends Component {
                       validProfile: true
                     });
                     if(user.id){
+                      
+                    this.setState({postsFetching: true}, () => {
                       this.getPosts(user.id, 10, '', '')
+                    })
                     }
                   }else{
                     this.setState({
@@ -210,7 +216,10 @@ class Profile extends Component {
                       })
                     }
                     if(res.data.id){
+                      
+                    this.setState({postsFetching: true}, () => {
                       this.getPosts(res.data.id, 10, '', '')
+                    })
                       getFollowUsernames(res.data.id).then((ress) => {
                         let followers = ress.data.followers || [];
                         let following = ress.data.following || [];
@@ -270,7 +279,10 @@ class Profile extends Component {
                 photoExt: user.photoExt,
               });
               if(user.id){
-                this.getPosts(user.id, 10, '', '')
+                
+                this.setState({postsFetching: true}, () => {
+                  this.getPosts(user.id, 10, '', '')
+                })
               }
             }
             //console.log(props.match.path != '/post/:postId/1' && (!this.state.posts.length > 0  || id != this.state.profileId ) || this.state.profileId == undefined)
@@ -559,13 +571,31 @@ class Profile extends Component {
                 </Link>
                 <div>
                   <h1 className="text-center">Your posts</h1>
-                  <div className="posts" onScroll={this.handleScroll}>
+                  <div className="posts" onScroll={this.handleScroll}>{ this.state.postsFetching 
+                    ? <>
+                      <div className="posts-placeholder card col-9 my-6">
+                        <div className="text-placeholder my-4 mx-1"></div>
+                        <div className="title-placeholder my-4 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                      </div>
+                      <div className="posts-placeholder card col-9 my-6">
+                        <div className="text-placeholder my-4 mx-1"></div>
+                        <div className="title-placeholder my-4 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                      </div>
+                      </>
+                    : <>
                     { this.state.posts.map((post, key) => {
                         return (
                           <Post history={this.props.history} post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                         )
                       })
                     }{ this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleScroll}>Load more posts</button></div>}
+                    </> }
                   </div>
                 </div>
               </>
@@ -578,14 +608,31 @@ class Profile extends Component {
                       </div>
                       <div>
                         <h1 className="text-center">{this.state.profileId}</h1>
-                        <div className="posts" onScroll={this.handleScroll}>
-                          { this.state.posts.map((post, key) => {
+                        <div className="posts" onScroll={this.handleScroll}>{ this.state.postsFetching 
+                          ? <>
+                            <div className="posts-placeholder card col-9 my-6">
+                              <div className="text-placeholder my-4 mx-1"></div>
+                              <div className="title-placeholder my-4 mx-1"></div>
+                              <div className="description-placeholder my-2 mx-1"></div>
+                              <div className="description-placeholder my-2 mx-1"></div>
+                              <div className="description-placeholder my-2 mx-1"></div>
+                            </div>
+                            <div className="posts-placeholder card col-9 my-6">
+                              <div className="text-placeholder my-4 mx-1"></div>
+                              <div className="title-placeholder my-4 mx-1"></div>
+                              <div className="description-placeholder my-2 mx-1"></div>
+                              <div className="description-placeholder my-2 mx-1"></div>
+                              <div className="description-placeholder my-2 mx-1"></div>
+                            </div>
+                            </>
+                          : <> { this.state.posts.map((post, key) => {
                               return (
                                 <Post history={this.props.history} post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                               )
                             })
                           }
                           { this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleNewPosts}>Load more posts</button></div>}
+                        </> }
                         </div>
                       </div>
                     </>
@@ -596,13 +643,30 @@ class Profile extends Component {
                       <div>
                         <h1 className="text-center">{this.state.profileId}</h1>
                         {!(this.state.isPrivate) &&
-                          <div className="posts" onScroll={this.handleScroll}>
-                          { this.state.posts.map((post, key) => {
+                          <div className="posts" onScroll={this.handleScroll}>{ this.state.postsFetching 
+                            ? <>
+                              <div className="posts-placeholder card col-9 my-6">
+                                <div className="text-placeholder my-4 mx-1"></div>
+                                <div className="title-placeholder my-4 mx-1"></div>
+                                <div className="description-placeholder my-2 mx-1"></div>
+                                <div className="description-placeholder my-2 mx-1"></div>
+                                <div className="description-placeholder my-2 mx-1"></div>
+                              </div>
+                              <div className="posts-placeholder card col-9 my-6">
+                                <div className="text-placeholder my-4 mx-1"></div>
+                                <div className="title-placeholder my-4 mx-1"></div>
+                                <div className="description-placeholder my-2 mx-1"></div>
+                                <div className="description-placeholder my-2 mx-1"></div>
+                                <div className="description-placeholder my-2 mx-1"></div>
+                              </div>
+                              </>
+                            : <>{ this.state.posts.map((post, key) => {
                               return (
                                 <Post history={this.props.history} post={post} key={key} iter={key} userdata={this.state.userdata} formatDate={this.formatDate} addPoint={(e) => this.addPoint(e, key)}  authUser={this.props.auth.user.id} from="profile" />
                               )
                             })
                           }{ this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button className="btn btn-blue btn-squared p-4" onClick={this.handleNewPosts}>Load more posts</button></div>}
+                          </> }
                         </div>
                         }
                       </div>

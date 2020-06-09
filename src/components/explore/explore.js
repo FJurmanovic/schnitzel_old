@@ -21,7 +21,8 @@ class Explore extends React.Component {
             last: false,
             end: false,
             category: "",
-            path: ""
+            path: "",
+            postsFetching: false
         };
         this.handleScroll = this.handleScroll.bind(this);
         this.addPoint = this.addPoint.bind(this);
@@ -60,9 +61,9 @@ class Explore extends React.Component {
               //console.log(lastPost)
 
               if(lastDate == '' && lastId == ''){
-                this.setState({posts: posts, lastPost: lastPost, last: res.data.last})
+                this.setState({posts: posts, lastPost: lastPost, last: res.data.last, postsFetching: false})
               }else{
-                this.setState({posts: postList, lastPost: lastPost, last: res.data.last})
+                this.setState({posts: postList, lastPost: lastPost, last: res.data.last, postsFetching: false})
               }
 
               if(res.data.post.length < 10){
@@ -74,7 +75,7 @@ class Explore extends React.Component {
                   console.log("Last Date: " + lastPost.createdAt + ", Last User: " + lastPost._id)
               }*/
             }else{
-              this.setState({end: true})
+              this.setState({end: true, postsFetching: false})
             }
       
             return res;
@@ -103,12 +104,18 @@ class Explore extends React.Component {
                 let partOf = categories.includes(categoryId)
                 if(partOf){
                     category = categoryId
-                    this.getPosts(localStorage.jwtToken, 0, 10, '', '', props.match.params.categoryId, true)
+                    
+                    this.setState({postsFetching: true}, () => {
+                      this.getPosts(localStorage.jwtToken, 0, 10, '', '', props.match.params.categoryId, true)
+                    })
                 }else{
                     props.history.push("/explore")
                 }
             } else if (props.match.path == "/explore") {
-              this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
+              
+              this.setState({postsFetching: true}, () => {
+                this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
+              })
             } 
             this.setState({
               userdata: this.props.auth.user,
@@ -152,7 +159,10 @@ class Explore extends React.Component {
                   let partOf = categories.includes(categoryId)
                   if(partOf){
                       //if(this.state.category != categoryId){
+                        
+                      this.setState({postsFetching: true}, () => {
                           this.getPosts(localStorage.jwtToken, 0, 10, '', '', props.match.params.categoryId, true)
+                      })
                       //}
                       this.setState({
                           category: categoryId,
@@ -163,7 +173,9 @@ class Explore extends React.Component {
                       props.history.push("/explore")
                   }
               } else {
-                  this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
+                  this.setState({postsFetching: true}, () => {
+                    this.getPosts(localStorage.jwtToken, 0, 10, '', '', "all", true)
+                  })
                   this.setState({
                       path: props.match.path
                   })
@@ -259,8 +271,24 @@ class Explore extends React.Component {
                 
                 <hr />
 
-                <div className="posts" onScroll={this.handleScroll}>
-                    { this.state.posts.length > 0 
+                <div className="posts" onScroll={this.handleScroll}>{ this.state.postsFetching 
+                    ? <>
+                      <div className="posts-placeholder card col-9 my-6">
+                        <div className="text-placeholder my-4 mx-1"></div>
+                        <div className="title-placeholder my-4 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                      </div>
+                      <div className="posts-placeholder card col-9 my-6">
+                        <div className="text-placeholder my-4 mx-1"></div>
+                        <div className="title-placeholder my-4 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                        <div className="description-placeholder my-2 mx-1"></div>
+                      </div>
+                      </>
+                    : <>{ this.state.posts.length > 0 
                     ? <>
                         { this.state.posts.map((post, key) => {
                             return (
@@ -271,7 +299,7 @@ class Explore extends React.Component {
                         { this.state.end ? <div className="text-center f2 mb-8">There are no more posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div> : <div className="text-center f2 mb-8"><button onClick={this.handleScroll} className="btn btn-blue btn-squared p-4">Load more posts</button></div>}
                         </>
                     : <div className="text-center f2">There are no posts to load. <br /> <Link to="/explore" className="btn btn-blue btn-rounder f3">Explore</Link> to find new posts</div>
-                    }
+                    } </> }
                 </div>
             </>
         )
