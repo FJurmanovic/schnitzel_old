@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import {Image} from 'cloudinary-react';
 
 import {removePost, dataByUsername} from '../components/classes/callAPI';
+import { firstUpper } from '../components/classes/Functions';
 
 
 const OpenButton = (props) => {
@@ -77,6 +78,25 @@ export const Post = (props) => {
                     <span className="f5 mx-2 date">Posted {post.timeAgo}</span>
                     </div>
                     <div className="card-body">
+                        <div className="labels my-1">
+                            {post.categories.map((category, i) => {
+                                return <React.Fragment key={i}>
+                                    {i < 4 && <Link to={`/explore/${category}`} className="label mr-2">{category}</Link>}
+                                    {i === 1 && 
+                                        <>
+                                            <span className="others label px-2">...<div className="under-categories">
+                                                <div className="categories-all">
+                                                    {post.categories.map((ctg, ctgid) => {
+                                                        return <React.Fragment key={ctgid}><Link to={`/explore/${ctg}`} className="ctg-text mx-3">{firstUpper(ctg)}</Link></React.Fragment>
+                                                    })}
+                                                </div>
+                                            </div></span>
+                                            
+                                        </>
+                                    }
+                                </React.Fragment>
+                            })}
+                        </div>
                         <h3>{post.title}</h3>
                         <div className="f5 description">{post.description}</div>
                         {post.type == "recipe" &&

@@ -148,6 +148,47 @@ body{
             }
         }
         .card, .screen-post {
+            .under-categories {
+                position: absolute;
+                margin-top: -1px;
+                margin-left: -20px;
+                width: 150px;
+                height: 160px;
+                display: none;
+            
+                .categories-all {
+                    position: absolute;
+                    width: 150px;
+                    height: 150px;
+                    background-color: #ebebeb;
+                    z-index: 500;
+                    border: 1px solid #d8d8d8;
+                    border-radius: .5em;
+                    margin-top: 7px;
+                    overflow: auto;
+
+                    .ctg-text {
+                        color: #464646;
+                        margin-top: 4px;
+                        font-size: 13px;
+                        display: block
+                    }
+                }
+            }
+            
+
+                
+            .others:hover .under-categories {
+                display: block;
+            }
+            
+            .others {
+                &.label:hover {
+                    ~.under-categories{
+                        display: block;
+                    }
+                }
+            }
             .author a {
                 padding-bottom: 5px;
             }
