@@ -436,7 +436,6 @@ class Profile extends Component {
             }
           });
         }
-        //console.log(isFollowing);
         return isFollowing;
       }
 
@@ -448,9 +447,6 @@ class Profile extends Component {
 
       handleUnfollowButton(event) {
         if (!!event) event.preventDefault();
-
-        console.log("w")
-
         unfollowUser(this.state.userdata.id, this.state.id).then(res => {
           this.removeFollower(this.state.id)
           this.removeFromFollowerState(this.state.id)
@@ -463,7 +459,7 @@ class Profile extends Component {
         followUser(this.state.userdata.id, this.state.id).then(res =>
           {
             this.addFollower(this.state.id)
-            this.addToFollowerState(this.state.id)
+            this.addToFollowerState(this.state.userdata.id)
           }
         )
       }
