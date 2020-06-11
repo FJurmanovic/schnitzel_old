@@ -56,7 +56,7 @@ export const Post = (props) => {
         <React.Fragment key={iter}>
             <>
                 <div className="card col-9 my-6">
-                    {post.hasPhoto && <div className="card-image"><OpenButton from={from} id={post.id}><Image cloudName="dj7ju136o" className="card-img-top"  publicId={`post/${post.id}/${post.id}${post.photoExt}`} /></OpenButton></div>}
+                    {post.hasPhoto && <div className="card-image"><OpenButton from={from} id={post.id}><img src={`https://storage.googleapis.com/schnitzel/post/${post.id}/${post.id}${post.photoExt}`} className="card-img-top" /></OpenButton></div>}
                     
                     <div className="f5 pr-5 mb-n3 mt-3 top-card">
                     {(userdata.id == post.userId || authUser == post.userId) &&<span className="float-right"><a href="./" onClick={() => removePost(post.id)}>Delete post</a> | <Link to={location => `/post/edit/${post.id}`}>Edit post</Link></span>}
@@ -68,7 +68,7 @@ export const Post = (props) => {
                             <Link className="popover-author" to={location => `/${post.username}`}>
                                 <div className="" id={`popover_${iter}`}>
                                     <div className="md-photo">
-                                        {authorData.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${authorData.id}/${authorData.id}${authorData.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />} 
+                                        {authorData.hasPhoto ? <img src={`https://storage.googleapis.com/schnitzel/avatar/${authorData.id}/${authorData.id}${authorData.photoExt}`} className="card-img-top" /> : <img src="https://storage.googleapis.com/schnitzel/default.jpg" className="card-img-top" />} 
                                         <span className="author-user">{post.username}</span>
                                         <span className="author-post">Posts: {authorData.postNum}</span>
                                     </div>
@@ -82,7 +82,7 @@ export const Post = (props) => {
                             {post.categories.map((category, i) => {
                                 return <React.Fragment key={i}>
                                     {i < 4 && <Link to={`/explore/${category}`} className="label mr-2">{category}</Link>}
-                                    {i === 1 && 
+                                    {i === 5 && 
                                         <>
                                             <span className="others label px-2">...<div className="under-categories">
                                                 <div className="categories-all">

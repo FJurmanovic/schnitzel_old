@@ -232,7 +232,7 @@ class EditProfile extends Component {
             <form onSubmit={this.handleSubmit}>
               {this.state.editAvatar
               ? <label>Image:<br />
-                {this.state.hasPhoto && <Image cloudName="dj7ju136o"  publicId={`avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} />}
+                {this.state.hasPhoto && <img src={`https://storage.googleapis.com/schnitzel/avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} className="card-img-top" />}
                 <input type="file" onChange={this.handleImage} />
                 </label>
               : <span><a href="#" onClick={() => {this.setState({editAvatar: true})}}>Edit profile picture</a></span>

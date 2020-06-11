@@ -188,6 +188,8 @@ class Profile extends Component {
                       username: user.username,
                       token: localStorage.jwtToken,
                       profileId: user.username,
+                      hasPhoto: user.hasPhoto,
+                      photoExt: user.photoExt,
                       posts: [],
                       flw: {
                         followers: user.followers,
@@ -548,7 +550,7 @@ class Profile extends Component {
           {this.state.validProfile ? 
           <div onScroll={this.handleScroll}>
             <div>
-              <div className="profile-image mx-auto text-center">{this.state.hasPhoto ? <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} /> : <Image cloudName="dj7ju136o" className="card-img-top"  publicId={`default_dnqwla.jpg`} />}</div>
+              <div className="profile-image mx-auto text-center">{this.state.hasPhoto ? <img src={`https://storage.googleapis.com/schnitzel/avatar/${this.state.id}/${this.state.id}${this.state.photoExt}`} className="card-img-top" /> : <img src="https://storage.googleapis.com/schnitzel/default.jpg" className="card-img-top" />}</div>
               <div className="mx-auto text-center">
                 <ul className="d-inline-block m-3 text-left">
                   <button className="btn btn-blue-transparent btn-rounder border-blue d-inline-block" onClick={() => this.setState({showFollowers: true})}>Followers</button>

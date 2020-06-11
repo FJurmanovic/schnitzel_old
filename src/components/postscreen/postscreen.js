@@ -263,7 +263,7 @@ class Postscreen extends Component {
             { !!this.state.post.type  &&
                 <div className='overlay' onClick={this.goBack}>
                     <div className='poston screen-post' onClick={this.stayHere}>
-                             {this.state.post.hasPhoto && <div className="card-image"><Image cloudName="dj7ju136o" className="card-img-top"  publicId={`post/${this.state.post.id}/${this.state.post.id}${this.state.post.photoExt}`} /></div>}
+                             {this.state.post.hasPhoto && <div className="card-image"><img src={`https://storage.googleapis.com/schnitzel/post/${this.state.post.id}/${this.state.post.id}${this.state.post.photoExt}`} className="card-img-top" /></div>}
                             <div className="screen-body">    
                             {(this.state.userdata.id == this.state.post.userId || this.props.auth.user.id == this.state.post.userId) && <span className="float-right"><a href="./" onClick={() => {removePost(this.state.post.id); this.props.history.push("/")}}>Delete post</a> | <Link to={location => `/post/edit/${this.state.post.id}`}>Edit post</Link></span>}
                             <h3>{this.state.post.title}</h3>
