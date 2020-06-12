@@ -121,9 +121,10 @@ export const createPost = (post, data, history) => dispatch => { //sends post da
             if(!!data){
                 uploadImage(data, {"id": postId, "type": "post"})
             }
-            dispatch({
+
+            setTimeout(dispatch({
                 type: SET_POSTED
-            })
+            }), 2000)
         })
         .catch(err =>
             dispatch({
