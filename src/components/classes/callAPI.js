@@ -119,12 +119,18 @@ export const createPost = (post, data, history) => dispatch => { //sends post da
             //console.log(data)
             let postId = res.data.id
             if(!!data){
-                uploadImage(data, {"id": postId, "type": "post"})
+                uploadImage(data, {"id": postId, "type": "post"}).then((res) => {
+                    if(!!res) {
+                        dispatch({
+                            type: SET_POSTED
+                        })
+                    }
+                })
+            }else{
+                dispatch({
+                    type: SET_POSTED
+                })
             }
-
-            setTimeout(dispatch({
-                type: SET_POSTED
-            }), 2000)
         })
         .catch(err =>
             dispatch({
