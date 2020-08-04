@@ -81,7 +81,7 @@ export const Post = (props) => {
                         <div className="labels my-1">
                             {post.categories.map((category, i) => {
                                 return <React.Fragment key={i}>
-                                    {i < 4 && <Link to={`/explore/${category}`} className="label mr-2">{category}</Link>}
+                                    {i < 4 && <Link to={`/explore/f/${category}`} className="label mr-2">{category}</Link>}
                                     {i === 5 && 
                                         <>
                                             <span className="others label px-2">...<div className="under-categories">
