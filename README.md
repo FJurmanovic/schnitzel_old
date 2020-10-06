@@ -48,8 +48,8 @@ And run it
 Contribute
 ----------
 
-- Issue Tracker: https://github.com/Yurma/schnitzel/issues
-- Source Code: https://github.com/Yurma/schnitzel
+- Issue Tracker: https://github.com/Yurma/schnitzel_old/issues
+- Source Code: https://github.com/Yurma/schnitzel_old
 
 License
 -------
